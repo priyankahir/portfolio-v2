@@ -1,29 +1,67 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0a0a0a;
-  --color-foreground: #ededed;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   
   --font-sans: var(--font-inter);
-  --font-heading: var(--font-space-grotesk);
+  --font-heading: var(--font-vt323);
+  --font-mono: var(--font-jetbrains-mono);
 
-  --color-primary: #ffffff;
-  --color-secondary: #a1a1aa;
-  --color-accent: #3b82f6;
-
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-surface: rgba(255, 255, 255, 0.03);
-  --color-surface-hover: rgba(255, 255, 255, 0.08);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-accent-purple: var(--accent-purple);
+  
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-card: var(--surface-card);
+  --color-border: var(--border);
+  --color-border-focus: var(--border-focus);
+  --color-border-glow: var(--border-glow);
 }
 
 @layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+    /* Theme 1: Black + Blue */
+    --background: #050505;
+    --foreground: #e5e7eb;
+
+    --primary: #2563eb;
+    --secondary: #94a3b8;
+    --accent: #0284c7;
+    --accent-purple: #7c3aed;
+
+    --surface: rgba(37, 99, 235, 0.05);
+    --surface-hover: rgba(37, 99, 235, 0.1);
+    --surface-card: rgba(10, 10, 10, 0.85);
+    --border: rgba(37, 99, 235, 0.2);
+    --border-focus: rgba(37, 99, 235, 0.5);
+    --border-glow: rgba(37, 99, 235, 0.15);
+  }
+
+  .dark {
+    color-scheme: dark;
+    /* Theme 2: Black + Green (Hacker OS) */
+    --background: #050505;
+    --foreground: #e5e7eb;
+
+    --primary: #00ff41;
+    --secondary: #94a3b8;
+    --accent: #22d3ee;
+    --accent-purple: #8b5cf6;
+
+    --surface: rgba(0, 255, 65, 0.03);
+    --surface-hover: rgba(0, 255, 65, 0.08);
+    --surface-card: rgba(5, 5, 5, 0.7);
+    --border: rgba(0, 255, 65, 0.15);
+    --border-focus: rgba(0, 255, 65, 0.4);
+    --border-glow: rgba(0, 255, 65, 0.3);
   }
 
   body {
-    background-color: var(--background);
+    background-color: var(--background) !important;
     color: var(--foreground);
     font-family: var(--font-inter), sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -32,36 +70,134 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-space-grotesk), sans-serif;
-    letter-spacing: -0.02em;
+    font-family: var(--font-vt323), monospace;
+    letter-spacing: 0.02em;
+  }
+
+  code, pre {
+    font-family: var(--font-jetbrains-mono), monospace;
+  }
+  
+  @media (hover: hover) and (pointer: fine) {
+    body {
+      cursor: none;
+    }
+    a, button, input, textarea, select {
+      cursor: none;
+    }
   }
 }
 
 @layer utilities {
+  .font-terminal {
+    font-family: var(--font-jetbrains-mono), monospace;
+  }
+  
+  .font-heading {
+    font-family: var(--font-vt323), monospace;
+  }
+
+  .terminal-panel {
+    @apply bg-surface-card backdrop-blur-xl border border-border rounded-xl shadow-[0_8px_32px_0_rgba(37,99,235,0.05)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)];
+  }
+  
+  .terminal-panel-hover {
+    @apply hover:bg-surface-hover hover:border-border-glow transition-all duration-300;
+  }
+
+  .terminal-glow {
+    box-shadow: 0 0 10px var(--border-glow);
+  }
+
+  .terminal-glow-hover:hover {
+    box-shadow: 0 0 15px var(--border-focus);
+  }
+
   .glass {
     @apply bg-surface backdrop-blur-md border border-border;
   }
   
+  .glass-card {
+    @apply bg-surface-card backdrop-blur-xl border border-border rounded-2xl shadow-[0_8px_32px_0_rgba(37,99,235,0.05)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.36)];
+  }
+  
   .glass-hover {
-    @apply hover:bg-surface-hover transition-colors duration-300;
+    @apply hover:bg-surface-hover hover:border-border-focus hover:shadow-[0_0_15px_rgba(37,99,235,0.15)] dark:hover:shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-all duration-300;
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-secondary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  }
+  
+  .heading-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-primary to-primary/60;
   }
 
-  /* Custom scrollbar */
+  .bg-grid-pattern {
+    background-image: url('/images/bgGrid.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+    opacity: 0.15;
+  }
+  .dark .bg-grid-pattern {
+    opacity: 0.05;
+  }
+
   ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
     background: var(--background);
   }
   ::-webkit-scrollbar-thumb {
-    background: #333;
+    background: #cbd5e1;
+    border: 1px solid #f8fafc;
     border-radius: 4px;
   }
+  .dark ::-webkit-scrollbar-thumb {
+    background: #161616;
+    border: 1px solid #000000;
+  }
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: var(--primary);
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 5px var(--border); }
+    50% { box-shadow: 0 0 20px var(--border-focus); }
+  }
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  .crt-overlay::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    z-index: 100;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    opacity: 0.1;
+  }
+  .dark .crt-overlay::before {
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    opacity: 0.15;
   }
 }
+
