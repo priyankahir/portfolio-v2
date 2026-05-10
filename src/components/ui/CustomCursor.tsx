@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setIsMounted(true), 0);
+    setIsMounted(true);
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
+      if (!isVisible) setIsVisible(true);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
@@ -36,7 +38,7 @@ export function CustomCursor() {
       window.removeEventListener("mousemove", updateMousePosition);
       window.removeEventListener("mouseover", handleMouseOver);
     };
-  }, []);
+  }, [isVisible]);
 
   if (!isMounted) return null;
 
@@ -46,36 +48,43 @@ export function CustomCursor() {
   }
 
   return (
-    <>
-      <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-primary rounded-full pointer-events-none z-[9999] mix-blend-screen shadow-[0_0_10px_rgba(0,255,65,0.5)]"
-        animate={{
-          x: mousePosition.x - 8,
-          y: mousePosition.y - 8,
-          scale: isHovering ? 2 : 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 28,
-          mass: 0.5,
-        }}
-      />
-      <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-primary/50 rounded-full pointer-events-none z-[9998] shadow-[0_0_15px_rgba(0,255,65,0.2)]"
-        animate={{
-          x: mousePosition.x - 16,
-          y: mousePosition.y - 16,
-          scale: isHovering ? 1.5 : 1,
-          opacity: isHovering ? 0 : 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 250,
-          damping: 20,
-          mass: 0.8,
-        }}
-      />
-    </>
+    <AnimatePresence>
+      {isVisible && (
+        <>
+          {/* Minimal Dot */}
+          <motion.div
+            className="fixed top-0 left-0 w-1.5 h-1.5 bg-primary rounded-full pointer-events-none z-[9999]"
+            animate={{
+              x: mousePosition.x - 3,
+              y: mousePosition.y - 3,
+              scale: isHovering ? 0 : 1,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 1000,
+              damping: 50,
+              mass: 0.1,
+            }}
+          />
+
+          {/* Minimal Ring */}
+          <motion.div
+            className="fixed top-0 left-0 w-8 h-8 border border-primary/30 rounded-full pointer-events-none z-[9998]"
+            animate={{
+              x: mousePosition.x - 16,
+              y: mousePosition.y - 16,
+              scale: isHovering ? 1.5 : 1,
+              borderColor: isHovering ? "rgba(0, 255, 65, 0.8)" : "rgba(0, 255, 65, 0.3)",
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 250,
+              damping: 25,
+              mass: 0.5,
+            }}
+          />
+        </>
+      )}
+    </AnimatePresence>
   );
 }

@@ -5,6 +5,8 @@ import { constructMetadata } from "@/lib/metadata";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { SystemMonitorHUD } from "@/components/ui/SystemMonitorHUD";
+import { CommandPalette } from "@/components/ui/CommandPalette";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
 import { TerminalBootLoader } from "@/components/layout/TerminalBootLoader";
 
@@ -38,9 +40,13 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${vt323.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col crt-overlay transition-colors duration-300`}
+        suppressHydrationWarning
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider defaultTheme="dark">
+          <div className="scanline" />
           <TerminalBootLoader />
+          <CommandPalette />
+          <SystemMonitorHUD />
           <CustomCursor />
           <Navbar />
           <main className="flex-1 flex flex-col">{children}</main>

@@ -199,5 +199,73 @@
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
     opacity: 0.15;
   }
+
+  /* Advanced CRT Flicker */
+  .crt-overlay::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(18, 16, 16, 0.1);
+    opacity: 0;
+    z-index: 101;
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0.01; }
+    5% { opacity: 0.02; }
+    10% { opacity: 0.01; }
+    15% { opacity: 0.03; }
+    20% { opacity: 0.01; }
+    25% { opacity: 0.02; }
+    30% { opacity: 0.01; }
+    35% { opacity: 0.03; }
+    40% { opacity: 0.01; }
+    45% { opacity: 0.02; }
+    50% { opacity: 0.03; }
+    55% { opacity: 0.01; }
+    60% { opacity: 0.02; }
+    65% { opacity: 0.01; }
+    70% { opacity: 0.03; }
+    75% { opacity: 0.02; }
+    80% { opacity: 0.01; }
+    85% { opacity: 0.03; }
+    90% { opacity: 0.02; }
+    95% { opacity: 0.01; }
+    100% { opacity: 0.02; }
+  }
+
+  .scanline {
+    width: 100%;
+    height: 100px;
+    z-index: 102;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, var(--border) 50%, rgba(0, 0, 0, 0) 100%);
+    opacity: 0.05;
+    position: fixed;
+    bottom: 100%;
+    pointer-events: none;
+    animation: scanline 10s linear infinite;
+  }
+
+  @keyframes scanline {
+    0% { bottom: 100%; }
+    100% { bottom: -100px; }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+  .pause {
+    animation-play-state: paused;
+  }
 }
 

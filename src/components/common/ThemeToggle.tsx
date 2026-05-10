@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "next-themes";
+import { useTheme } from "./ThemeProvider";
 import { useEffect, useState } from "react";
 import { Terminal, Monitor } from "lucide-react";
 import { motion } from "framer-motion";

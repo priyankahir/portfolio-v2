@@ -2,6 +2,9 @@
 
 import { Reveal } from "@/components/animations/Reveal";
 import { useState } from "react";
+import { developerDetails } from "@/data/developer";
+import { GitCompareArrows, Link, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { SiGithub } from "react-icons/si";
 
 export function ContactSection() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
@@ -10,6 +13,25 @@ export function ContactSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
+    
+    // Simulate system verification
+    console.log("Verifying communication channel...");
+    
+    // Construct mailto link
+    const subject = `[PB.OS INQUIRY] from ${formData.name}`;
+    const body = `--- SYSTEM_ENCRYPTED_MESSAGE ---%0D%0A%0D%0A[SOURCE]: ${formData.name} (${formData.email})%0D%0A[PAYLOAD]:%0D%0A%0D%0A${formData.message}%0D%0A%0D%0A--- END_MESSAGE ---`;
+    const mailtoUrl = `mailto:${developerDetails.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+    
+    // Attempt to open email client
+    try {
+      const mailtoWindow = window.open(mailtoUrl, "_blank");
+      if (!mailtoWindow || mailtoWindow.closed || typeof mailtoWindow.closed === "undefined") {
+        window.location.href = mailtoUrl;
+      }
+    } catch (e) {
+      window.location.href = mailtoUrl;
+    }
+
     setTimeout(() => {
       setStatus("sent");
       setTimeout(() => {
@@ -40,45 +62,45 @@ export function ContactSection() {
                 <span className="text-primary">{">"}</span> CONTACT_INFO
               </h3>
               <div className="space-y-6 font-terminal">
-                <div className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <a href={developerDetails.socials.whatsapp} target="_blank" rel="noreferrer" className="flex items-center gap-4 group cursor-pointer">
+                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
+                    <MessageSquare className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-xs text-secondary">PHN</p>
-                    <p className="font-medium text-foreground">+91 99797-00935</p>
+                    <p className="text-[10px] text-secondary uppercase tracking-tighter">WhatsApp</p>
+                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">{developerDetails.phone}</p>
                   </div>
-                </div>
+                </a>
+                
+                <a href={`mailto:${developerDetails.email}`} className="flex items-center gap-4 group cursor-pointer">
+                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-secondary uppercase tracking-tighter">Email</p>
+                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">{developerDetails.email}</p>
+                  </div>
+                </a>
                 
                 <div className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary transition-all">
+                    <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-xs text-secondary">EML</p>
-                    <p className="font-medium text-foreground">priyankahir333@gmail.com</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                  </div>
-                  <div>
-                    <p className="text-xs text-secondary">LOC</p>
-                    <p className="font-medium text-foreground">Ahmedabad, Gujarat, India</p>
+                    <p className="text-[10px] text-secondary uppercase tracking-tighter">Location</p>
+                    <p className="font-medium text-foreground">{developerDetails.location}</p>
                   </div>
                 </div>
               </div>
 
               <div className="mt-10 font-terminal">
-                <h4 className="text-sm font-bold mb-4 text-primary">EXTERNAL_LINKS</h4>
-                <div className="flex gap-4">
-                  <a href="https://linkedin.com/in/priyank-baldaniya" target="_blank" rel="noreferrer" className="px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-colors interactive">
-                    [ LINKEDIN ]
+                <h4 className="text-[10px] font-bold mb-4 text-primary uppercase tracking-widest">EXTERNAL_LINKS</h4>
+                <div className="flex flex-wrap gap-4">
+                  <a href={developerDetails.socials.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-all interactive text-xs">
+                    <Link className="w-4 h-4" /> [ LINKEDIN ]
                   </a>
-                  <a href="#" target="_blank" rel="noreferrer" className="px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-colors interactive">
-                    [ GITHUB ]
+                  <a href={developerDetails.socials.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-all interactive text-xs">
+                    <GitCompareArrows className="w-4 h-4" /> [ GITHUB ]
                   </a>
                 </div>
               </div>
@@ -92,15 +114,17 @@ export function ContactSection() {
               </div>
               
               {status === "sent" ? (
-                <div className="flex flex-col items-center justify-center h-[300px] text-center">
-                  <span className="text-4xl mb-4">✅</span>
+                <div className="flex flex-col items-center justify-center h-[300px] text-center animate-in fade-in zoom-in duration-500">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 border border-primary/20">
+                    <span className="text-2xl">✓</span>
+                  </div>
                   <p className="text-primary font-bold text-lg">TRANSMISSION_SUCCESSFUL</p>
-                  <p className="text-secondary mt-2">I will process your request shortly.</p>
+                  <p className="text-secondary mt-2 text-sm">Opening your email client...</p>
                 </div>
               ) : (
                 <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="name" className="text-xs font-bold text-secondary flex items-center gap-2">
+                    <label htmlFor="name" className="text-[10px] font-bold text-secondary flex items-center gap-2 uppercase tracking-tighter">
                       <span className="text-primary">{"[?]"}</span> ENTER_ALIAS
                     </label>
                     <input 
@@ -109,15 +133,15 @@ export function ContactSection() {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="bg-surface border border-border rounded px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(37,99,235,0.1)] dark:focus:shadow-[0_0_10px_rgba(0,255,65,0.2)] transition-all interactive placeholder:text-secondary/50" 
-                      placeholder="John Doe" 
+                      className="bg-surface/50 border border-border rounded px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(0,255,65,0.1)] transition-all interactive placeholder:text-secondary/30 text-sm" 
+                      placeholder="Your Name" 
                       disabled={status !== "idle"}
                     />
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="email" className="text-xs font-bold text-secondary flex items-center gap-2">
-                      <span className="text-primary">{"[?]"}</span> ENTER_SOURCE_IP
+                    <label htmlFor="email" className="text-[10px] font-bold text-secondary flex items-center gap-2 uppercase tracking-tighter">
+                      <span className="text-primary">{"[?]"}</span> ENTER_SOURCE_EMAIL
                     </label>
                     <input 
                       type="email" 
@@ -125,14 +149,14 @@ export function ContactSection() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="bg-surface border border-border rounded px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(37,99,235,0.1)] dark:focus:shadow-[0_0_10px_rgba(0,255,65,0.2)] transition-all interactive placeholder:text-secondary/50" 
-                      placeholder="john@example.com" 
+                      className="bg-surface/50 border border-border rounded px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(0,255,65,0.1)] transition-all interactive placeholder:text-secondary/30 text-sm" 
+                      placeholder="your@email.com" 
                       disabled={status !== "idle"}
                     />
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="message" className="text-xs font-bold text-secondary flex items-center gap-2">
+                    <label htmlFor="message" className="text-[10px] font-bold text-secondary flex items-center gap-2 uppercase tracking-tighter">
                       <span className="text-primary">{"[?]"}</span> ENTER_PAYLOAD_DATA
                     </label>
                     <textarea 
@@ -141,8 +165,8 @@ export function ContactSection() {
                       required
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
-                      className="bg-surface border border-border rounded px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(37,99,235,0.1)] dark:focus:shadow-[0_0_10px_rgba(0,255,65,0.2)] transition-all interactive resize-none placeholder:text-secondary/50" 
-                      placeholder="Hello, I'd like to talk about..."
+                      className="bg-surface/50 border border-border rounded px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(0,255,65,0.1)] transition-all interactive resize-none placeholder:text-secondary/30 text-sm" 
+                      placeholder="What's on your mind?"
                       disabled={status !== "idle"}
                     ></textarea>
                   </div>
@@ -150,10 +174,10 @@ export function ContactSection() {
                   <button 
                     type="submit" 
                     disabled={status !== "idle"}
-                    className="mt-2 bg-primary/10 text-primary border border-primary/50 font-bold py-3 rounded hover:bg-primary hover:text-black transition-colors interactive terminal-glow-hover flex items-center justify-center gap-2"
+                    className="mt-2 bg-primary/10 text-primary border border-primary/50 font-bold py-4 rounded hover:bg-primary hover:text-black transition-all interactive terminal-glow-hover flex items-center justify-center gap-3 group"
                   >
                     {status === "sending" ? "TRANSMITTING..." : "TRANSMIT_DATA"}
-                    {status === "idle" && <span className="animate-blink">_</span>}
+                    {status === "idle" && <span className="animate-blink group-hover:text-black">_</span>}
                   </button>
                 </form>
               )}

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { TerminalTyping } from "@/components/animations/TerminalTyping";
 import { Reveal } from "@/components/animations/Reveal";
+import { MatrixRain } from "@/components/animations/MatrixRain";
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -12,6 +13,9 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-20 overflow-hidden px-4">
+      {/* Immersive Effects */}
+      <MatrixRain />
+      
       {/* Background Grid */}
       <div className="absolute inset-0 bg-grid-pattern opacity-50"></div>
       
@@ -78,7 +82,7 @@ export function HeroSection() {
 
           {/* Right Column: Profile Image ONLY */}
           <div className="order-1 lg:order-2 flex flex-col items-center lg:items-end justify-center relative">
-            <Reveal direction="up" delay={0.3}>
+            <Reveal direction="up" delay={0.3} width="fit-content">
               <div className="relative group">
                 {/* Decorative frames */}
                 <div className="absolute -inset-4 border border-primary/20 rounded-2xl -z-10 group-hover:border-primary/40 transition-colors duration-500"></div>

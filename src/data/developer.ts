@@ -3,11 +3,12 @@ export const developerDetails = {
   role: "Frontend Developer",
   tagline: "Building modern scalable web applications.",
   location: "Ahmedabad, India",
-  email: "priyank@example.com", // Placeholder
+  email: "priyankahir333@gmail.com",
+  phone: "+91 9979700935",
   socials: {
     github: "https://github.com/priyankahir",
-    linkedin: "https://linkedin.com/in/priyankbaldaniya",
-    twitter: "https://twitter.com/priyankbaldaniya",
+    linkedin: "https://www.linkedin.com/in/priyank-baldaniya-6073002b6/",
+    whatsapp: "https://wa.me/919979700935",
   },
   skills: [
     "React.js",
