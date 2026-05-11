@@ -74,7 +74,7 @@ export function SystemMonitorHUD() {
         <div className="flex items-center gap-2">
           <Wifi className="w-3.5 h-3.5 text-primary animate-pulse" />
           <span className="text-[10px] font-terminal text-primary uppercase tracking-widest">
-            Protocol: <span className="text-primary font-bold">PB.OS_v2.0_SECURE</span>
+            Protocol: <span className="text-primary font-bold">PB.OS_v1.0_SECURE</span>
           </span>
         </div>
         <div className="h-3 w-[1px] bg-primary/20"></div>

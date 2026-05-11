@@ -3,12 +3,26 @@
 import { Reveal } from "@/components/animations/Reveal";
 import { useState } from "react";
 import { developerDetails } from "@/data/developer";
-import { GitCompareArrows, Link, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { GitCompareArrows, Link, Mail, MapPin, MessageSquare, Phone, Copy, Check } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 
 export function ContactSection() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+
+  const copyToClipboard = (text: string, type: "email" | "phone") => {
+    navigator.clipboard.writeText(text);
+    if (type === "email") {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    } else {
+      setCopiedPhone(true);
+      setTimeout(() => setCopiedPhone(false), 2000);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,40 +69,60 @@ export function ContactSection() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           <Reveal direction="right">
-            <div className="terminal-panel p-8 md:p-10 h-full">
-              <h3 className="text-2xl font-bold font-heading mb-6 flex items-center gap-2">
-                <span className="text-primary">{">"}</span> CONTACT_INFO
-              </h3>
-              <div className="space-y-6 font-terminal">
-                <a href={developerDetails.socials.whatsapp} target="_blank" rel="noreferrer" className="flex items-center gap-4 group cursor-pointer">
-                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
-                    <MessageSquare className="w-5 h-5" />
+            <div className="terminal-panel p-6 sm:p-8 md:p-10 h-full flex flex-col justify-between">
+              <div>
+                <h3 className="text-2xl font-bold font-heading mb-8 flex items-center gap-2">
+                  <span className="text-primary">{">"}</span> CONTACT_INFO
+                </h3>
+                <div className="space-y-6 font-terminal">
+                  <div className="flex items-center justify-between group">
+                    <a href={developerDetails.socials.whatsapp} target="_blank" rel="noreferrer" className="flex items-center gap-4 flex-1">
+                      <div className="w-10 h-10 shrink-0 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
+                        <MessageSquare className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-[10px] text-secondary uppercase tracking-tighter">WhatsApp</p>
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors break-all sm:break-normal">{developerDetails.phone}</p>
+                      </div>
+                    </a>
+                    <button 
+                      onClick={() => copyToClipboard(developerDetails.phone, "phone")}
+                      className="p-2 text-secondary hover:text-primary transition-colors shrink-0"
+                      title="Copy phone number"
+                    >
+                      {copiedPhone ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                    </button>
                   </div>
-                  <div>
-                    <p className="text-[10px] text-secondary uppercase tracking-tighter">WhatsApp</p>
-                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">{developerDetails.phone}</p>
+                  
+                  <div className="flex items-center justify-between group">
+                    <a href={`mailto:${developerDetails.email}`} className="flex items-center gap-4 flex-1">
+                      <div className="w-10 h-10 shrink-0 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
+                        <Mail className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-[10px] text-secondary uppercase tracking-tighter">Email</p>
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors break-all sm:break-normal">{developerDetails.email}</p>
+                      </div>
+                    </a>
+                    <button 
+                      onClick={() => copyToClipboard(developerDetails.email, "email")}
+                      className="p-2 text-secondary hover:text-primary transition-colors shrink-0"
+                      title="Copy email address"
+                    >
+                      {copiedEmail ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                    </button>
                   </div>
-                </a>
-                
-                <a href={`mailto:${developerDetails.email}`} className="flex items-center gap-4 group cursor-pointer">
-                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-secondary uppercase tracking-tighter">Email</p>
-                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">{developerDetails.email}</p>
-                  </div>
-                </a>
-                
-                <div className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary transition-all">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-secondary uppercase tracking-tighter">Location</p>
-                    <p className="font-medium text-foreground">{developerDetails.location}</p>
+                  
+                  <div className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 shrink-0 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary transition-all">
+                      <MapPin className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-secondary uppercase tracking-tighter">Location</p>
+                      <p className="font-medium text-foreground">{developerDetails.location}</p>
+                    </div>
                   </div>
                 </div>
               </div>

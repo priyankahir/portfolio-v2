@@ -6,6 +6,7 @@ import { Reveal } from "@/components/animations/Reveal";
 import { MatrixRain } from "@/components/animations/MatrixRain";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 export function HeroSection() {
@@ -89,9 +90,12 @@ export function HeroSection() {
                 <div className="absolute -inset-2 border border-primary/10 rounded-xl -z-10 group-hover:border-primary/30 transition-colors duration-500 delay-100"></div>
                 
                 <div className="relative w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-2xl overflow-hidden border-2 border-primary shadow-[0_0_30px_rgba(37,99,235,0.2)] dark:shadow-[0_0_30px_rgba(0,255,65,0.2)] bg-surface-card">
-                  <img 
+                  <Image 
                     src="/images/profile.jpeg" 
                     alt="Priyank Baldaniya" 
+                    width={400}
+                    height={400}
+                    priority
                     className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
@@ -194,7 +198,7 @@ export function HeroSection() {
         </div>
       </div>
       <div className="absolute bottom-10 right-10 hidden md:block font-terminal text-[10px] text-secondary/30 text-right">
-        <p>V 2.1.0-STABLE</p>
+        <p>V 1.0.0-STABLE</p>
         <p>© 2026 PRIYANK</p>
       </div>
     </section>

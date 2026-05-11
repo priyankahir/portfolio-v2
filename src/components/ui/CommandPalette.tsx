@@ -2,17 +2,18 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Command, Search, Home, User, Briefcase, Code, BookOpen, Mail, X, Download } from "lucide-react";
+import { Command, Search, Home, User, Briefcase, Code, BookOpen, Mail, X, Download, Layers } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const ACTIONS = [
   { id: "home", title: "Go to Home", icon: Home, shortcut: "H", path: "/" },
   { id: "about", title: "About System", icon: User, shortcut: "A", path: "/#about" },
+  { id: "services", title: "Offered Services", icon: Layers, shortcut: "V", path: "/#services" },
   { id: "skills", title: "Installed Modules", icon: Code, shortcut: "S", path: "/#skills" },
   { id: "experience", title: "Deployment History", icon: Briefcase, shortcut: "E", path: "/#experience" },
   { id: "projects", title: "Active Deployments", icon: Command, shortcut: "P", path: "/#projects" },
   { id: "blog", title: "System Logs", icon: BookOpen, shortcut: "B", path: "/blog" },
-  { id: "resume", title: "Download CV", icon: Download, shortcut: "R", path: "/images/resume.pdf", download: true },
+  { id: "resume", title: "Download CV", icon: Download, shortcut: "R", path: "/images/Priyank%20Baldaniya%20Frontend%20CV.pdf", download: true },
   { id: "contact", title: "Init Connection", icon: Mail, shortcut: "C", path: "/#contact" },
 ];
 
@@ -201,7 +202,7 @@ export function CommandPalette() {
               </div>
             </div>
             <div className="text-[9px] text-primary/50 font-terminal font-bold">
-              PB.OS_v2.0_SHELL
+              PB.OS_v1.0_SHELL
             </div>
           </div>
         </motion.div>

@@ -50,13 +50,13 @@ export function AboutSection() {
                 <div className="mb-4">
                   <span className="text-primary font-bold text-lg">priyank</span>
                   <span className="text-secondary">@</span>
-                  <span className="text-primary font-bold text-lg">portfolio-v2</span>
+                  <span className="text-primary font-bold text-lg">portfolio</span>
                   <div className="text-secondary">---------------------------</div>
                 </div>
                 
                 <div className="grid grid-cols-[120px_1fr] gap-y-2">
                   <span className="text-accent font-bold">OS:</span>
-                  <span>PB.OS 2.0 (Premium Hacker Edition)</span>
+                  <span>PB.OS 1.0 (Premium Hacker Edition)</span>
                   
                   <span className="text-accent font-bold">Host:</span>
                   <span>React / Next.js Server Components</span>
@@ -66,9 +66,6 @@ export function AboutSection() {
                   
                   <span className="text-accent font-bold">Packages:</span>
                   <span>TypeScript, Tailwind CSS, Zustand, Framer Motion</span>
-                  
-                  <span className="text-accent font-bold">Shell:</span>
-                  <span>zsh 5.8 (Interactive)</span>
                   
                   <span className="text-accent font-bold">Company:</span>
                   <span>Vivansh InfoTech</span>

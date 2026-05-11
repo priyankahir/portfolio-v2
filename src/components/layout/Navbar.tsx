@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/components/common/ThemeToggle";
 const NAV_LINKS = [
   { name: "~/home", path: "/" },
   { name: "~/about", path: "/#about" },
+  { name: "~/services", path: "/#services" },
   { name: "~/skills", path: "/#skills" },
   { name: "~/experience", path: "/#experience" },
   { name: "~/projects", path: "/#projects" },
@@ -57,7 +58,7 @@ export function Navbar() {
               <span className="hidden sm:inline">PB://</span>
             </Link>
             
-            <nav className="hidden lg:flex items-center gap-8 font-terminal text-[13px]">
+            <nav className="hidden xl:flex items-center gap-4 xxl:gap-8 font-terminal text-[12px] xxl:text-[13px]">
               {NAV_LINKS.map((link) => {
                 const isActive = pathname === link.path || (link.path !== "/" && pathname.startsWith(link.path));
                 const shortName = link.name.replace("~/", "");
@@ -83,13 +84,13 @@ export function Navbar() {
               <ThemeToggle />
               <Link 
                 href="/#contact" 
-                className="hidden md:flex bg-primary/10 text-primary border border-primary/50 px-4 sm:px-5 py-2 rounded font-terminal text-xs sm:text-sm font-bold hover:bg-primary hover:text-white dark:hover:text-black transition-colors interactive whitespace-nowrap"
+                className="hidden lg:flex bg-primary/10 text-primary border border-primary/50 px-4 sm:px-5 py-2 rounded font-terminal text-xs sm:text-sm font-bold hover:bg-primary hover:text-white dark:hover:text-black transition-colors interactive whitespace-nowrap"
               >
                 [./init_contact]
               </Link>
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 text-secondary hover:text-primary transition-colors interactive font-terminal text-sm font-bold"
+                className="xl:hidden p-2 text-secondary hover:text-primary transition-colors interactive font-terminal text-sm font-bold"
                 aria-label="Toggle Menu"
               >
                 {isMobileMenuOpen ? "[X]" : "[MENU]"}
@@ -103,7 +104,7 @@ export function Navbar() {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="lg:hidden border-t border-border/50 bg-black/10 dark:bg-black/40"
+                className="xl:hidden border-t border-border/50 bg-black/10 dark:bg-black/40"
               >
                 <div className="flex flex-col py-4 px-4 gap-4 font-terminal text-sm">
                   {NAV_LINKS.map((link) => {

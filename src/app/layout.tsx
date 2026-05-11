@@ -8,7 +8,6 @@ import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SystemMonitorHUD } from "@/components/ui/SystemMonitorHUD";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
-import { TerminalBootLoader } from "@/components/layout/TerminalBootLoader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,7 +43,6 @@ export default function RootLayout({
       >
         <ThemeProvider defaultTheme="dark">
           <div className="scanline" />
-          <TerminalBootLoader />
           <CommandPalette />
           <SystemMonitorHUD />
           <CustomCursor />

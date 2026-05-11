@@ -56,7 +56,7 @@ export function ResumeSection() {
               <p className="text-xl text-primary font-terminal">Frontend Developer based in Gujarat, India</p>
             </div>
             <a 
-              href="/images/Priyank Baldaniya Frontend CV.pdf" 
+              href="/images/Priyank%20Baldaniya%20Frontend%20CV.pdf" 
               download="Priyank_Baldaniya_Resume.pdf"
               className="group relative inline-flex items-center gap-3 px-8 py-4 bg-primary text-white dark:text-black rounded font-bold text-lg hover:shadow-[0_0_25px_rgba(37,99,235,0.4)] dark:hover:shadow-[0_0_25px_rgba(0,255,65,0.4)] transition-all overflow-hidden"
             >

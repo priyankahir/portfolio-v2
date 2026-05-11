@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/animations/Reveal";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const PROJECTS = [
   {
@@ -14,7 +15,7 @@ const PROJECTS = [
     description: "Enterprise Environmental, Health & Safety platform supporting training management, incident reporting, and compliance tracking. Features dynamic dashboards, course builder UI, and real-time reporting.",
     impact: "99.9% UPTIME | 40% FASTER_ONBOARDING",
     github: "#",
-    live: "#"
+    live: "https://capability.work"
   },
   {
     name: "AI Chatbot & Report Intelligence",
@@ -114,7 +115,7 @@ export function ProjectsSection() {
                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
                     <div className="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
                   </div>
-                  <span className="font-terminal text-[10px] text-secondary tracking-widest uppercase">MODULE_PRJKT_{currentIndex + 1}_V2</span>
+                  <span className="font-terminal text-[10px] text-secondary tracking-widest uppercase">MODULE_PRJKT_{currentIndex + 1}_V1</span>
                   <div className={`font-terminal text-[10px] px-2 py-0.5 border ${PROJECTS[currentIndex].status === 'ONLINE' ? 'text-primary border-primary/30 bg-primary/10' : 'text-accent border-accent/30'}`}>
                     {PROJECTS[currentIndex].status}
                   </div>
@@ -136,7 +137,7 @@ export function ProjectsSection() {
                     {PROJECTS[currentIndex].description}
                   </p>
                   
-                  <div className="mb-4">
+                  <div className="mb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
                       <div className="text-[10px] text-primary font-terminal font-bold mb-4 tracking-widest uppercase opacity-50 underline underline-offset-4">DEPENDENCIES</div>
                       <div className="flex flex-wrap gap-2">
@@ -147,36 +148,56 @@ export function ProjectsSection() {
                         ))}
                       </div>
                     </div>
-                  
+
+                    <div className="flex gap-4 font-terminal">
+                      {PROJECTS[currentIndex].github !== "#" ? (
+                        <Link 
+                          href={PROJECTS[currentIndex].github}
+                          target="_blank"
+                          className="text-xs text-secondary hover:text-primary border border-border px-4 py-2 rounded hover:border-primary transition-all"
+                        >
+                          [ SOURCE_CODE ]
+                        </Link>
+                      ) : (
+                        <span></span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </motion.div>
             </AnimatePresence>
 
             {/* Navigation Controls */}
-            <div className="flex justify-between items-center mt-12 font-terminal">
+            <div className="flex justify-between items-center mt-8 sm:mt-12 font-terminal px-2">
               <button 
                 onClick={prevProject}
-                className="text-secondary hover:text-primary transition-colors flex items-center gap-2 group"
+                className="text-secondary hover:text-primary transition-colors flex items-center gap-1 sm:gap-2 group"
+                aria-label="Previous Project"
               >
-                <span className="text-primary group-hover:-translate-x-1 transition-transform">{"[ PREV_PRJKT ]"}</span>
+                <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4 text-primary group-hover:-translate-x-1 transition-transform" />
+                <span className="text-primary hidden sm:inline">{"[ PREV_PRJKT ]"}</span>
+                <span className="text-primary text-[10px] sm:hidden">PREV</span>
               </button>
               
-              <div className="flex gap-4">
+              <div className="flex gap-2 sm:gap-4">
                 {PROJECTS.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentIndex(i)}
-                    className={`h-1 rounded-full transition-all ${i === currentIndex ? 'bg-primary w-8 shadow-[0_0_10px_rgba(0,255,65,0.5)]' : 'bg-border w-4 hover:bg-secondary'}`}
+                    className={`h-1 rounded-full transition-all ${i === currentIndex ? 'bg-primary w-6 sm:w-8 shadow-[0_0_10px_rgba(0,255,65,0.5)]' : 'bg-border w-2 sm:w-4 hover:bg-secondary'}`}
+                    aria-label={`Go to project ${i + 1}`}
                   />
                 ))}
               </div>
 
               <button 
                 onClick={nextProject}
-                className="text-secondary hover:text-primary transition-colors flex items-center gap-2 group"
+                className="text-secondary hover:text-primary transition-colors flex items-center gap-1 sm:gap-2 group"
+                aria-label="Next Project"
               >
-                <span className="text-primary group-hover:translate-x-1 transition-transform">{"[ NEXT_PRJKT ]"}</span>
+                <span className="text-primary hidden sm:inline">{"[ NEXT_PRJKT ]"}</span>
+                <span className="text-primary text-[10px] sm:hidden">NEXT</span>
+                <ChevronRight className="w-5 h-5 sm:w-4 sm:h-4 text-primary group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </div>

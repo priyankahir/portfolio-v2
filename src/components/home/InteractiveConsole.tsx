@@ -5,21 +5,37 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "@/components/animations/Reveal";
 import { Terminal, Send } from "lucide-react";
 
-const COMMANDS: Record<string, string | (() => string)> = {
-  help: "AVAILABLE_COMMANDS: [ls, whoami, skills, contact, clear, sudo, date, version]",
-  ls: "DRIVES: [/projects, /blog, /config, /assets, /credentials.secret]",
-  whoami: "USER: priyank_baldaniya | ROLE: senior_frontend_developer | STATUS: active",
-  skills: "STACK: [React, Next.js, TS, Tailwind, Framer, Zustand, TanStack]",
-  contact: "INITIATING_CONNECTION... Open #contact section for secure protocol.",
+const COMMANDS: Record<string, string | ((args?: string[]) => string)> = {
+  help: "AVAILABLE_COMMANDS: [ls, whoami, skills, projects, contact, socials, about, date, clear, sudo, version]",
+  ls: (args) => {
+    const target = args?.[0]?.replace(/^\//, "");
+    if (target === "projects") return "PROJECTS: [capability.work, ai-chatbot, chrgd, rembrandt, kuber-grow]";
+    if (target === "blog") return "BLOG_POSTS: [nextjs-16-guide, framer-motion-tips, typescript-best-practices]";
+    return "DRIVES: [/projects, /blog, /config, /assets, /credentials.secret]";
+  },
+  whoami: "USER: priyank_baldaniya | ROLE: senior_frontend_developer | STATUS: active | LOCATION: ahmedabad_in",
+  skills: "STACK: [React, Next.js, TS, Tailwind, Framer, Zustand, TanStack, REST_APIs]",
+  projects: "DEPLOYED_MODULES: [Capability.work, AI_Chatbot, CHRGD, Rembrandt, Kuber_Grow]. Use 'ls projects' for more details.",
+  about: "Priyank Baldaniya: Senior Frontend Developer with 1+ years of experience in building scalable web apps with React & Next.js. Passionate about UI/UX and performance.",
+  socials: "CONNECT: [GitHub: priyankahir, LinkedIn: priyank-baldaniya, WhatsApp: +919979700935]",
+  contact: "INITIATING_CONNECTION... Scrolling to communication.protocol section.",
   date: () => new Date().toLocaleString(),
-  version: "PB.OS_v2.1.0-STABLE",
+  version: "PB.OS_v1.0.0-STABLE",
   sudo: "PERMISSION_DENIED: User 'visitor' is not in the sudoers file. This incident will be reported.",
-  clear: "SYSTEM_FLUSH_COMPLETE"
+  clear: "SYSTEM_FLUSH_COMPLETE",
+  cd: (args) => {
+    const target = args?.[0]?.replace(/^\//, "");
+    if (!target) return "USAGE: cd <directory>";
+    if (["projects", "blog", "config", "assets"].includes(target)) {
+      return (COMMANDS.ls as (args?: string[]) => string)([target]);
+    }
+    return `ACCESS_DENIED: Cannot enter ${target}. Directory is encrypted or does not exist.`;
+  }
 };
 
 export function InteractiveConsole() {
   const [history, setHistory] = useState<{ type: "cmd" | "resp"; text: string }[]>([
-    { type: "resp", text: "PB.OS [Version 2.1.0] (c) 2026 Priyank Baldaniya." },
+    { type: "resp", text: "PB.OS [Version 1.0.0] (c) 2026 Priyank Baldaniya." },
     { type: "resp", text: "Type 'help' to see available commands." }
   ]);
   const [input, setInput] = useState("");
@@ -35,16 +51,45 @@ export function InteractiveConsole() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const cmd = input.trim().toLowerCase();
+    let normalizedInput = input.trim();
+    if (normalizedInput.startsWith("/")) {
+      normalizedInput = normalizedInput.substring(1);
+    }
+
+    const parts = normalizedInput.split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    const args = parts.slice(1);
+    
     const newHistory = [...history, { type: "cmd" as const, text: input }];
 
     if (cmd === "clear") {
       setHistory([]);
     } else {
-      const response = COMMANDS[cmd];
-      const respText = typeof response === "function" ? response() : response || `COMMAND_NOT_FOUND: ${cmd}. Type 'help' for assistance.`;
+      // Check if command is a directory (projects, blog, etc.)
+      const isDirectory = ["projects", "blog", "config", "assets"].includes(cmd);
+      const response = isDirectory && args.length === 0 ? (COMMANDS.ls as (args?: string[]) => string)([cmd]) : COMMANDS[cmd];
+      
+      let respText = "";
+      
+      if (typeof response === "function") {
+        respText = (response as (args?: string[]) => string)(args);
+      } else if (response) {
+        respText = response as string;
+      } else {
+        respText = `COMMAND_NOT_FOUND: ${cmd}. Type 'help' for assistance.`;
+      }
+
       newHistory.push({ type: "resp" as const, text: respText });
       setHistory(newHistory);
+
+      if (cmd === "contact") {
+        setTimeout(() => {
+          const contactSection = document.getElementById("contact");
+          if (contactSection) {
+            contactSection.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 1000);
+      }
     }
     
     setInput("");
@@ -110,7 +155,6 @@ export function InteractiveConsole() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Enter command..."
                 className="flex-1 bg-transparent border-none outline-none text-primary font-terminal placeholder:text-secondary/30"
-                autoFocus
               />
               <button type="submit" className="text-secondary hover:text-primary transition-colors">
                 <Send className="w-4 h-4" />
