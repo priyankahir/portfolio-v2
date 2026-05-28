@@ -31,7 +31,7 @@ export async function Footer() {
   const linkedinLink = getSocialUrl('linkedin');
 
   return (
-    <footer className="border-t border-border/40 py-8 md:py-12 mb-16 mt-auto">
+    <footer className="border-t border-border/40 py-8 md:py-12 mt-auto">
       <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4 text-center md:text-left">
         <p className="text-xs sm:text-sm text-secondary font-terminal order-2 md:order-1">
           © {new Date().getFullYear()} {about?.name || "Developer"}. All rights reserved.

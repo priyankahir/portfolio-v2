@@ -1,14 +1,15 @@
-"use client";
-
 import { Reveal } from "@/components/animations/Reveal";
 import { BlogCard } from "@/components/blog/BlogCard";
-import { BLOG_POSTS } from "@/data/blog";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { client } from "@/sanity/lib/client";
+import { getBlogsQuery } from "@/sanity/lib/queries";
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogs = await client.fetch(getBlogsQuery);
+
   return (
-    <main className="min-h-screen py-24 px-4 bg-background">
+    <div className="flex-1 py-24 px-4 bg-background">
       <div className="container mx-auto max-w-5xl">
         <Reveal>
           <div className="mb-12">
@@ -34,11 +35,14 @@ export default function BlogPage() {
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {BLOG_POSTS.map((post, idx) => (
-            <BlogCard key={post.slug} post={post} index={idx} />
-          ))}
+          {blogs.map((post: any, idx: number) => {
+            const slug = post?.slug || idx.toString();
+            return (
+              <BlogCard key={slug} post={post} index={idx} />
+            );
+          })}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

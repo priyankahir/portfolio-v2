@@ -3,6 +3,7 @@
 import { Reveal } from "@/components/animations/Reveal";
 import { useState } from "react";
 import { GitCompareArrows, Link, Mail, MapPin, MessageSquare, Copy, Check } from "lucide-react";
+import { toast } from "sonner";
 
 interface SocialLink {
   platform: string;
@@ -51,35 +52,34 @@ export function ContactSection({ about }: ContactSectionProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
     
-    // Simulate system verification
-    console.log("Verifying communication channel...");
-    
-    // Construct mailto link
-    const subject = `[PB.OS INQUIRY] from ${formData.name}`;
-    const body = `--- SYSTEM_ENCRYPTED_MESSAGE ---%0D%0A%0D%0A[SOURCE]: ${formData.name} (${formData.email})%0D%0A[PAYLOAD]:%0D%0A%0D%0A${formData.message}%0D%0A%0D%0A--- END_MESSAGE ---`;
-    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
-    
-    // Attempt to open email client
     try {
-      const mailtoWindow = window.open(mailtoUrl, "_blank");
-      if (!mailtoWindow || mailtoWindow.closed || typeof mailtoWindow.closed === "undefined") {
-        window.location.href = mailtoUrl;
-      }
-    } catch (e) {
-      window.location.href = mailtoUrl;
-    }
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setTimeout(() => {
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
       setStatus("sent");
+      toast.success("Transmission successful! Email has been sent.");
       setTimeout(() => {
         setStatus("idle");
         setFormData({ name: "", email: "", message: "" });
       }, 3000);
-    }, 1500);
+    } catch (error) {
+      console.error(error);
+      setStatus("idle");
+      toast.error("Failed to transmit data. Please verify EMAIL_PASS is configured in .env.local.");
+    }
   };
 
   return (

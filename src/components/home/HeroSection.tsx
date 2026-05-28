@@ -11,9 +11,10 @@ import { ArrowUpRight } from "lucide-react";
 
 interface HeroSectionProps {
   about?: any;
+  skills?: any[];
 }
 
-export function HeroSection({ about }: HeroSectionProps) {
+export function HeroSection({ about, skills = [] }: HeroSectionProps) {
   const [typingStep, setTypingStep] = useState(0);
 
   const name = about?.name || "Priyank Baldaniya";
@@ -171,26 +172,19 @@ export function HeroSection({ about }: HeroSectionProps) {
 
                 {typingStep >= 2 && (
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 ml-4 text-xs text-secondary">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-primary font-bold underline">LANGUAGES</span>
-                      <span>TypeScript</span>
-                      <span>JavaScript</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-primary font-bold underline">FRONTEND</span>
-                      <span>Next.js 16+</span>
-                      <span>React.js</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-primary font-bold underline">STYLING</span>
-                      <span>Tailwind CSS</span>
-                      <span>Framer Motion</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-primary font-bold underline">TOOLS</span>
-                      <span>Git / GitHub</span>
-                      <span>Vite</span>
-                    </div>
+                    {/* Map through a few basic categories dynamically, fallback to empty array if no skills */}
+                    {['Languages', 'Frontend', 'Styling', 'Tools'].map(cat => {
+                      const catSkills = skills.filter(s => s.category?.toLowerCase() === cat.toLowerCase()).slice(0, 3);
+                      if (catSkills.length === 0) return null;
+                      return (
+                        <div key={cat} className="flex flex-col gap-1">
+                          <span className="text-primary font-bold underline uppercase">{cat}</span>
+                          {catSkills.map(skill => (
+                            <span key={skill.name}>{skill.name}</span>
+                          ))}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>

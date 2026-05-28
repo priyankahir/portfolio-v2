@@ -4,10 +4,9 @@ import "./globals.css";
 import { constructMetadata } from "@/lib/metadata";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CustomCursor } from "@/components/ui/CustomCursor";
-import { SystemMonitorHUD } from "@/components/ui/SystemMonitorHUD";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,11 +43,10 @@ export default function RootLayout({
         <ThemeProvider defaultTheme="dark">
           <div className="scanline" />
           <CommandPalette />
-          <SystemMonitorHUD />
-          <CustomCursor />
           <Navbar />
           <main className="flex-1 flex flex-col">{children}</main>
           <Footer />
+          <Toaster theme="dark" position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>

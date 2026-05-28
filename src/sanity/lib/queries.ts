@@ -53,6 +53,19 @@ export const getBlogsQuery = groq`*[_type == "blog"] | order(publishedAt desc){
   "mainImage": mainImage.asset->url
 }`
 
+export const getBlogPostQuery = groq`*[_type == "blog" && slug.current == $slug][0]{
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url,
+  body,
+  "author": "Priyank Baldaniya",
+  "category": "Development",
+  "readTime": "5 min read"
+}`
+
 export const getTestimonialsQuery = groq`*[_type == "testimonial"] | order(_createdAt desc){
   _id,
   name,

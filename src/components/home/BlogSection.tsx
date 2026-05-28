@@ -30,7 +30,7 @@ export function BlogSection({ blogs = [] }: BlogSectionProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredPosts.map((post: any, idx) => {
-            const slug = post?.slug?.current || idx.toString();
+            const slug = post?.slug || idx.toString();
             return (
               <BlogCard key={slug} post={post} index={idx} />
             );

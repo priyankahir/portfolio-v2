@@ -13,7 +13,7 @@ interface BlogCardProps {
 export function BlogCard({ post, index }: BlogCardProps) {
   // Map Sanity fields to frontend display with fallbacks
   const title = post?.title || "Untitled Post";
-  const slug = post?.slug?.current || "#";
+  const slug = post?.slug || "#";
   const excerpt = post?.excerpt || "No excerpt available for this post.";
   const category = post?.category || "Development"; // Fallback as category is not in schema
   const readTime = post?.readTime || "5 min read"; // Fallback
