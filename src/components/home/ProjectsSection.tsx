@@ -6,80 +6,56 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const PROJECTS = [
-  {
-    name: "Capability.work",
-    status: "ONLINE",
-    subtitle: "EHS Training & Work Management Platform",
-    stack: ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "TanStack Query", "Zustand"],
-    description: "Enterprise Environmental, Health & Safety platform supporting training management, incident reporting, and compliance tracking. Features dynamic dashboards, course builder UI, and real-time reporting.",
-    impact: "99.9% UPTIME | 40% FASTER_ONBOARDING",
-    github: "#",
-    live: "https://capability.work"
-  },
-  {
-    name: "AI Chatbot & Report Intelligence",
-    status: "BETA",
-    subtitle: "Integrated AI for Capability.work",
-    stack: ["React.js", "Next.js", "Claude API", "RAG", "Vector DB", "Zustand"],
-    description: "Integrated Claude API chatbot with RAG. Features AI Report Summary generation from uploaded documents, dynamic AI-driven form flows with quality ratings, and seamless human support handoff.",
-    impact: "85% AI_QUERY_ACCURACY | 2x RESPONSE_SPEED",
-    github: "#",
-    live: "#"
-  },
-  {
-    name: "CHRGD Technologies",
-    status: "ONLINE",
-    subtitle: "Franchise Management SaaS Platform",
-    stack: ["React.js", "TypeScript", "Tailwind CSS", "Zustand", "Stripe", "Toast POS"],
-    description: "SaaS platform streamlining franchise operations. Implemented automated royalty payment handling via Stripe, real-time order tracking through Toast POS, and role-based access control.",
-    impact: "$1M+ TRANSACTION_VOLUME | 300+ NODES",
-    github: "#",
-    live: "#"
-  },
-  {
-    name: "Rembrandt Advantage",
-    status: "MAINTENANCE",
-    subtitle: "Psychological Assessment Platform",
-    stack: ["React.js", "TypeScript", "Tailwind CSS", "REST APIs"],
-    description: "Dynamic report template builder for custom behavioral assessments. Implemented complex conditional form logic and dynamic rendering for personalized output formats.",
-    impact: "ZERO_UI_REGRESSIONS | 50+ CUSTOM_TEMPLATES",
-    github: "#",
-    live: "#"
-  },
-  {
-    name: "Kuber Grow",
-    status: "ONLINE",
-    subtitle: "Stock Order & Pricing Management",
-    stack: ["React.js", "TypeScript", "Tailwind CSS", "TanStack Query", "Axios"],
-    description: "Frontend modules for bulk stock purchasing and real-time pricing workflows. Optimized rendering performance for large-volume transactions and strong data consistency.",
-    impact: "60% RENDER_OPTIMIZATION | 0.2s DATA_SYNC",
-    github: "#",
-    live: "#"
-  }
-];
+interface Project {
+  _id: string;
+  title: string;
+  subtitle?: string;
+  status?: string;
+  description: string;
+  technologies?: string[];
+  liveUrl?: string;
+  githubUrl?: string;
+}
 
-export function ProjectsSection() {
+interface ProjectsSectionProps {
+  projects?: Project[];
+}
+
+export function ProjectsSection({ projects = [] }: ProjectsSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || projects.length === 0) return;
     
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % PROJECTS.length);
+      setCurrentIndex((prev) => (prev + 1) % projects.length);
     }, 8000); // 8 seconds for senior-level reading
     
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, projects.length]);
 
   const nextProject = () => {
-    setCurrentIndex((prev) => (prev + 1) % PROJECTS.length);
+    if (projects.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % projects.length);
   };
 
   const prevProject = () => {
-    setCurrentIndex((prev) => (prev - 1 + PROJECTS.length) % PROJECTS.length);
+    if (projects.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
   };
+
+  if (projects.length === 0) {
+    return (
+      <section id="projects" className="py-24 px-4 relative bg-primary/5">
+        <div className="container mx-auto max-w-5xl text-center font-terminal text-secondary">
+          [ No active deployments found. Connect to Sanity Studio to add projects. ]
+        </div>
+      </section>
+    );
+  }
+
+  const currentProject = projects[currentIndex];
 
   return (
     <section id="projects" className="py-24 px-4 relative bg-primary/5">
@@ -116,8 +92,8 @@ export function ProjectsSection() {
                     <div className="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
                   </div>
                   <span className="font-terminal text-[10px] text-secondary tracking-widest uppercase">MODULE_PRJKT_{currentIndex + 1}_V1</span>
-                  <div className={`font-terminal text-[10px] px-2 py-0.5 border ${PROJECTS[currentIndex].status === 'ONLINE' ? 'text-primary border-primary/30 bg-primary/10' : 'text-accent border-accent/30'}`}>
-                    {PROJECTS[currentIndex].status}
+                  <div className={`font-terminal text-[10px] px-2 py-0.5 border ${currentProject.status === 'ONLINE' ? 'text-primary border-primary/30 bg-primary/10' : 'text-accent border-accent/30'}`}>
+                    {currentProject.status || 'ONLINE'}
                   </div>
                 </div>
                 
@@ -127,21 +103,21 @@ export function ProjectsSection() {
                   </div>
 
                   <h3 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-3 group-hover:text-primary transition-colors tracking-tight">
-                    {PROJECTS[currentIndex].name}
+                    {currentProject.title}
                   </h3>
                   <p className="text-primary font-terminal text-sm md:text-base mb-8 opacity-80 uppercase tracking-widest">
-                    {PROJECTS[currentIndex].subtitle}
+                    {currentProject.subtitle || "Full Stack Application"}
                   </p>
                   
                   <p className="text-secondary mb-10 flex-1 leading-relaxed text-lg font-terminal border-l border-primary/20 pl-6">
-                    {PROJECTS[currentIndex].description}
+                    {currentProject.description}
                   </p>
                   
                   <div className="mb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
                       <div className="text-[10px] text-primary font-terminal font-bold mb-4 tracking-widest uppercase opacity-50 underline underline-offset-4">DEPENDENCIES</div>
                       <div className="flex flex-wrap gap-2">
-                        {PROJECTS[currentIndex].stack.map((tech, i) => (
+                        {currentProject.technologies?.map((tech, i) => (
                           <span key={i} className="text-[10px] font-terminal text-secondary bg-surface border border-border px-2.5 py-1 rounded">
                             {tech}
                           </span>
@@ -150,16 +126,23 @@ export function ProjectsSection() {
                     </div>
 
                     <div className="flex gap-4 font-terminal">
-                      {PROJECTS[currentIndex].github !== "#" ? (
+                      {currentProject.githubUrl && (
                         <Link 
-                          href={PROJECTS[currentIndex].github}
+                          href={currentProject.githubUrl}
                           target="_blank"
                           className="text-xs text-secondary hover:text-primary border border-border px-4 py-2 rounded hover:border-primary transition-all"
                         >
                           [ SOURCE_CODE ]
                         </Link>
-                      ) : (
-                        <span></span>
+                      )}
+                      {currentProject.liveUrl && (
+                        <Link 
+                          href={currentProject.liveUrl}
+                          target="_blank"
+                          className="text-xs bg-primary text-white dark:text-black px-4 py-2 rounded font-bold hover:opacity-90 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] dark:shadow-[0_0_15px_rgba(0,255,65,0.3)]"
+                        >
+                          [ LIVE_DEMO ]
+                        </Link>
                       )}
                     </div>
                   </div>
@@ -180,7 +163,7 @@ export function ProjectsSection() {
               </button>
               
               <div className="flex gap-2 sm:gap-4">
-                {PROJECTS.map((_, i) => (
+                {projects.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentIndex(i)}

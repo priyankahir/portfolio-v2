@@ -2,16 +2,43 @@
 
 import { Reveal } from "@/components/animations/Reveal";
 import { useState } from "react";
-import { developerDetails } from "@/data/developer";
-import { GitCompareArrows, Link, Mail, MapPin, MessageSquare, Phone, Copy, Check } from "lucide-react";
-import { SiGithub } from "react-icons/si";
+import { GitCompareArrows, Link, Mail, MapPin, MessageSquare, Copy, Check } from "lucide-react";
 
-export function ContactSection() {
+interface SocialLink {
+  platform: string;
+  url: string;
+}
+
+interface AboutData {
+  email?: string;
+  location?: string;
+  socials?: SocialLink[];
+}
+
+interface ContactSectionProps {
+  about?: AboutData | null;
+}
+
+export function ContactSection({ about }: ContactSectionProps) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
+
+  const email = about?.email || "hello@example.com";
+  // The UI calls it phone but in Sanity schema we might not have a phone field, let's use a fallback or add it if needed. 
+  // Let's assume WhatsApp link or a separate phone field. The About schema has an email field, but we didn't add phone.
+  // I will use whatsapp link for the phone number display or a static fallback if not present.
+  const getSocialUrl = (platform: string) => {
+    if (!about?.socials) return "#";
+    const link = about.socials.find((s) => s.platform.toLowerCase() === platform.toLowerCase());
+    return link ? link.url : "#";
+  };
+  const whatsappLink = getSocialUrl('whatsapp');
+  const githubLink = getSocialUrl('github');
+  const linkedinLink = getSocialUrl('linkedin');
+  const phone = whatsappLink !== "#" ? whatsappLink.replace("https://wa.me/", "+") : "+91 0000000000";
 
   const copyToClipboard = (text: string, type: "email" | "phone") => {
     navigator.clipboard.writeText(text);
@@ -34,7 +61,7 @@ export function ContactSection() {
     // Construct mailto link
     const subject = `[PB.OS INQUIRY] from ${formData.name}`;
     const body = `--- SYSTEM_ENCRYPTED_MESSAGE ---%0D%0A%0D%0A[SOURCE]: ${formData.name} (${formData.email})%0D%0A[PAYLOAD]:%0D%0A%0D%0A${formData.message}%0D%0A%0D%0A--- END_MESSAGE ---`;
-    const mailtoUrl = `mailto:${developerDetails.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
     
     // Attempt to open email client
     try {
@@ -78,17 +105,17 @@ export function ContactSection() {
                 </h3>
                 <div className="space-y-6 font-terminal">
                   <div className="flex items-center justify-between group">
-                    <a href={developerDetails.socials.whatsapp} target="_blank" rel="noreferrer" className="flex items-center gap-4 flex-1">
+                    <a href={whatsappLink} target="_blank" rel="noreferrer" className="flex items-center gap-4 flex-1">
                       <div className="w-10 h-10 shrink-0 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
                         <MessageSquare className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
                         <p className="text-[10px] text-secondary uppercase tracking-tighter">WhatsApp</p>
-                        <p className="font-medium text-foreground group-hover:text-primary transition-colors break-all sm:break-normal">{developerDetails.phone}</p>
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors break-all sm:break-normal">{phone}</p>
                       </div>
                     </a>
                     <button 
-                      onClick={() => copyToClipboard(developerDetails.phone, "phone")}
+                      onClick={() => copyToClipboard(phone, "phone")}
                       className="p-2 text-secondary hover:text-primary transition-colors shrink-0"
                       title="Copy phone number"
                     >
@@ -97,17 +124,17 @@ export function ContactSection() {
                   </div>
                   
                   <div className="flex items-center justify-between group">
-                    <a href={`mailto:${developerDetails.email}`} className="flex items-center gap-4 flex-1">
+                    <a href={`mailto:${email}`} className="flex items-center gap-4 flex-1">
                       <div className="w-10 h-10 shrink-0 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
                         <Mail className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
                         <p className="text-[10px] text-secondary uppercase tracking-tighter">Email</p>
-                        <p className="font-medium text-foreground group-hover:text-primary transition-colors break-all sm:break-normal">{developerDetails.email}</p>
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors break-all sm:break-normal">{email}</p>
                       </div>
                     </a>
                     <button 
-                      onClick={() => copyToClipboard(developerDetails.email, "email")}
+                      onClick={() => copyToClipboard(email, "email")}
                       className="p-2 text-secondary hover:text-primary transition-colors shrink-0"
                       title="Copy email address"
                     >
@@ -121,7 +148,7 @@ export function ContactSection() {
                     </div>
                     <div>
                       <p className="text-[10px] text-secondary uppercase tracking-tighter">Location</p>
-                      <p className="font-medium text-foreground">{developerDetails.location}</p>
+                      <p className="font-medium text-foreground">{about?.location || "Location"}</p>
                     </div>
                   </div>
                 </div>
@@ -130,12 +157,16 @@ export function ContactSection() {
               <div className="mt-10 font-terminal">
                 <h4 className="text-[10px] font-bold mb-4 text-primary uppercase tracking-widest">EXTERNAL_LINKS</h4>
                 <div className="flex flex-wrap gap-4">
-                  <a href={developerDetails.socials.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-all interactive text-xs">
-                    <Link className="w-4 h-4" /> [ LINKEDIN ]
-                  </a>
-                  <a href={developerDetails.socials.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-all interactive text-xs">
-                    <GitCompareArrows className="w-4 h-4" /> [ GITHUB ]
-                  </a>
+                  {linkedinLink !== "#" && (
+                    <a href={linkedinLink} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-all interactive text-xs">
+                      <Link className="w-4 h-4" /> [ LINKEDIN ]
+                    </a>
+                  )}
+                  {githubLink !== "#" && (
+                    <a href={githubLink} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded text-secondary hover:text-primary hover:border-primary transition-all interactive text-xs">
+                      <GitCompareArrows className="w-4 h-4" /> [ GITHUB ]
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

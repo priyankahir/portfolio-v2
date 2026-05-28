@@ -2,12 +2,19 @@
 
 import { Reveal } from "@/components/animations/Reveal";
 import Link from "next/link";
-import { BLOG_POSTS } from "@/data/blog";
 import { BlogCard } from "@/components/blog/BlogCard";
 
-export function BlogSection() {
+interface BlogSectionProps {
+  blogs?: Record<string, unknown>[];
+}
+
+export function BlogSection({ blogs = [] }: BlogSectionProps) {
   // Show only the first 3 posts on the home page
-  const featuredPosts = BLOG_POSTS.slice(0, 3);
+  const featuredPosts = blogs.slice(0, 3);
+
+  if (featuredPosts.length === 0) {
+    return null; // Hide section if no blogs
+  }
 
   return (
     <section id="blog" className="py-24 px-4 relative">
@@ -22,9 +29,12 @@ export function BlogSection() {
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredPosts.map((post, idx) => (
-            <BlogCard key={post.slug} post={post} index={idx} />
-          ))}
+          {featuredPosts.map((post: any, idx) => {
+            const slug = post?.slug?.current || idx.toString();
+            return (
+              <BlogCard key={slug} post={post} index={idx} />
+            );
+          })}
         </div>
         
         <Reveal delay={0.4}>

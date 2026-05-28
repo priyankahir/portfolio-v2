@@ -1,8 +1,16 @@
 "use client";
 
 import { Reveal } from "@/components/animations/Reveal";
+import { PortableText } from '@portabletext/react';
 
-export function AboutSection() {
+interface AboutSectionProps {
+  about?: any;
+}
+
+export function AboutSection({ about }: AboutSectionProps) {
+  const name = about?.name || "priyank";
+  const firstName = name.split(" ")[0].toLowerCase();
+
   return (
     <section id="about" className="py-24 px-4 relative">
       <div className="container mx-auto max-w-5xl">
@@ -48,7 +56,7 @@ export function AboutSection() {
               {/* System Info Right Column */}
               <div className="flex-1 space-y-3 text-foreground">
                 <div className="mb-4">
-                  <span className="text-primary font-bold text-lg">priyank</span>
+                  <span className="text-primary font-bold text-lg">{firstName}</span>
                   <span className="text-secondary">@</span>
                   <span className="text-primary font-bold text-lg">portfolio</span>
                   <div className="text-secondary">---------------------------</div>
@@ -56,31 +64,31 @@ export function AboutSection() {
                 
                 <div className="grid grid-cols-[120px_1fr] gap-y-2">
                   <span className="text-accent font-bold">OS:</span>
-                  <span>PB.OS 1.0 (Premium Hacker Edition)</span>
+                  <span>{firstName.toUpperCase()}.OS 1.0 (Premium Hacker Edition)</span>
                   
                   <span className="text-accent font-bold">Host:</span>
                   <span>React / Next.js Server Components</span>
                   
-                  <span className="text-accent font-bold">Uptime:</span>
-                  <span>1.4+ Years</span>
-                  
-                  <span className="text-accent font-bold">Packages:</span>
-                  <span>TypeScript, Tailwind CSS, Zustand, Framer Motion</span>
-                  
-                  <span className="text-accent font-bold">Company:</span>
-                  <span>Vivansh InfoTech</span>
+                  <span className="text-accent font-bold">Role:</span>
+                  <span>{about?.role || "Frontend Developer"}</span>
                   
                   <span className="text-accent font-bold">Location:</span>
-                  <span>Ahmedabad, Gujarat</span>
+                  <span>{about?.location || "Ahmedabad, Gujarat"}</span>
                   
-                  <span className="text-accent font-bold">Projects:</span>
-                  <span>10+ Delivered Successfully</span>
+                  <span className="text-accent font-bold">Email:</span>
+                  <span>{about?.email || "contact@example.com"}</span>
                 </div>
                 
                 <div className="mt-8">
-                  <p className="text-secondary leading-relaxed max-w-2xl">
-                    <span className="text-primary">{">"}</span> I specialize in the React ecosystem, bridging the gap between elegant design and robust engineering. I thrive on solving intricate problems—whether it&apos;s integrating AI with Claude API, managing complex state with Zustand and TanStack Query, or optimizing rendering for large-scale SaaS platforms.
-                  </p>
+                  <div className="text-secondary leading-relaxed max-w-2xl space-y-4">
+                    {about?.bio ? (
+                      <PortableText value={about.bio} />
+                    ) : (
+                      <p>
+                        <span className="text-primary">{">"}</span> I specialize in the React ecosystem, bridging the gap between elegant design and robust engineering. I thrive on solving intricate problems—whether it&apos;s integrating AI with Claude API, managing complex state with Zustand and TanStack Query, or optimizing rendering for large-scale SaaS platforms.
+                      </p>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="mt-6 pt-4 border-t border-border/50">

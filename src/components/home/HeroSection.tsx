@@ -9,8 +9,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
-export function HeroSection() {
+interface HeroSectionProps {
+  about?: any;
+}
+
+export function HeroSection({ about }: HeroSectionProps) {
   const [typingStep, setTypingStep] = useState(0);
+
+  const name = about?.name || "Priyank Baldaniya";
+  const role = about?.role || "Senior Frontend Developer";
+  const location = about?.location || "AHMEDABAD, IN";
+  const profileImage = about?.profileImage || "/images/profile.jpeg";
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-20 overflow-hidden px-4">
@@ -58,7 +67,7 @@ export function HeroSection() {
 
             <Reveal delay={0.4}>
               <p className="text-lg md:text-xl text-secondary max-w-2xl mb-10 font-mono leading-relaxed">
-                Frontend Developer specializing in high-performance web applications with Next.js, React, and TypeScript. Building the future of the web, one commit at a time.
+                {about?.tagline || "Frontend Developer specializing in high-performance web applications with Next.js, React, and TypeScript. Building the future of the web, one commit at a time."}
               </p>
             </Reveal>
 
@@ -91,15 +100,15 @@ export function HeroSection() {
                 
                 <div className="relative w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-2xl overflow-hidden border-2 border-primary shadow-[0_0_30px_rgba(37,99,235,0.2)] dark:shadow-[0_0_30px_rgba(0,255,65,0.2)] bg-surface-card">
                   <Image 
-                    src="/images/profile.jpeg" 
-                    alt="Priyank Baldaniya" 
+                    src={profileImage}
+                    alt={name}
                     width={400}
                     height={400}
                     priority
                     className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                    <span className="text-white font-terminal text-xs">./priyank.sh</span>
+                    <span className="text-white font-terminal text-xs">./{name.split(" ")[0].toLowerCase()}.sh</span>
                   </div>
                 </div>
               </div>
@@ -120,7 +129,7 @@ export function HeroSection() {
                 </div>
                 <span className="text-secondary/50 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                  priyank@terminal:~
+                  {name.split(" ")[0].toLowerCase()}@terminal:~
                 </span>
               </div>
               
@@ -142,8 +151,8 @@ export function HeroSection() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-primary font-bold ml-4 mb-4 border-l border-primary/20 pl-4"
                   >
-                    Priyank Baldaniya
-                    <div className="text-accent text-[10px] uppercase tracking-widest mt-1">Senior Frontend Developer</div>
+                    {name}
+                    <div className="text-accent text-[10px] uppercase tracking-widest mt-1">{role}</div>
                   </motion.div>
                 )}
 
@@ -194,12 +203,12 @@ export function HeroSection() {
       <div className="absolute bottom-10 left-10 hidden md:block font-terminal text-[10px] text-secondary/30">
         <div className="flex flex-col gap-1">
           <p>SYS.STAT: <span className="text-primary">ONLINE</span></p>
-          <p>LOC: <span className="text-primary">AHMEDABAD, IN</span></p>
+          <p>LOC: <span className="text-primary">{location.toUpperCase()}</span></p>
         </div>
       </div>
       <div className="absolute bottom-10 right-10 hidden md:block font-terminal text-[10px] text-secondary/30 text-right">
         <p>V 1.0.0-STABLE</p>
-        <p>© 2026 PRIYANK</p>
+        <p>© 2026 {name.split(" ")[0].toUpperCase()}</p>
       </div>
     </section>
   );
