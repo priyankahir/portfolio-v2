@@ -60,7 +60,11 @@
     --border-glow: rgba(0, 255, 65, 0.3);
   }
 
-  body {
+  html {
+  scroll-behavior: smooth;
+}
+
+body {
     background-color: var(--background) !important;
     color: var(--foreground);
     font-family: var(--font-inter), sans-serif;

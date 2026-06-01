@@ -2,11 +2,6 @@ import type { Metadata } from "next";
 import { Inter, VT323, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { constructMetadata } from "@/lib/metadata";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { CommandPalette } from "@/components/ui/CommandPalette";
-import { ThemeProvider } from "@/components/common/ThemeProvider";
-import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,19 +30,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${vt323.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col crt-overlay transition-colors duration-300`}
         suppressHydrationWarning
       >
-        <ThemeProvider defaultTheme="dark">
-          <div className="scanline" />
-          <CommandPalette />
-          <Navbar />
-          <main className="flex-1 flex flex-col">{children}</main>
-          <Footer />
-          <Toaster theme="dark" position="bottom-right" />
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );
