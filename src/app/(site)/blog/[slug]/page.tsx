@@ -7,6 +7,8 @@ import { getBlogPostQuery } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 
+export const revalidate = 30;
+
 export default async function BlogPostDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
