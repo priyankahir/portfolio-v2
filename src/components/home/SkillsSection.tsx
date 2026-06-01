@@ -3,6 +3,7 @@
 import { Reveal } from "@/components/animations/Reveal";
 import * as LucideIcons from "lucide-react";
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 
 interface Skill {
   _id: string;
@@ -63,22 +64,45 @@ export function SkillsSection({ skills = [] }: SkillsSectionProps) {
                       {category.title}
                     </h3>
                     
-                    <div className="flex flex-wrap gap-3">
+                    <motion.div className="flex flex-wrap gap-3"
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, margin: "-50px" }}
+                      variants={{
+                        hidden: {},
+                        visible: {
+                          transition: {
+                            staggerChildren: 0.05
+                          }
+                        }
+                      }}
+                    >
                       {category.skills.map((skill, i) => {
                         const Icon = (skill.icon && (LucideIcons as any)[skill.icon]) || LucideIcons.Code;
                         return (
-                          <div 
+                          <motion.div 
                             key={i}
+                            variants={{
+                              hidden: { opacity: 0, scale: 0.8, y: 10 },
+                              visible: { 
+                                opacity: 1, 
+                                scale: 1, 
+                                y: 0,
+                                transition: { type: "spring", stiffness: 300, damping: 20 } 
+                              }
+                            }}
+                            whileHover={{ scale: 1.05, y: -2, boxShadow: "0px 4px 15px rgba(0,255,65,0.15)" }}
+                            whileTap={{ scale: 0.95 }}
                             className="flex items-center gap-2 font-terminal text-sm px-3 py-1.5 bg-surface border border-border-focus rounded text-foreground hover:text-primary hover:border-primary transition-colors interactive cursor-default"
                           >
                             <span className="text-lg transition-all duration-300 drop-shadow-md text-primary">
                               <Icon size={18} />
                             </span>
                             {skill.name}
-                          </div>
+                          </motion.div>
                         );
                       })}
-                    </div>
+                    </motion.div>
                   </div>
                 </Reveal>
               ))}

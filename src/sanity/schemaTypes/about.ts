@@ -52,6 +52,12 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'phone',
+      title: 'Phone Number',
+      type: 'string',
+      description: 'Include country code (e.g., +91 9979700935)',
+    }),
+    defineField({
       name: 'socials',
       title: 'Social Links',
       type: 'array',

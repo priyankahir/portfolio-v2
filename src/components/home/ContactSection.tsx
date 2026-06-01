@@ -12,6 +12,7 @@ interface SocialLink {
 
 interface AboutData {
   email?: string;
+  phone?: string;
   location?: string;
   socials?: SocialLink[];
 }
@@ -28,9 +29,8 @@ export function ContactSection({ about }: ContactSectionProps) {
   const [copiedPhone, setCopiedPhone] = useState(false);
 
   const email = about?.email || "hello@example.com";
-  // The UI calls it phone but in Sanity schema we might not have a phone field, let's use a fallback or add it if needed. 
-  // Let's assume WhatsApp link or a separate phone field. The About schema has an email field, but we didn't add phone.
-  // I will use whatsapp link for the phone number display or a static fallback if not present.
+  const phone = about?.phone || "+91 0000000000";
+
   const getSocialUrl = (platform: string) => {
     if (!about?.socials) return "#";
     const link = about.socials.find((s) => s.platform.toLowerCase() === platform.toLowerCase());
@@ -39,7 +39,6 @@ export function ContactSection({ about }: ContactSectionProps) {
   const whatsappLink = getSocialUrl('whatsapp');
   const githubLink = getSocialUrl('github');
   const linkedinLink = getSocialUrl('linkedin');
-  const phone = whatsappLink !== "#" ? whatsappLink.replace("https://wa.me/", "+") : "+91 0000000000";
 
   const copyToClipboard = (text: string, type: "email" | "phone") => {
     navigator.clipboard.writeText(text);
@@ -105,12 +104,12 @@ export function ContactSection({ about }: ContactSectionProps) {
                 </h3>
                 <div className="space-y-6 font-terminal">
                   <div className="flex items-center justify-between group">
-                    <a href={whatsappLink} target="_blank" rel="noreferrer" className="flex items-center gap-4 flex-1">
+                    <a href={whatsappLink !== "#" ? whatsappLink : `tel:${phone.replace(/\s+/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center gap-4 flex-1">
                       <div className="w-10 h-10 shrink-0 rounded bg-surface border border-border flex items-center justify-center text-primary group-hover:border-primary group-hover:bg-primary/5 transition-all">
                         <MessageSquare className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-[10px] text-secondary uppercase tracking-tighter">WhatsApp</p>
+                        <p className="text-[10px] text-secondary uppercase tracking-tighter">Phone / WhatsApp</p>
                         <p className="font-medium text-foreground group-hover:text-primary transition-colors break-all sm:break-normal">{phone}</p>
                       </div>
                     </a>

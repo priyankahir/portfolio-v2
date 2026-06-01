@@ -2,6 +2,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { AboutSection } from "@/components/home/AboutSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { SkillsSection } from "@/components/home/SkillsSection";
+import { AiPhilosophySection } from "@/components/home/AiPhilosophySection";
 import { TechnicalPhilosophy } from "@/components/home/TechnicalPhilosophy";
 import { ExperienceSection } from "@/components/home/ExperienceSection";
 import { EducationTimeline } from "@/components/home/EducationTimeline";
@@ -41,6 +42,7 @@ export default async function Home() {
       <AboutSection about={about} />
       <ServicesSection />
       <SkillsSection skills={skills} />
+      <AiPhilosophySection />
       <TechnicalPhilosophy />
       <ExperienceSection experience={experience} />
       <ProjectsSection projects={projects} />
