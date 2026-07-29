@@ -1,212 +1,465 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Command, Search, Home, User, Briefcase, Code, BookOpen, Mail, X, Download, Layers } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowRight,
+  BookOpen,
+  Briefcase,
+  CornerDownLeft,
+  Download,
+  FileText,
+  Home,
+  Mail,
+  Moon,
+  Search,
+  Sparkles,
+  Sun,
+  User,
+} from "lucide-react";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+  type ReactNode,
+} from "react";
+import { posts } from "@/data/posts";
+import { profile } from "@/data/profile";
+import { projects } from "@/data/projects";
+import { cn } from "@/lib/utils";
 
-const ACTIONS = [
-  { id: "home", title: "Go to Home", icon: Home, shortcut: "H", path: "/" },
-  { id: "about", title: "About System", icon: User, shortcut: "A", path: "/#about" },
-  { id: "services", title: "Offered Services", icon: Layers, shortcut: "V", path: "/#services" },
-  { id: "skills", title: "Installed Modules", icon: Code, shortcut: "S", path: "/#skills" },
-  { id: "experience", title: "Deployment History", icon: Briefcase, shortcut: "E", path: "/#experience" },
-  { id: "projects", title: "Active Deployments", icon: Command, shortcut: "P", path: "/#projects" },
-  { id: "blog", title: "System Logs", icon: BookOpen, shortcut: "B", path: "/blog" },
-  { id: "resume", title: "Download CV", icon: Download, shortcut: "R", path: "/images/Priyank%20Baldaniya%20Frontend%20CV.pdf", download: true },
-  { id: "contact", title: "Init Connection", icon: Mail, shortcut: "C", path: "/#contact" },
-];
+interface Command {
+  id: string;
+  label: string;
+  hint: string;
+  group: string;
+  icon: ComponentType<{ className?: string }>;
+  /** Extra text matched by the fuzzy filter but not displayed. */
+  keywords?: string;
+  run: (ctx: CommandContext) => void;
+}
 
-export function CommandPalette() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
+interface CommandContext {
+  router: ReturnType<typeof useRouter>;
+  setTheme: (theme: string) => void;
+  isDark: boolean;
+  close: () => void;
+}
+
+const navigate = (path: string) => (ctx: CommandContext) => {
+  ctx.close();
+  ctx.router.push(path);
+};
+
+function buildCommands(isDark: boolean): Command[] {
+  return [
+    {
+      id: "home",
+      label: "Home",
+      hint: "/",
+      group: "Navigate",
+      icon: Home,
+      run: navigate("/"),
+    },
+    {
+      id: "about",
+      label: "About",
+      hint: "/about",
+      group: "Navigate",
+      icon: User,
+      keywords: "bio background story",
+      run: navigate("/about"),
+    },
+    {
+      id: "projects",
+      label: "Projects",
+      hint: "/projects",
+      group: "Navigate",
+      icon: Briefcase,
+      keywords: "work case studies portfolio",
+      run: navigate("/projects"),
+    },
+    {
+      id: "blog",
+      label: "Blog",
+      hint: "/blog",
+      group: "Navigate",
+      icon: BookOpen,
+      keywords: "writing articles notes",
+      run: navigate("/blog"),
+    },
+    {
+      id: "resume",
+      label: "Résumé",
+      hint: "/resume",
+      group: "Navigate",
+      icon: FileText,
+      keywords: "cv experience",
+      run: navigate("/resume"),
+    },
+    {
+      id: "contact",
+      label: "Contact",
+      hint: "/contact",
+      group: "Navigate",
+      icon: Mail,
+      keywords: "email hire reach out",
+      run: navigate("/contact"),
+    },
+    ...projects.map<Command>((project) => ({
+      id: `project-${project.slug}`,
+      label: project.title,
+      hint: project.domain,
+      group: "Projects",
+      icon: Sparkles,
+      keywords: `${project.subtitle} ${project.stack.join(" ")}`,
+      run: navigate(`/projects/${project.slug}`),
+    })),
+    ...posts.map<Command>((post) => ({
+      id: `post-${post.slug}`,
+      label: post.title,
+      hint: post.category,
+      group: "Writing",
+      icon: BookOpen,
+      keywords: `${post.excerpt} ${post.tags.join(" ")}`,
+      run: navigate(`/blog/${post.slug}`),
+    })),
+    {
+      id: "download-cv",
+      label: "Download résumé (PDF)",
+      hint: "Save to device",
+      group: "Actions",
+      icon: Download,
+      keywords: "cv pdf download",
+      run: (ctx) => {
+        ctx.close();
+        const link = document.createElement("a");
+        link.href = profile.resumePath;
+        link.download = profile.resumeFileName;
+        link.click();
+      },
+    },
+    {
+      id: "copy-email",
+      label: "Copy email address",
+      hint: profile.email,
+      group: "Actions",
+      icon: Mail,
+      keywords: "mail contact clipboard",
+      run: (ctx) => {
+        ctx.close();
+        void navigator.clipboard.writeText(profile.email);
+      },
+    },
+    {
+      id: "theme",
+      label: `Switch to ${isDark ? "light" : "dark"} theme`,
+      hint: "Toggle appearance",
+      group: "Actions",
+      icon: isDark ? Sun : Moon,
+      keywords: "dark light mode appearance",
+      run: (ctx) => {
+        ctx.setTheme(ctx.isDark ? "light" : "dark");
+        ctx.close();
+      },
+    },
+  ];
+}
+
+/** Subsequence match — "cwv" finds "Core Web Vitals". */
+function fuzzyMatch(haystack: string, needle: string): boolean {
+  if (!needle) return true;
+  const target = haystack.toLowerCase();
+  const query = needle.toLowerCase();
+  if (target.includes(query)) return true;
+
+  let cursor = 0;
+  for (const char of query) {
+    cursor = target.indexOf(char, cursor);
+    if (cursor === -1) return false;
+    cursor += 1;
+  }
+  return true;
+}
+
+const CommandPaletteContext = createContext<{ open: () => void } | null>(null);
+
+/** Lets any component (e.g. the navbar button) open the palette. */
+export function useCommandPalette() {
+  const context = useContext(CommandPaletteContext);
+  if (!context) {
+    throw new Error("useCommandPalette must be used within <CommandPalette>");
+  }
+  return context;
+}
+
+export function CommandPalette({ children }: { children?: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const router = useRouter();
+  const { resolvedTheme, setTheme } = useTheme();
+  const listRef = useRef<HTMLDivElement>(null);
+  const listId = useId();
 
-  const handleOpen = useCallback(() => setIsOpen(true), []);
-  const handleClose = useCallback(() => {
-    setIsOpen(false);
-    setSearch("");
-    setSelectedIndex(0);
+  const isDark = resolvedTheme === "dark";
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setQuery("");
+    setActiveIndex(0);
   }, []);
 
-  const filteredActions = ACTIONS.filter((action) =>
-    action.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const results = useMemo(() => {
+    const commands = buildCommands(isDark);
+    if (!query.trim()) return commands;
+    return commands.filter((command) =>
+      fuzzyMatch(
+        `${command.label} ${command.hint} ${command.keywords ?? ""}`,
+        query.trim()
+      )
+    );
+  }, [query, isDark]);
 
-  const onAction = useCallback((path: string) => {
-    router.push(path);
-    handleClose();
-  }, [router, handleClose]);
+  const grouped = useMemo(() => {
+    const map = new Map<string, Command[]>();
+    results.forEach((command) => {
+      const bucket = map.get(command.group) ?? [];
+      bucket.push(command);
+      map.set(command.group, bucket);
+    });
+    return [...map.entries()];
+  }, [results]);
 
+  // Global ⌘K / Ctrl+K listener.
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setIsOpen((open) => !open);
-      }
-      
-      if (!isOpen) return;
-
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredActions.length));
-      }
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev - 1 + filteredActions.length) % Math.max(1, filteredActions.length));
-      }
-      if (e.key === "Enter") {
-        e.preventDefault();
-        const action = filteredActions[selectedIndex];
-        if (action) {
-          if (action.download) {
-            const link = document.createElement("a");
-            link.href = action.path;
-            link.download = "Priyank_Baldaniya_Resume.pdf";
-            link.click();
-            handleClose();
-          } else {
-            onAction(action.path);
-          }
-        }
-      }
-      if (e.key === "Escape") {
-        handleClose();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setOpen((value) => !value);
       }
     };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, [isOpen, filteredActions, selectedIndex, onAction, handleClose]);
-
-  // Reset selection when search changes
+  // Lock body scroll while the dialog is open.
   useEffect(() => {
-    setSelectedIndex(0);
-  }, [search]);
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
 
-  if (!isOpen) {
-    return (
-      <div className="fixed bottom-12 right-6 z-40 hidden lg:block">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-primary/20 rounded-full font-terminal text-[10px] text-secondary/50"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-          Press <span className="text-primary font-bold px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded mx-1">⌘ K</span> to open command palette
-        </motion.div>
-      </div>
-    );
-  }
+  // Keep the highlighted row inside the scroll viewport.
+  useEffect(() => {
+    listRef.current
+      ?.querySelector<HTMLElement>(`[data-index="${activeIndex}"]`)
+      ?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex]);
+
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+      return;
+    }
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((index) => (index + 1) % Math.max(1, results.length));
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex(
+        (index) => (index - 1 + results.length) % Math.max(1, results.length)
+      );
+      return;
+    }
+    if (event.key === "Enter") {
+      event.preventDefault();
+      results[activeIndex]?.run({ router, setTheme, isDark, close });
+    }
+  };
+
+  let flatIndex = -1;
+
+  const contextValue = useMemo(() => ({ open: () => setOpen(true) }), []);
 
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={handleClose}
-          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        />
+    <CommandPaletteContext.Provider value={contextValue}>
+      {children}
 
-        {/* Modal */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -20 }}
-          className="relative w-full max-w-xl terminal-panel overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border-primary/30"
-        >
-          <div className="flex items-center gap-3 px-4 py-4 border-b border-border/50 bg-primary/5">
-            <Search className="w-5 h-5 text-primary" />
-            <input
-              autoFocus
-              placeholder="Type a command or search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none text-foreground font-terminal placeholder:text-secondary/30"
+      <AnimatePresence>
+        {open && (
+          <div
+            className="fixed inset-0 z-[100] flex items-start justify-center px-4 pt-[12vh]"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Command palette"
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              onClick={close}
+              className="absolute inset-0 bg-black/55 backdrop-blur-[3px]"
             />
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-terminal text-secondary/50 px-1.5 py-0.5 border border-border rounded">ESC</span>
-              <button onClick={handleClose} className="text-secondary hover:text-primary">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
 
-          <div className="max-h-[60vh] overflow-y-auto p-2 scrollbar-thin">
-            {filteredActions.length > 0 ? (
-              <div className="space-y-1">
-                {filteredActions.map((action, index) => (
-                  <button
-                    key={action.id}
-                    onClick={() => {
-                      if (action.download) {
-                        const link = document.createElement("a");
-                        link.href = action.path;
-                        link.download = "Priyank_Baldaniya_Resume.pdf";
-                        link.click();
-                        handleClose();
-                      } else {
-                        onAction(action.path);
-                      }
-                    }}
-                    onMouseEnter={() => setSelectedIndex(index)}
-                    className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all text-left ${
-                      index === selectedIndex ? "bg-primary/20 border-primary/20 shadow-[inset_0_0_10px_rgba(0,255,65,0.1)]" : "hover:bg-primary/5 border-transparent"
-                    } border`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-8 h-8 rounded border flex items-center justify-center transition-all ${
-                        index === selectedIndex ? "bg-primary/10 border-primary/50 text-primary" : "bg-surface border-border text-secondary"
-                      }`}>
-                        <action.icon className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className={`text-sm font-terminal font-bold transition-colors ${
-                          index === selectedIndex ? "text-primary" : "text-foreground"
-                        }`}>
-                          {action.title}
-                        </p>
-                        <p className={`text-[10px] font-terminal uppercase transition-opacity ${
-                          index === selectedIndex ? "text-primary/70" : "text-secondary opacity-50"
-                        }`}>
-                          {action.path}
-                        </p>
-                      </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97, y: -12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: -12 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="panel-solid relative w-full max-w-xl overflow-hidden shadow-2xl"
+              onKeyDown={onKeyDown}
+            >
+              <div className="flex items-center gap-3 border-b border-line px-4 py-3.5">
+                <Search className="h-4 w-4 shrink-0 text-faint" aria-hidden="true" />
+                <input
+                  autoFocus
+                  value={query}
+                  onChange={(event) => {
+                    // Reset the highlight here rather than in an effect —
+                    // the new result list always starts at its first row.
+                    setQuery(event.target.value);
+                    setActiveIndex(0);
+                  }}
+                  placeholder="Search pages, projects, articles…"
+                  aria-label="Search"
+                  aria-controls={listId}
+                  aria-expanded="true"
+                  role="combobox"
+                  className="min-w-0 flex-1 bg-transparent text-sm text-fg outline-none placeholder:text-faint"
+                />
+                <kbd className="hidden shrink-0 rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-faint sm:block">
+                  ESC
+                </kbd>
+              </div>
+
+              <div
+                ref={listRef}
+                id={listId}
+                role="listbox"
+                className="max-h-[min(60vh,420px)] overflow-y-auto p-2"
+              >
+                {results.length === 0 ? (
+                  <p className="px-3 py-10 text-center font-mono text-xs text-faint">
+                    No matches for “{query}”
+                  </p>
+                ) : (
+                  grouped.map(([group, commands]) => (
+                    <div key={group} className="mb-1 last:mb-0">
+                      <p className="px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-faint">
+                        {group}
+                      </p>
+                      {commands.map((command) => {
+                        flatIndex += 1;
+                        const index = flatIndex;
+                        const active = index === activeIndex;
+                        const Icon = command.icon;
+
+                        return (
+                          <button
+                            key={command.id}
+                            type="button"
+                            data-index={index}
+                            role="option"
+                            aria-selected={active}
+                            onMouseMove={() => setActiveIndex(index)}
+                            onClick={() =>
+                              command.run({ router, setTheme, isDark, close })
+                            }
+                            className={cn(
+                              "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors",
+                              active ? "bg-primary-soft" : "hover:bg-surface-hover"
+                            )}
+                          >
+                            <Icon
+                              className={cn(
+                                "h-4 w-4 shrink-0",
+                                active ? "text-primary" : "text-faint"
+                              )}
+                            />
+                            <span className="min-w-0 flex-1">
+                              <span
+                                className={cn(
+                                  "block truncate text-sm",
+                                  active ? "text-primary" : "text-fg"
+                                )}
+                              >
+                                {command.label}
+                              </span>
+                              <span className="block truncate font-mono text-[11px] text-faint">
+                                {command.hint}
+                              </span>
+                            </span>
+                            {active && (
+                              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-primary" />
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
-                    <span className={`text-[10px] font-terminal border px-2 py-0.5 rounded transition-colors ${
-                      index === selectedIndex ? "text-primary border-primary/30" : "text-secondary/30 border-border/50"
-                    }`}>
-                      {action.shortcut}
-                    </span>
-                  </button>
-                ))}
+                  ))
+                )}
               </div>
-            ) : (
-              <div className="py-12 text-center">
-                <p className="text-secondary font-terminal text-sm">NO_MATCHING_COMMANDS</p>
-              </div>
-            )}
-          </div>
 
-          <div className="px-4 py-2 border-t border-border/30 bg-black/40 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5 text-[9px] text-secondary/50 font-terminal">
-                <span className="px-1 border border-border rounded">↑↓</span> to navigate
+              <div className="flex items-center justify-between border-t border-line px-4 py-2.5 font-mono text-[10px] text-faint">
+                <span className="flex items-center gap-3">
+                  <span className="flex items-center gap-1">
+                    <kbd className="rounded border border-line px-1">↑</kbd>
+                    <kbd className="rounded border border-line px-1">↓</kbd>
+                    navigate
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CornerDownLeft className="h-2.5 w-2.5" />
+                    select
+                  </span>
+                </span>
+                <span className="text-primary/70">{results.length} results</span>
               </div>
-              <div className="flex items-center gap-1.5 text-[9px] text-secondary/50 font-terminal">
-                <span className="px-1 border border-border rounded">↵</span> to select
-              </div>
-            </div>
-            <div className="text-[9px] text-primary/50 font-terminal font-bold">
-              PB.OS_v1.0_SHELL
-            </div>
+            </motion.div>
           </div>
-        </motion.div>
-      </div>
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </CommandPaletteContext.Provider>
+  );
+}
+
+/**
+ * Discoverable affordance for the ⌘K shortcut. Lives in the navbar so it
+ * never floats over page content.
+ */
+export function CommandPaletteTrigger({ className }: { className?: string }) {
+  const { open } = useCommandPalette();
+
+  return (
+    <button
+      type="button"
+      onClick={open}
+      aria-label="Search this site"
+      className={cn(
+        "group flex items-center gap-2 rounded-lg border border-line bg-surface px-2.5 text-muted transition-colors hover:border-line-strong hover:text-fg",
+        className
+      )}
+    >
+      <Search className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      <span className="hidden font-mono text-xs lg:inline">Search</span>
+      <kbd className="hidden rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-faint lg:inline">
+        ⌘K
+      </kbd>
+    </button>
   );
 }

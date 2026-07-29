@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { Inter, VT323, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { constructMetadata } from "@/lib/metadata";
+import { siteConfig } from "@/lib/site";
+import { buildMetadata } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -9,32 +10,41 @@ const inter = Inter({
   display: "swap",
 });
 
-const vt323 = VT323({
-  weight: "400",
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-vt323",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
-export const metadata: Metadata = constructMetadata();
+export const metadata: Metadata = buildMetadata();
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: siteConfig.themeColor.light },
+    { media: "(prefers-color-scheme: dark)", color: siteConfig.themeColor.dark },
+  ],
+  colorScheme: "dark light",
+};
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${vt323.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col transition-colors duration-300`}
-        suppressHydrationWarning
-      >
+    <html
+      lang="en"
+      // next-themes writes the theme class here before hydration.
+      suppressHydrationWarning
+      className={`${inter.variable} ${spaceGrotesk.variable} ${jetBrainsMono.variable}`}
+    >
+      <body className="flex min-h-screen flex-col bg-bg text-fg antialiased">
         {children}
       </body>
     </html>

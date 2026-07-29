@@ -1,47 +1,63 @@
-import { Reveal } from "@/components/animations/Reveal";
-import { BlogCard } from "@/components/blog/BlogCard";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { blogs } from "@/data/portfolio";
+import { PostList } from "@/components/blog/PostList";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Section } from "@/components/ui/Section";
+import { postCategories, sortedPosts } from "@/data/posts";
+import {
+  breadcrumbSchema,
+  collectionPageSchema,
+  jsonLdGraph,
+} from "@/lib/json-ld";
+import { buildMetadata } from "@/lib/seo";
 
-export default async function BlogPage() {
+export const metadata = buildMetadata({
+  title: "Blog",
+  description:
+    "Notes on React architecture, TanStack Query and Zustand, AI/RAG interfaces, schema-driven forms and Core Web Vitals for data-heavy dashboards.",
+  path: "/blog",
+  keywords: [
+    "React blog",
+    "Next.js articles",
+    "full stack architecture writing",
+    "TanStack Query guide",
+  ],
+});
 
-
+export default function BlogPage() {
   return (
-    <div className="flex-1 py-24 px-4 bg-background">
-      <div className="container mx-auto max-w-5xl">
-        <Reveal>
-          <div className="mb-12">
-            <Link 
-              href="/" 
-              className="inline-flex items-center gap-2 text-secondary hover:text-primary transition-colors font-terminal text-sm mb-8"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              cd ..
-            </Link>
-            
-            <div className="flex items-center gap-2">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-semibold text-primary tracking-wide">
-                <span className="text-secondary">#</span> ls /var/log/blog/
-              </h1>
-              <div className="h-[2px] flex-1 bg-gradient-to-r from-primary/50 to-transparent ml-4"></div>
-            </div>
-            <p className="text-secondary mt-4 font-terminal max-w-2xl">
-              Exploring the frontiers of frontend development, architecture, and design. 
-              A collection of insights, tutorials, and performance optimizations.
-            </p>
-          </div>
-        </Reveal>
+    <>
+      <JsonLd
+        data={jsonLdGraph(
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/blog" },
+          ]),
+          collectionPageSchema({
+            name: "Blog",
+            description:
+              "Articles on full-stack architecture, AI interfaces and web performance.",
+            path: "/blog",
+            items: sortedPosts.map((post) => ({
+              name: post.title,
+              path: `/blog/${post.slug}`,
+            })),
+          })
+        )}
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogs.map((post: any, idx: number) => {
-            const slug = post?.slug || idx.toString();
-            return (
-              <BlogCard key={slug} post={post} index={idx} />
-            );
-          })}
-        </div>
-      </div>
-    </div>
+      <PageHeader
+        command="ls -lt ~/notes"
+        title="Writing"
+        description="Things I worked out on the job and wrote down so I'd remember them — state architecture, AI interfaces, dynamic forms, and why dashboard performance is its own problem."
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+        ]}
+      />
+
+      <Section>
+        <PostList posts={sortedPosts} categories={postCategories} />
+      </Section>
+    </>
   );
 }

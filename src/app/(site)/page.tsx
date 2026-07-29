@@ -1,34 +1,39 @@
-import { HeroSection } from "@/components/home/HeroSection";
-import { AboutSection } from "@/components/home/AboutSection";
-import { ServicesSection } from "@/components/home/ServicesSection";
-import { SkillsSection } from "@/components/home/SkillsSection";
-import { TechnicalPhilosophy } from "@/components/home/TechnicalPhilosophy";
-import { ExperienceSection } from "@/components/home/ExperienceSection";
-import { EducationTimeline } from "@/components/home/EducationTimeline";
-import { ProjectsSection } from "@/components/home/ProjectsSection";
-import { ResumeSection } from "@/components/home/ResumeSection";
-import { BlogSection } from "@/components/home/BlogSection";
-import { InteractiveConsole } from "@/components/home/InteractiveConsole";
-import { ContactSection } from "@/components/home/ContactSection";
+import { About } from "@/components/home/About";
+import { AiSpotlight } from "@/components/home/AiSpotlight";
+import { Contact } from "@/components/home/Contact";
+import { Experience } from "@/components/home/Experience";
+import { Faq } from "@/components/home/Faq";
+import { Hero } from "@/components/home/Hero";
+import { Services } from "@/components/home/Services";
+import { Skills } from "@/components/home/Skills";
+import { Stats } from "@/components/home/Stats";
+import { Terminal } from "@/components/home/Terminal";
+import { Work } from "@/components/home/Work";
+import { Writing } from "@/components/home/Writing";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { faqs } from "@/data/services";
+import { faqSchema, jsonLdGraph, profilePageSchema } from "@/lib/json-ld";
+import { buildMetadata } from "@/lib/seo";
 
-import { about, projects, skills, experience, blogs } from "@/data/portfolio";
+export const metadata = buildMetadata({ path: "/", type: "profile" });
 
-export default function Home() {
-
+export default function HomePage() {
   return (
     <>
-      <HeroSection about={about} skills={skills} />
-      <AboutSection about={about} />
-      <ServicesSection />
-      <SkillsSection skills={skills} />
-      <TechnicalPhilosophy />
-      <ExperienceSection experience={experience} />
-      <ProjectsSection projects={projects} />
-      <EducationTimeline />
-      <ResumeSection resumeUrl={about?.resumeUrl} about={about} experience={experience} skills={skills} />
-      <BlogSection blogs={blogs} />
-      <InteractiveConsole />
-      <ContactSection about={about} />
+      <JsonLd data={jsonLdGraph(profilePageSchema(), faqSchema(faqs))} />
+
+      <Hero />
+      <Stats />
+      <About />
+      <Skills />
+      <Work />
+      <Experience />
+      <AiSpotlight />
+      <Services />
+      <Terminal />
+      <Writing />
+      <Faq />
+      <Contact />
     </>
   );
 }

@@ -1,144 +1,202 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { homeSectionIds, navItems } from "@/data/navigation";
+import { profile } from "@/data/profile";
+import { useScrolled } from "@/hooks/useScrolled";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
-
-const NAV_LINKS = [
-  { name: "~/home", path: "/" },
-  { name: "~/about", path: "/#about" },
-  { name: "~/services", path: "/#services" },
-  { name: "~/skills", path: "/#skills" },
-  { name: "~/experience", path: "/#experience" },
-  { name: "~/projects", path: "/#projects" },
-  { name: "~/resume", path: "/#resume" },
-  { name: "~/blog", path: "/blog" },
-];
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { CommandPaletteTrigger } from "@/components/ui/CommandPalette";
 
 export function Navbar() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isHome = pathname === "/";
+  /**
+   * The drawer is stored as "open for this path" rather than a bare boolean, so
+   * navigating away closes it by derivation — no effect syncing route to state.
+   */
+  const [openForPath, setOpenForPath] = useState<string | null>(null);
+  const menuOpen = openForPath === pathname;
+  const setMenuOpen = (open: boolean) => setOpenForPath(open ? pathname : null);
+
+  const scrolled = useScrolled(24);
+  const activeSection = useScrollSpy(homeSectionIds, isHome);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+    if (!menuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [menuOpen]);
+
+  const isActive = (href: string, sectionId?: string) => {
+    if (href.startsWith("/#")) return isHome && activeSection === sectionId;
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
-    <header 
-      className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300 pointer-events-none",
-        scrolled ? "py-4" : "py-6"
-      )}
-    >
-      <div className="container mx-auto px-4 flex justify-center pointer-events-auto relative">
-        <motion.div 
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className={cn(
-            "flex flex-col w-full max-w-5xl rounded-xl transition-all duration-300 border border-transparent",
-            scrolled || isMobileMenuOpen ? "terminal-panel bg-surface-card/90" : "bg-surface-card/60 backdrop-blur-md border-border/50"
-          )}
+    <>
+      <a
+        href="#main"
+        className="sr-only left-4 top-4 z-[110] rounded-lg border border-line bg-elevated px-4 py-2 text-sm focus:not-sr-only focus:fixed"
+      >
+        Skip to content
+      </a>
+
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          scrolled
+            ? "border-b border-line bg-bg/80 py-2.5 backdrop-blur-xl"
+            : "border-b border-transparent py-4"
+        )}
+      >
+        <nav
+          aria-label="Primary"
+          className="container-page flex items-center justify-between gap-4"
         >
-          <div className="flex items-center justify-between px-4 sm:px-6 py-3 w-full">
-            <Link 
-              href="/" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="font-heading font-bold text-lg sm:text-xl mr-2 tracking-widest text-primary flex items-center gap-1 sm:gap-2 interactive shrink-0 transition-opacity hover:opacity-80"
+          <Link
+            href="/"
+            className="group flex shrink-0 items-center gap-2 font-mono text-sm font-semibold tracking-tight"
+          >
+            <span
+              aria-hidden="true"
+              className="grid h-7 w-7 place-items-center rounded-md bg-primary text-[13px] font-bold text-on-primary"
             >
-              <span className="text-secondary">$</span>
-              <span className="hidden sm:inline">PB://</span>
-            </Link>
-            
-            <nav className="hidden xl:flex items-center gap-4 xxl:gap-8 font-terminal text-[12px] xxl:text-[13px]">
-              {NAV_LINKS.map((link) => {
-                const isActive = pathname === link.path || (link.path !== "/" && pathname.startsWith(link.path));
-                const shortName = link.name.replace("~/", "");
-                return (
+              P
+            </span>
+            <span className="hidden sm:inline">
+              {profile.name.split(" ")[0].toLowerCase()}
+              <span className="text-primary">.dev</span>
+            </span>
+          </Link>
+
+          <ul className="hidden items-center gap-1 lg:flex">
+            {navItems.map((item) => {
+              const active = isActive(item.href, item.sectionId);
+              return (
+                <li key={item.href}>
                   <Link
-                    key={link.name}
-                    href={link.path}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
-                      "transition-all hover:text-primary relative group interactive flex items-center gap-1 uppercase tracking-wider",
-                      isActive ? "text-primary font-bold" : "text-secondary/70"
+                      "relative rounded-md px-3 py-2 font-mono text-[13px] transition-colors duration-200",
+                      active ? "text-primary" : "text-muted hover:text-fg"
                     )}
                   >
-                    <span className="text-[10px] opacity-40 group-hover:text-primary transition-colors">
-                      {isActive ? "●" : "○"}
+                    {active && (
+                      <motion.span
+                        layoutId="nav-active"
+                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                        className="absolute inset-0 -z-10 rounded-md bg-primary-soft"
+                      />
+                    )}
+                    <span aria-hidden="true" className="text-faint">
+                      /
                     </span>
-                    {shortName}
+                    {item.label}
                   </Link>
-                );
-              })}
-            </nav>
+                </li>
+              );
+            })}
+          </ul>
 
-            <div className="flex items-center gap-4 sm:gap-6">
-              <ThemeToggle />
-              <Link 
-                href="/#contact" 
-                className="hidden lg:flex bg-primary/10 text-primary border border-primary/50 px-4 sm:px-5 py-2 rounded font-terminal text-xs sm:text-sm font-bold hover:bg-primary hover:text-white dark:hover:text-black transition-colors interactive whitespace-nowrap"
-              >
-                [./init_contact]
-              </Link>
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="xl:hidden p-2 text-secondary hover:text-primary transition-colors interactive font-terminal text-sm font-bold"
-                aria-label="Toggle Menu"
-              >
-                {isMobileMenuOpen ? "[X]" : "[MENU]"}
-              </button>
-            </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <CommandPaletteTrigger className="hidden h-9 sm:flex" />
+            <ThemeToggle />
+            <Link
+              href="/contact"
+              className="hidden h-9 items-center rounded-lg border border-line-strong bg-primary-soft px-4 font-mono text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-on-primary sm:inline-flex"
+            >
+              Hire me
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              className="grid h-9 w-9 place-items-center rounded-lg border border-line text-muted transition-colors hover:text-primary lg:hidden"
+            >
+              {menuOpen ? (
+                <X className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Menu className="h-4 w-4" aria-hidden="true" />
+              )}
+            </button>
           </div>
+        </nav>
+      </header>
 
-          <AnimatePresence>
-            {isMobileMenuOpen && (
-              <motion.nav
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="xl:hidden border-t border-border/50 bg-black/10 dark:bg-black/40"
-              >
-                <div className="flex flex-col py-4 px-4 gap-4 font-terminal text-sm">
-                  {NAV_LINKS.map((link) => {
-                    const isActive = pathname === link.path || (link.path !== "/" && pathname.startsWith(link.path));
-                    return (
-                      <Link
-                        key={link.name}
-                        href={link.path}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={cn(
-                          "transition-all hover:text-primary interactive flex items-center gap-2 py-2 px-4 rounded-lg",
-                          isActive ? "text-primary font-bold bg-primary/10 border border-primary/20" : "text-secondary"
-                        )}
-                      >
-                        <span className="text-secondary opacity-50">$</span>
-                        {link.name}
-                        {isActive && <span className="ml-auto text-primary animate-blink">_</span>}
-                      </Link>
-                    );
-                  })}
-                  <Link 
-                    href="/#contact" 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="md:hidden mt-2 bg-primary/10 text-primary border border-primary/50 px-4 py-3 rounded text-center font-bold hover:bg-primary hover:text-white dark:hover:text-black transition-colors interactive"
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            id="mobile-nav"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-bg/95 pt-20 backdrop-blur-xl lg:hidden"
+          >
+            <motion.ul
+              initial="hidden"
+              animate="visible"
+              variants={{
+                visible: { transition: { staggerChildren: 0.045, delayChildren: 0.05 } },
+              }}
+              className="container-page flex flex-col gap-1"
+            >
+              {navItems.map((item) => (
+                <motion.li
+                  key={item.href}
+                  variants={{
+                    hidden: { opacity: 0, x: -12 },
+                    visible: { opacity: 1, x: 0 },
+                  }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg border border-transparent px-4 py-3.5 font-mono text-base transition-colors",
+                      isActive(item.href, item.sectionId)
+                        ? "border-line-strong bg-primary-soft text-primary"
+                        : "text-muted hover:bg-surface-hover hover:text-fg"
+                    )}
                   >
-                    [./init_contact]
+                    <span aria-hidden="true" className="text-faint">
+                      ~/
+                    </span>
+                    {item.label}
                   </Link>
-                </div>
-              </motion.nav>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
-    </header>
+                </motion.li>
+              ))}
+              <motion.li
+                variants={{
+                  hidden: { opacity: 0, x: -12 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                className="mt-4"
+              >
+                <Link
+                  href="/contact"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex h-12 items-center justify-center rounded-lg bg-primary font-mono text-sm font-medium text-on-primary"
+                >
+                  Hire me
+                </Link>
+              </motion.li>
+            </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
-

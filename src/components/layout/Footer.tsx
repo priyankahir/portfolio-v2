@@ -1,50 +1,87 @@
 import Link from "next/link";
-import { about } from "@/data/portfolio";
-interface SocialLink {
-  platform: string;
-  url: string;
-}
+import { footerLinks } from "@/data/navigation";
+import { profile } from "@/data/profile";
+import { SocialIcon } from "@/components/ui/SocialIcon";
 
-interface AboutData {
-  name?: string;
-  socials?: SocialLink[];
-}
-
-export async function Footer() {
-
-
-  const getSocialUrl = (platform: string) => {
-    if (!about?.socials) return "#";
-    const link = about.socials.find((s) => s.platform.toLowerCase() === platform.toLowerCase());
-    return link ? link.url : "#";
-  };
-
-  const whatsappLink = getSocialUrl('whatsapp');
-  const githubLink = getSocialUrl('github');
-  const linkedinLink = getSocialUrl('linkedin');
+export function Footer() {
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border/40 py-8 md:py-12 mt-auto">
-      <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4 text-center md:text-left">
-        <p className="text-xs sm:text-sm text-secondary font-terminal order-2 md:order-1">
-          © {new Date().getFullYear()} {about?.name || "Developer"}. All rights reserved.
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 font-terminal order-1 md:order-2">
-          {githubLink !== "#" && (
-            <Link href={githubLink} target="_blank" rel="noopener noreferrer" className="text-secondary hover:text-primary transition-colors text-[10px] sm:text-xs">
-              [ GITHUB ]
+    <footer className="mt-auto border-t border-line bg-bg-subtle">
+      <div className="container-page py-14">
+        <div className="grid gap-10 md:grid-cols-[1.6fr_1fr]">
+          <div className="max-w-sm">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 font-mono text-sm font-semibold"
+            >
+              <span
+                aria-hidden="true"
+                className="grid h-7 w-7 place-items-center rounded-md bg-primary text-[13px] font-bold text-on-primary"
+              >
+                P
+              </span>
+              {profile.name}
             </Link>
-          )}
-          {linkedinLink !== "#" && (
-            <Link href={linkedinLink} target="_blank" rel="noopener noreferrer" className="text-secondary hover:text-primary transition-colors text-[10px] sm:text-xs">
-              [ LINKEDIN ]
-            </Link>
-          )}
-          {whatsappLink !== "#" && (
-            <Link href={whatsappLink} target="_blank" rel="noopener noreferrer" className="text-secondary hover:text-primary transition-colors text-[10px] sm:text-xs">
-              [ WHATSAPP ]
-            </Link>
-          )}
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              {profile.role} building fast, accessible web applications with React,
+              Next.js, Node.js and MongoDB. Based in {profile.location}.
+            </p>
+
+            {profile.availability.open && (
+              <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-line-strong bg-primary-soft px-3 py-1.5 font-mono text-[11px] text-primary">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                </span>
+                {profile.availability.label}
+              </p>
+            )}
+          </div>
+
+          {footerLinks.map((column) => (
+            <nav key={column.title} aria-label={column.title}>
+              <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-faint">
+                {column.title}
+              </h2>
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-3 md:grid-cols-2">
+                {column.items.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="link-underline text-sm text-muted transition-colors hover:text-fg"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+
+        <div className="mt-12 flex flex-col-reverse items-center gap-6 border-t border-line pt-8 sm:flex-row sm:justify-between">
+          <p className="text-center font-mono text-[11px] text-faint sm:text-left">
+            © {year} {profile.name}. Built with Next.js &amp; Tailwind CSS.
+          </p>
+
+          <ul className="flex items-center gap-2">
+            {profile.socials.map((social) => (
+              <li key={social.label}>
+                <a
+                  href={social.url}
+                  target={social.url.startsWith("http") ? "_blank" : undefined}
+                  rel={
+                    social.url.startsWith("http") ? "me noopener noreferrer" : undefined
+                  }
+                  aria-label={social.label}
+                  className="grid h-9 w-9 place-items-center rounded-lg border border-line text-muted transition-colors hover:border-line-strong hover:text-primary"
+                >
+                  <SocialIcon icon={social.icon} className="h-4 w-4" />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

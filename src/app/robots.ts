@@ -1,12 +1,16 @@
-import { MetadataRoute } from "next";
-import { developerDetails } from "@/data/developer";
+import type { MetadataRoute } from "next";
+import { absoluteUrl, siteUrl } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
-    sitemap: `${developerDetails.seo.url}/sitemap.xml`,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/"],
+      },
+    ],
+    sitemap: absoluteUrl("/sitemap.xml"),
+    host: siteUrl,
   };
 }

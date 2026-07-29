@@ -1,72 +1,130 @@
-import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+import { profile } from "@/data/profile";
 
-export async function POST(req: Request) {
-  try {
-    const { name, email, message } = await req.json();
+export const runtime = "nodejs";
 
-    if (!name || !email || !message) {
-      return NextResponse.json(
-        { error: 'Name, email, and message are required' },
-        { status: 400 }
-      );
+const MAX = { name: 100, email: 160, subject: 160, message: 5000 };
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/**
+ * Fixed-window rate limit, per instance. Enough to blunt casual abuse of a
+ * personal contact form; a larger deployment would move this to a shared store.
+ */
+const WINDOW_MS = 60_000;
+const MAX_PER_WINDOW = 3;
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = hits.get(key);
+
+  if (!entry || now > entry.resetAt) {
+    hits.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    // Opportunistic cleanup so the map can't grow without bound.
+    if (hits.size > 500) {
+      for (const [id, value] of hits) if (now > value.resetAt) hits.delete(id);
     }
+    return false;
+  }
 
-    // Configure the email transporter
+  entry.count += 1;
+  return entry.count > MAX_PER_WINDOW;
+}
+
+function clientKey(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  return forwarded?.split(",")[0]?.trim() ?? "unknown";
+}
+
+export async function POST(request: Request) {
+  if (rateLimited(clientKey(request))) {
+    return NextResponse.json(
+      { error: "Too many messages. Please try again in a minute." },
+      { status: 429 }
+    );
+  }
+
+  let payload: Record<string, unknown>;
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
+
+  const name = String(payload.name ?? "").trim();
+  const email = String(payload.email ?? "").trim();
+  const subject = String(payload.subject ?? "").trim();
+  const message = String(payload.message ?? "").trim();
+  const honeypot = String(payload.company ?? "").trim();
+
+  // A filled honeypot means a bot — accept silently so it doesn't retry.
+  if (honeypot) {
+    return NextResponse.json({ ok: true }, { status: 200 });
+  }
+
+  if (name.length < 2 || name.length > MAX.name) {
+    return NextResponse.json({ error: "Please enter a valid name." }, { status: 400 });
+  }
+  if (!EMAIL_PATTERN.test(email) || email.length > MAX.email) {
+    return NextResponse.json(
+      { error: "Please enter a valid email address." },
+      { status: 400 }
+    );
+  }
+  if (message.length < 20 || message.length > MAX.message) {
+    return NextResponse.json(
+      { error: "Message must be between 20 and 5000 characters." },
+      { status: 400 }
+    );
+  }
+  if (subject.length > MAX.subject) {
+    return NextResponse.json({ error: "Subject is too long." }, { status: 400 });
+  }
+
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+
+  if (!user || !pass) {
+    console.error("[contact] EMAIL_USER / EMAIL_PASS are not configured");
+    return NextResponse.json(
+      { error: "Messaging isn't configured right now — please email me directly." },
+      { status: 503 }
+    );
+  }
+
+  try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
+      service: "gmail",
+      auth: { user, pass },
     });
 
-    // Email configuration
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: 'priyankahir333@gmail.com',
-      replyTo: email,
-      subject: `[PB.OS INQUIRY] New message from ${name}`,
-      text: `
---- SYSTEM_ENCRYPTED_MESSAGE ---
+    await transporter.sendMail({
+      from: `"Portfolio contact" <${user}>`,
+      to: profile.email,
+      replyTo: `"${name}" <${email}>`,
+      subject: subject
+        ? `[Portfolio] ${subject}`
+        : `[Portfolio] New message from ${name}`,
+      text: [
+        `Name: ${name}`,
+        `Email: ${email}`,
+        subject && `Subject: ${subject}`,
+        `Received: ${new Date().toISOString()}`,
+        "",
+        message,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    });
 
-[SOURCE_NAME]: ${name}
-[SOURCE_EMAIL]: ${email}
-[TIMESTAMP]: ${new Date().toISOString()}
-
-[PAYLOAD]:
-
-${message}
-
---- END_MESSAGE ---
-      `,
-      html: `
-        <div style="font-family: monospace; background-color: #050505; color: #00ff41; padding: 20px; border-radius: 8px;">
-          <h2 style="border-bottom: 1px solid #00ff41; padding-bottom: 10px;">--- SYSTEM_ENCRYPTED_MESSAGE ---</h2>
-          <p><strong>[SOURCE_NAME]:</strong> ${name}</p>
-          <p><strong>[SOURCE_EMAIL]:</strong> ${email}</p>
-          <p><strong>[TIMESTAMP]:</strong> ${new Date().toISOString()}</p>
-          <br />
-          <h3>[PAYLOAD]:</h3>
-          <div style="background-color: rgba(0, 255, 65, 0.1); padding: 15px; border-radius: 4px; white-space: pre-wrap;">${message}</div>
-          <br />
-          <p style="border-top: 1px solid #00ff41; padding-top: 10px;">--- END_MESSAGE ---</p>
-        </div>
-      `
-    };
-
-    // Send the email
-    await transporter.sendMail(mailOptions);
-
-    return NextResponse.json(
-      { message: 'Email sent successfully' },
-      { status: 200 }
-    );
+    return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
-    console.error('Error sending email:', error);
+    // Log server-side; never leak transport details to the client.
+    console.error("[contact] send failed:", error);
     return NextResponse.json(
-      { error: 'Failed to send email' },
-      { status: 500 }
+      { error: "Couldn't send that message. Please email me directly." },
+      { status: 502 }
     );
   }
 }
