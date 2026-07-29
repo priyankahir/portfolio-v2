@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${vt323.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col crt-overlay transition-colors duration-300`}
+        className={`${inter.variable} ${vt323.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col transition-colors duration-300`}
         suppressHydrationWarning
       >
         {children}

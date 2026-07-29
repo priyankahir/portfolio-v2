@@ -2,7 +2,6 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { AboutSection } from "@/components/home/AboutSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { SkillsSection } from "@/components/home/SkillsSection";
-import { AiPhilosophySection } from "@/components/home/AiPhilosophySection";
 import { TechnicalPhilosophy } from "@/components/home/TechnicalPhilosophy";
 import { ExperienceSection } from "@/components/home/ExperienceSection";
 import { EducationTimeline } from "@/components/home/EducationTimeline";
@@ -12,29 +11,9 @@ import { BlogSection } from "@/components/home/BlogSection";
 import { InteractiveConsole } from "@/components/home/InteractiveConsole";
 import { ContactSection } from "@/components/home/ContactSection";
 
-import { client } from "@/sanity/lib/client";
-import {
-  getAboutQuery,
-  getProjectsQuery,
-  getSkillsQuery,
-  getExperienceQuery,
-  getBlogsQuery,
-} from "@/sanity/lib/queries";
+import { about, projects, skills, experience, blogs } from "@/data/portfolio";
 
-export default async function Home() {
-  let about = null, projects = [], skills = [], experience = [], blogs = [];
-  
-  try {
-    [about, projects, skills, experience, blogs] = await Promise.all([
-      client.fetch(getAboutQuery),
-      client.fetch(getProjectsQuery),
-      client.fetch(getSkillsQuery),
-      client.fetch(getExperienceQuery),
-      client.fetch(getBlogsQuery),
-    ]);
-  } catch (error) {
-    console.warn("Failed to fetch data from Sanity. Make sure environment variables are set.", error);
-  }
+export default function Home() {
 
   return (
     <>
@@ -42,7 +21,6 @@ export default async function Home() {
       <AboutSection about={about} />
       <ServicesSection />
       <SkillsSection skills={skills} />
-      <AiPhilosophySection />
       <TechnicalPhilosophy />
       <ExperienceSection experience={experience} />
       <ProjectsSection projects={projects} />

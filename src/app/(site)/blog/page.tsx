@@ -2,11 +2,10 @@ import { Reveal } from "@/components/animations/Reveal";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { client } from "@/sanity/lib/client";
-import { getBlogsQuery } from "@/sanity/lib/queries";
+import { blogs } from "@/data/portfolio";
 
 export default async function BlogPage() {
-  const blogs = await client.fetch(getBlogsQuery);
+
 
   return (
     <div className="flex-1 py-24 px-4 bg-background">

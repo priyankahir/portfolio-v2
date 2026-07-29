@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { client } from "@/sanity/lib/client";
-import { getAboutQuery } from "@/sanity/lib/queries";
-
+import { about } from "@/data/portfolio";
 interface SocialLink {
   platform: string;
   url: string;
@@ -13,12 +11,7 @@ interface AboutData {
 }
 
 export async function Footer() {
-  let about: AboutData | null = null;
-  try {
-    about = await client.fetch(getAboutQuery);
-  } catch (error) {
-    console.warn("Failed to fetch data from Sanity in Footer.", error);
-  }
+
 
   const getSocialUrl = (platform: string) => {
     if (!about?.socials) return "#";

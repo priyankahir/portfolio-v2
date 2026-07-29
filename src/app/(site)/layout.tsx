@@ -11,7 +11,6 @@ export default function SiteLayout({
 }>) {
   return (
     <ThemeProvider defaultTheme="dark">
-      <div className="scanline" />
       <CommandPalette />
       <Navbar />
       <main className="flex-1 flex flex-col">{children}</main>

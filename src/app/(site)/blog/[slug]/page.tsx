@@ -2,8 +2,7 @@ import { Reveal } from "@/components/animations/Reveal";
 import { ArrowLeft, Calendar, Clock, User, Share2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { client } from "@/sanity/lib/client";
-import { getBlogPostQuery } from "@/sanity/lib/queries";
+import { blogs } from "@/data/portfolio";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 
@@ -12,7 +11,7 @@ export const revalidate = 30;
 export default async function BlogPostDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
-  const post = await client.fetch(getBlogPostQuery, { slug });
+  const post = blogs.find((p) => p.slug === slug);
 
   if (!post) {
     notFound();

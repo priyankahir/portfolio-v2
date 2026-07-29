@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { TerminalTyping } from "@/components/animations/TerminalTyping";
 import { Reveal } from "@/components/animations/Reveal";
-import { MatrixRain } from "@/components/animations/MatrixRain";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,9 +23,7 @@ export function HeroSection({ about, skills = [] }: HeroSectionProps) {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-20 overflow-hidden px-4">
-      {/* Immersive Effects */}
-      <MatrixRain />
-      
+      {/* Immersive Effects */}      
       {/* Background Grid */}
       <div className="absolute inset-0 bg-grid-pattern opacity-50"></div>
       
