@@ -17,7 +17,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       // Label is only meaningful once we know the current theme.
       aria-label={mounted ? `Switch to ${isDark ? "light" : "dark"} theme` : "Toggle theme"}
       className={cn(
-        "relative grid h-9 w-9 place-items-center rounded-lg border border-line text-muted transition-colors duration-300 hover:border-line-strong hover:text-primary",
+        "relative grid cursor-pointer h-9 w-9 place-items-center rounded-lg border border-line text-muted transition-colors duration-300 hover:border-line-strong hover:text-primary",
         className
       )}
     >

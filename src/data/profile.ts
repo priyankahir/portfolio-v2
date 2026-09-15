@@ -19,7 +19,7 @@ export const profile: Profile = {
   phone: "+91 99797 00935",
   phoneRaw: "919979700935",
   avatar: "/images/profile.jpeg",
-  resumePath: "/images/Priyank Baldaniya Frontend CV.pdf",
+  resumePath: "/images/Priyank_Baldaniya_Resume_MERN_Stack.pdf",
   resumeFileName: "Priyank-Baldaniya-MERN-Developer.pdf",
   availability: {
     open: true,
