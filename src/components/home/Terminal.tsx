@@ -280,7 +280,7 @@ export function Terminal() {
   return (
     <Section id="terminal">
       <SectionHeading
-        command="./explore.sh"
+        eyebrow="Interactive shell"
         title="Or just ask the shell"
         description="A working terminal wired to the same data as the rest of this site. Try whoami, ls projects, or open blog."
         align="center"
@@ -313,7 +313,7 @@ export function Terminal() {
                     "whitespace-pre-wrap break-words",
                     line.kind === "input" && "text-fg",
                     line.kind === "output" && "text-muted",
-                    line.kind === "error" && "text-[#ff6b6b]",
+                    line.kind === "error" && "text-danger",
                     line.kind === "system" && "text-primary"
                   )}
                 >

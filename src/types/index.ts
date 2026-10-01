@@ -112,8 +112,6 @@ export interface Project {
   metrics: ProjectMetric[];
   stack: string[];
   role: string;
-  liveUrl?: string;
-  repoUrl?: string;
   /** Accent hue (0–360) used for the card gradient */
   hue: number;
 }

@@ -24,7 +24,7 @@ export function Section({
     <section
       id={id}
       className={cn(
-        "relative scroll-mt-24 py-20 md:py-28",
+        "relative py-20 md:py-28",
         tinted && "bg-bg-subtle",
         className
       )}
@@ -41,8 +41,8 @@ export function Section({
 }
 
 interface SectionHeadingProps {
-  /** Terminal-style eyebrow, e.g. "cat about.md" */
-  command: string;
+  /** Short uppercase label above the title, e.g. "Selected work". */
+  eyebrow: string;
   title: string;
   description?: string;
   align?: "left" | "center";
@@ -50,9 +50,9 @@ interface SectionHeadingProps {
   action?: ReactNode;
 }
 
-/** Shared heading treatment: monospace command line, display title, blurb. */
+/** Shared heading treatment: accent-ruled eyebrow, display title, blurb. */
 export function SectionHeading({
-  command,
+  eyebrow,
   title,
   description,
   align = "left",
@@ -74,17 +74,9 @@ export function SectionHeading({
         )}
       >
         <div className={cn("max-w-2xl", align === "center" && "mx-auto")}>
-          <p
-            className={cn(
-              "mb-4 flex items-center gap-2 font-mono text-xs tracking-wider text-primary",
-              align === "center" && "justify-center"
-            )}
-          >
-            <span aria-hidden="true" className="text-faint">
-              $
-            </span>
-            {command}
-          </p>
+          <Eyebrow className={cn("mb-4", align === "center" && "justify-center")}>
+            {eyebrow}
+          </Eyebrow>
           <h2 className="text-3xl font-semibold leading-tight sm:text-4xl md:text-[2.75rem]">
             {title}
           </h2>
@@ -95,5 +87,29 @@ export function SectionHeading({
         {action && <div className="shrink-0">{action}</div>}
       </div>
     </Reveal>
+  );
+}
+
+/** Accent rule + uppercase mono label. Shared by section and page headings. */
+export function Eyebrow({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <p
+      className={cn(
+        "flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-primary",
+        className
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className="h-px w-8 bg-gradient-to-r from-primary to-transparent"
+      />
+      {children}
+    </p>
   );
 }

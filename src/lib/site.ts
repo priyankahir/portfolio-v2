@@ -13,13 +13,14 @@ export const siteConfig = {
   url: siteUrl,
   name: profile.name,
   shortName: "Priyank B.",
-  title: `${profile.name} — ${profile.headline}`,
+  // Kept under ~60 characters so search results don't truncate it.
+  title: `${profile.name} — MERN Stack Developer | React & Next.js`,
   description:
-    "MERN stack developer with 1.7+ years building production web applications in React, Next.js, Node.js, Express and MongoDB across EHS, AI, fintech and trading. Available for full-stack roles.",
+    "MERN stack developer in Ahmedabad, India, building production web apps with MongoDB, Express, React, Node.js and Next.js across EHS, AI, fintech and trading.",
   locale: "en_IN",
   language: "en",
   themeColor: {
-    light: "#f7f7f5",
+    light: "#f7f8fa",
     dark: "#07090c",
   },
   keywords: [
@@ -32,13 +33,24 @@ export const siteConfig = {
     "MongoDB developer",
     "Express.js developer",
     "TypeScript developer",
-    "MERN developer Ahmedabad",
+    "MERN stack developer Ahmedabad",
+    "React developer Ahmedabad",
+    "Node.js developer India",
+    "MongoDB Express React Node.js",
+    "React developer portfolio",
+    "Next.js projects",
     "full stack developer India",
     "AI interface developer",
     "portfolio",
   ],
-  twitterHandle: "@priyankbaldaniya",
 } as const;
+
+/**
+ * Last meaningful content update for static pages and case studies. Used as
+ * `lastModified` in the sitemap instead of the build time, so crawlers only
+ * see a change when the content actually changed. Bump it when you edit them.
+ */
+export const contentUpdatedAt = "2026-10-01";
 
 /** Builds an absolute URL from a site-relative path. */
 export function absoluteUrl(path = "/"): string {

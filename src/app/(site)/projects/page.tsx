@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/animations/Reveal";
 import { Stagger, StaggerItem } from "@/components/animations/Stagger";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -24,6 +25,9 @@ export const metadata = buildMetadata({
 });
 
 export default function ProjectsPage() {
+  const [lead, ...rest] = projects;
+  const domainCount = new Set(projects.map((project) => project.domain)).size;
+
   return (
     <>
       <JsonLd
@@ -46,9 +50,9 @@ export default function ProjectsPage() {
       />
 
       <PageHeader
-        command="ls -la ./case-studies"
+        eyebrow="Case studies"
         title="Work I've shipped"
-        description={`${projects.length} production products across six domains. Each one below is a short case study — the constraint, what I built, and what shipped.`}
+        description={`${projects.length} production products across ${domainCount} domains. Each one below is a short case study — the constraint, what I built, and what shipped.`}
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Projects", path: "/projects" },
@@ -56,10 +60,16 @@ export default function ProjectsPage() {
       />
 
       <Section>
-        <Stagger className="grid gap-4 lg:grid-cols-2">
-          {projects.map((project, index) => (
+        {lead && (
+          <Reveal className="mb-4">
+            <ProjectCard project={lead} index={0} titleAs="h2" featured />
+          </Reveal>
+        )}
+
+        <Stagger className="grid gap-4 md:grid-cols-2">
+          {rest.map((project, index) => (
             <StaggerItem key={project.id}>
-              <ProjectCard project={project} index={index} titleAs="h2" />
+              <ProjectCard project={project} index={index + 1} titleAs="h2" />
             </StaggerItem>
           ))}
         </Stagger>

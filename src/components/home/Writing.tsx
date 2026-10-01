@@ -11,7 +11,7 @@ export function Writing() {
   return (
     <Section id="writing" tinted>
       <SectionHeading
-        command="ls ~/notes"
+        eyebrow="Writing"
         title="Things I've written down"
         description="Notes from actual work — state architecture, AI interfaces, dynamic forms and the performance problems dashboards have that landing pages don't."
         action={

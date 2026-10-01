@@ -12,7 +12,7 @@ export function Faq() {
   return (
     <Section id="faq">
       <SectionHeading
-        command="man priyank"
+        eyebrow="FAQ"
         title="Questions people ask"
         description="The things that come up in first conversations, answered up front."
         align="center"

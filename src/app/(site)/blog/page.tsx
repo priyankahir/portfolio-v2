@@ -46,7 +46,7 @@ export default function BlogPage() {
       />
 
       <PageHeader
-        command="ls -lt ~/notes"
+        eyebrow="Blog"
         title="Writing"
         description="Things I worked out on the job and wrote down so I'd remember them — state architecture, AI interfaces, dynamic forms, and why dashboard performance is its own problem."
         crumbs={[

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { BRAND, LOGO_DOT, LOGO_PATHS, LOGO_STROKE, LOGO_VIEWBOX } from "@/lib/brand";
 import { siteConfig } from "@/lib/site";
 
 export const OG_SIZE = { width: 1200, height: 630 };
@@ -133,29 +134,15 @@ export function renderOgImage({ eyebrow, title, subtitle, chips = [] }: OgOption
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 46,
-                  height: 46,
-                  borderRadius: 10,
-                  background: PRIMARY,
-                  color: "#04140c",
-                  fontSize: 26,
-                  fontWeight: 700,
-                  marginRight: 18,
-                }}
-              >
-                P
+              <div style={{ display: "flex", marginRight: 18 }}>
+                <LogoMark size={46} />
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", fontSize: 26, color: FG }}>
                   {siteConfig.name}
                 </div>
                 <div style={{ display: "flex", fontSize: 20, color: MUTED }}>
-                  MERN Stack Developer · React · Node.js
+                  MERN Stack Developer · React · Node.js · MongoDB
                 </div>
               </div>
             </div>
@@ -168,5 +155,58 @@ export function renderOgImage({ eyebrow, title, subtitle, chips = [] }: OgOption
       </div>
     ),
     OG_SIZE
+  );
+}
+
+/**
+ * The PB monogram for Satori-rendered images (OG cards, favicon, app icons).
+ * Same geometry as the site's <Logo>, with fixed colours because there are no
+ * CSS variables inside an ImageResponse.
+ */
+function LogoMark({ size }: { size: number }) {
+  return (
+    <svg width={size} height={size} viewBox={LOGO_VIEWBOX}>
+      <defs>
+        <linearGradient id="pb" x1="6" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor={BRAND.from} />
+          <stop offset="1" stopColor={BRAND.to} />
+        </linearGradient>
+      </defs>
+      <rect width="32" height="32" rx="9" fill={BRAND.tile} />
+      <rect
+        x="0.5"
+        y="0.5"
+        width="31"
+        height="31"
+        rx="8.5"
+        fill="none"
+        stroke={BRAND.from}
+        strokeOpacity="0.3"
+      />
+      {LOGO_PATHS.map((d) => (
+        <path
+          key={d}
+          d={d}
+          fill="none"
+          stroke="url(#pb)"
+          strokeWidth={LOGO_STROKE}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ))}
+      <circle cx={LOGO_DOT.cx} cy={LOGO_DOT.cy} r={LOGO_DOT.r} fill={BRAND.from} />
+    </svg>
+  );
+}
+
+/** Square brand mark used for the favicon, Apple touch icon and PWA icons. */
+export function renderIcon(size: number) {
+  return new ImageResponse(
+    (
+      <div style={{ width: "100%", height: "100%", display: "flex" }}>
+        <LogoMark size={size} />
+      </div>
+    ),
+    { width: size, height: size }
   );
 }

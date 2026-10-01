@@ -19,6 +19,7 @@ export function PostCard({
 }) {
   return (
     <article
+      data-spotlight
       className={cn(
         "panel panel-interactive group relative flex h-full flex-col p-6",
         featured && "md:p-8",

@@ -4,7 +4,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { faqs } from "@/data/services";
 import { profile } from "@/data/profile";
-import { breadcrumbSchema, faqSchema, jsonLdGraph } from "@/lib/json-ld";
+import { contactPageSchema, breadcrumbSchema, faqSchema, jsonLdGraph } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -23,6 +23,7 @@ export default function ContactPage() {
     <>
       <JsonLd
         data={jsonLdGraph(
+          contactPageSchema(),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Contact", path: "/contact" },
@@ -32,7 +33,7 @@ export default function ContactPage() {
       />
 
       <PageHeader
-        command="./init-contact --secure"
+        eyebrow="Contact"
         title="Get in touch"
         description="Hiring for a MERN or full-stack role, or stuck on a specific problem? Either is a good reason to write. I read everything and reply within a day."
         crumbs={[

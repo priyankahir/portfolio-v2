@@ -1,14 +1,15 @@
 import type { MetadataRoute } from "next";
 import { posts } from "@/data/posts";
 import { projects } from "@/data/projects";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, contentUpdatedAt } from "@/lib/site";
 
 /**
  * Static routes plus one entry per project and article.
  * Adding content to `src/data` puts it in the sitemap automatically.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  // A fixed content date, not build time: crawlers trust lastmod only when it is honest.
+  const contentDate = new Date(contentUpdatedAt);
 
   const staticRoutes: MetadataRoute.Sitemap = (
     [
@@ -21,14 +22,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ] as const
   ).map((route) => ({
     url: absoluteUrl(route.path),
-    lastModified: now,
+    lastModified: contentDate,
     changeFrequency: route.changeFrequency,
     priority: route.priority,
   }));
 
   const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
     url: absoluteUrl(`/projects/${project.slug}`),
-    lastModified: now,
+    lastModified: contentDate,
     changeFrequency: "yearly",
     priority: 0.7,
   }));

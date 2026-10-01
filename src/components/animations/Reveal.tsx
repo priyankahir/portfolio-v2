@@ -1,65 +1,45 @@
-"use client";
-
-import { motion, type Variants } from "framer-motion";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type Direction = "up" | "down" | "left" | "right" | "none";
+type Direction = "up" | "left" | "right" | "none";
 
 interface RevealProps {
   children: ReactNode;
   className?: string;
+  /** Seconds. Becomes a small pixel offset in the scroll range, so later items land later. */
   delay?: number;
-  duration?: number;
   direction?: Direction;
-  /** Distance travelled, in px. Kept small so nothing feels sluggish. */
-  distance?: number;
-  once?: boolean;
 }
 
-const OFFSETS: Record<Direction, { x: number; y: number }> = {
-  up: { x: 0, y: 1 },
-  down: { x: 0, y: -1 },
-  left: { x: 1, y: 0 },
-  right: { x: -1, y: 0 },
-  none: { x: 0, y: 0 },
+const OFFSETS: Record<Direction, { x: string; y: string }> = {
+  up: { x: "0px", y: "18px" },
+  left: { x: "18px", y: "0px" },
+  right: { x: "-18px", y: "0px" },
+  none: { x: "0px", y: "0px" },
 };
 
 /**
- * Scroll-triggered entrance. Animates opacity and transform only, so it never
- * touches layout. Reduced-motion users land on the final state immediately via
- * the global override in `globals.css`.
+ * Scroll-linked entrance, done entirely in CSS (`.reveal` in globals.css,
+ * driven by `animation-timeline: view()`).
+ *
+ * Why not an IntersectionObserver/JS animation: content is visible by default.
+ * Browsers without scroll-driven animations, users with reduced motion, no-JS
+ * visitors and crawlers that render with a very tall viewport (Googlebot) all
+ * see the final state; nothing can get stuck at `opacity: 0`. It's also a
+ * server component, so it ships no JavaScript.
  */
-export function Reveal({
-  children,
-  className,
-  delay = 0,
-  duration = 0.55,
-  direction = "up",
-  distance = 18,
-  once = true,
-}: RevealProps) {
+export function Reveal({ children, className, delay = 0, direction = "up" }: RevealProps) {
   const offset = OFFSETS[direction];
-
-  const variants: Variants = {
-    hidden: { opacity: 0, x: offset.x * distance, y: offset.y * distance },
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      transition: { duration, delay, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
+  const style = {
+    "--reveal-x": offset.x,
+    "--reveal-y": offset.y,
+    // ~0.1s of delay ≈ 20px later in the scroll range.
+    "--reveal-shift": `${Math.min(delay * 200, 100)}px`,
+  } as CSSProperties;
 
   return (
-    <motion.div
-      className={cn(className)}
-      variants={variants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once, margin: "0px 0px -12% 0px" }}
-    >
+    <div className={cn("reveal", className)} style={style}>
       {children}
-    </motion.div>
+    </div>
   );
 }

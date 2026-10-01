@@ -200,7 +200,7 @@ function Field({
     "aria-describedby": describedBy,
     className: cn(
       "w-full rounded-lg border bg-bg px-3.5 py-2.5 text-sm text-fg transition-colors placeholder:text-faint focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:opacity-60",
-      error ? "border-[#ff6b6b]" : "border-line focus:border-line-strong"
+      error ? "border-danger" : "border-line focus:border-line-strong"
     ),
   };
 
@@ -221,7 +221,7 @@ function Field({
       )}
 
       {error && (
-        <p id={describedBy} className="mt-1.5 text-xs text-[#ff6b6b]">
+        <p id={describedBy} className="mt-1.5 text-xs text-danger">
           {error}
         </p>
       )}

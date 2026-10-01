@@ -1,9 +1,8 @@
-import { ArrowLeft, ArrowRight, Check, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/animations/Reveal";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-import { LinkButton } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -11,7 +10,6 @@ import { TagList } from "@/components/ui/Tag";
 import { getProjectBySlug, projects } from "@/data/projects";
 import { breadcrumbSchema, jsonLdGraph, projectSchema } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
-import { displayHost } from "@/lib/utils";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -29,10 +27,11 @@ export async function generateMetadata({ params }: Params) {
   }
 
   return buildMetadata({
-    title: `${project.title} — ${project.subtitle}`,
+    title: `${project.title} — Case Study`,
     description: project.summary,
     path: `/projects/${project.slug}`,
     keywords: [...project.stack, project.domain, `${project.title} case study`],
+    hasOwnOgImage: true,
   });
 }
 
@@ -60,7 +59,7 @@ export default async function ProjectPage({ params }: Params) {
       />
 
       <PageHeader
-        command={`cat ./case-studies/${project.slug}.md`}
+        eyebrow={`Case study · ${project.domain}`}
         title={project.title}
         description={project.summary}
         crumbs={[
@@ -78,6 +77,7 @@ export default async function ProjectPage({ params }: Params) {
       </PageHeader>
 
       <Section>
+
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
           <div className="space-y-12">
             <Reveal>
@@ -137,16 +137,6 @@ export default async function ProjectPage({ params }: Params) {
               ))}
             </dl>
 
-            {project.liveUrl && (
-              <LinkButton
-                href={project.liveUrl}
-                variant="secondary"
-                className="w-full"
-              >
-                {displayHost(project.liveUrl)}
-                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-              </LinkButton>
-            )}
 
             <div className="panel p-6">
               <p className="text-sm leading-relaxed text-muted">

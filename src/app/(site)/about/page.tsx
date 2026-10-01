@@ -9,7 +9,7 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { profile } from "@/data/profile";
 import { principles, processSteps } from "@/data/services";
 import { toolbox } from "@/data/skills";
-import { breadcrumbSchema, jsonLdGraph } from "@/lib/json-ld";
+import { aboutPageSchema, breadcrumbSchema, jsonLdGraph } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -29,6 +29,7 @@ export default function AboutPage() {
     <>
       <JsonLd
         data={jsonLdGraph(
+          aboutPageSchema(),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "About", path: "/about" },
@@ -37,7 +38,7 @@ export default function AboutPage() {
       />
 
       <PageHeader
-        command="cat ~/about.md"
+        eyebrow="About me"
         title="A full-stack developer who designs the API before the mockup"
         description={profile.tagline}
         crumbs={[
@@ -111,7 +112,7 @@ A product-focused MERN role where the app has genuine complexity on both
 
       <Section tinted>
         <SectionHeading
-          command="cat principles.txt"
+          eyebrow="Principles"
           title="What I optimise for"
           description="Opinions I've formed from shipping, and would defend in a code review."
         />
@@ -119,7 +120,7 @@ A product-focused MERN role where the app has genuine complexity on both
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {principles.map((principle) => (
             <StaggerItem key={principle.id}>
-              <article className="panel panel-interactive h-full p-6">
+              <article data-spotlight className="panel panel-interactive h-full p-6">
                 <Icon name={principle.icon} className="h-5 w-5 text-primary" />
                 <h3 className="mt-4 text-base font-semibold">{principle.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -133,7 +134,7 @@ A product-focused MERN role where the app has genuine complexity on both
 
       <Section>
         <SectionHeading
-          command="./process --verbose"
+          eyebrow="Process"
           title="How a feature actually gets built"
           description="Five steps, in the order they happen. The first two are where most of the bugs get prevented."
         />
@@ -164,9 +165,9 @@ A product-focused MERN role where the app has genuine complexity on both
 
       <Experience />
 
-      <Section tinted>
+      <Section>
         <SectionHeading
-          command="ls /usr/local/bin"
+          eyebrow="Toolbox"
           title="Daily toolbox"
           description="The things actually open on my machine on a normal working day."
         />

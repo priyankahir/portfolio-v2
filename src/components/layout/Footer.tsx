@@ -1,26 +1,23 @@
 import Link from "next/link";
 import { footerLinks } from "@/data/navigation";
 import { profile } from "@/data/profile";
+import { projects } from "@/data/projects";
+import { Logo } from "@/components/ui/Logo";
 import { SocialIcon } from "@/components/ui/SocialIcon";
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-line bg-bg-subtle">
+    <footer className="mt-auto border-t border-line bg-bg-subtle print:hidden">
       <div className="container-page py-14">
-        <div className="grid gap-10 md:grid-cols-[1.6fr_1fr]">
-          <div className="max-w-sm">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
+          <div className="max-w-sm sm:col-span-2 lg:col-span-1">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 font-mono text-sm font-semibold"
+              className="inline-flex items-center gap-2.5 font-display text-base font-semibold tracking-tight"
             >
-              <span
-                aria-hidden="true"
-                className="grid h-7 w-7 place-items-center rounded-md bg-primary text-[13px] font-bold text-on-primary"
-              >
-                P
-              </span>
+              <Logo className="h-8 w-8" />
               {profile.name}
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-muted">
@@ -44,7 +41,7 @@ export function Footer() {
               <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-faint">
                 {column.title}
               </h2>
-              <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-3 md:grid-cols-2">
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5">
                 {column.items.map((item) => (
                   <li key={item.href}>
                     <Link
@@ -58,6 +55,26 @@ export function Footer() {
               </ul>
             </nav>
           ))}
+
+          {/* Every case study linked from every page — keeps them one click from
+              anywhere for visitors and crawlers alike. */}
+          <nav aria-label="Projects">
+            <h2 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-faint">
+              Projects
+            </h2>
+            <ul className="space-y-2.5">
+              {projects.map((project) => (
+                <li key={project.id}>
+                  <Link
+                    href={`/projects/${project.slug}`}
+                    className="link-underline text-sm text-muted transition-colors hover:text-fg"
+                  >
+                    {project.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
         <div className="mt-12 flex flex-col-reverse items-center gap-6 border-t border-line pt-8 sm:flex-row sm:justify-between">
@@ -75,7 +92,7 @@ export function Footer() {
                     social.url.startsWith("http") ? "me noopener noreferrer" : undefined
                   }
                   aria-label={social.label}
-                  className="grid h-9 w-9 place-items-center rounded-lg border border-line text-muted transition-colors hover:border-line-strong hover:text-primary"
+                  className="grid h-10 w-10 place-items-center rounded-lg border border-line text-muted transition-colors hover:border-line-strong hover:text-primary"
                 >
                   <SocialIcon icon={social.icon} className="h-4 w-4" />
                 </a>

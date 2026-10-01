@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Reveal } from "@/components/animations/Reveal";
+import { Eyebrow } from "@/components/ui/Section";
 
 interface Crumb {
   name: string;
@@ -9,13 +9,13 @@ interface Crumb {
 
 /** Shared hero band for every non-home route. */
 export function PageHeader({
-  command,
+  eyebrow,
   title,
   description,
   crumbs = [],
   children,
 }: {
-  command: string;
+  eyebrow: string;
   title: string;
   description?: string;
   crumbs?: Crumb[];
@@ -50,13 +50,10 @@ export function PageHeader({
           </nav>
         )}
 
-        <Reveal>
-          <p className="mb-4 flex items-center gap-2 font-mono text-xs text-primary">
-            <span aria-hidden="true" className="text-faint">
-              $
-            </span>
-            {command}
-          </p>
+        {/* CSS entrance, not <Reveal>: the h1 is the LCP element on most
+            routes and must be visible before hydration. */}
+        <div className="enter">
+          <Eyebrow className="mb-5">{eyebrow}</Eyebrow>
           <h1 className="max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl md:text-[3.4rem]">
             {title}
           </h1>
@@ -66,7 +63,7 @@ export function PageHeader({
             </p>
           )}
           {children && <div className="mt-8">{children}</div>}
-        </Reveal>
+        </div>
       </div>
     </header>
   );

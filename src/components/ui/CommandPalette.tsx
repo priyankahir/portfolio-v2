@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -308,7 +308,7 @@ export function CommandPalette({ children }: { children?: ReactNode }) {
             aria-modal="true"
             aria-label="Command palette"
           >
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -317,7 +317,7 @@ export function CommandPalette({ children }: { children?: ReactNode }) {
               className="absolute inset-0 bg-black/55 backdrop-blur-[3px]"
             />
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.97, y: -12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97, y: -12 }}
@@ -430,7 +430,7 @@ export function CommandPalette({ children }: { children?: ReactNode }) {
                 </span>
                 <span className="text-primary/70">{results.length} results</span>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>
@@ -456,8 +456,8 @@ export function CommandPaletteTrigger({ className }: { className?: string }) {
       )}
     >
       <Search className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-      <span className="hidden font-mono text-xs lg:inline">Search</span>
-      <kbd className="hidden rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-faint lg:inline">
+      <span className="hidden font-mono text-xs xl:inline">Search</span>
+      <kbd className="hidden rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-faint xl:inline">
         ⌘K
       </kbd>
     </button>

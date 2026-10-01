@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,8 +10,11 @@ import { profile } from "@/data/profile";
 import { useScrolled } from "@/hooks/useScrolled";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { cn } from "@/lib/utils";
+import { Magnetic } from "@/components/animations/Magnetic";
+import { NavLinks } from "@/components/layout/NavLinks";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { CommandPaletteTrigger } from "@/components/ui/CommandPalette";
+import { Logo } from "@/components/ui/Logo";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -52,10 +55,10 @@ export function Navbar() {
 
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          "fixed inset-x-0 top-0 z-50 transition-all print:hidden duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
           scrolled
             ? "border-b border-line bg-bg/80 py-2.5 backdrop-blur-xl"
-            : "border-b border-transparent py-4"
+            : "border-b border-transparent py-4",
         )}
       >
         <nav
@@ -64,59 +67,29 @@ export function Navbar() {
         >
           <Link
             href="/"
-            className="group flex shrink-0 items-center gap-2 font-mono text-sm font-semibold tracking-tight"
+            // The name text is hidden on small screens; the label keeps the link named.
+            aria-label={`${profile.name} — home`}
+            className="group flex shrink-0 items-center gap-2.5"
           >
-            <span
-              aria-hidden="true"
-              className="grid h-7 w-7 place-items-center rounded-md bg-primary text-[13px] font-bold text-on-primary"
-            >
-              P
-            </span>
-            <span className="hidden sm:inline">
-              {profile.name.split(" ")[0].toLowerCase()}
-              <span className="text-primary">.dev</span>
+            <Logo className="h-8 w-8 transition-transform duration-300 group-hover:-rotate-6" />
+            <span className="hidden font-display text-[15px] font-semibold tracking-tight sm:inline">
+              {profile.name}
             </span>
           </Link>
 
-          <ul className="hidden items-center gap-1 lg:flex">
-            {navItems.map((item) => {
-              const active = isActive(item.href, item.sectionId);
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "relative rounded-md px-3 py-2 font-mono text-[13px] transition-colors duration-200",
-                      active ? "text-primary" : "text-muted hover:text-fg"
-                    )}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="nav-active"
-                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                        className="absolute inset-0 -z-10 rounded-md bg-primary-soft"
-                      />
-                    )}
-                    <span aria-hidden="true" className="text-faint">
-                      /
-                    </span>
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <NavLinks items={navItems} isActive={isActive} />
 
           <div className="flex shrink-0 items-center gap-2">
             <CommandPaletteTrigger className="hidden h-9 sm:flex" />
             <ThemeToggle />
-            <Link
-              href="/contact"
-              className="hidden h-9 items-center rounded-lg border border-line-strong bg-primary-soft px-4 font-mono text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-on-primary sm:inline-flex"
-            >
-              Hire me
-            </Link>
+            <Magnetic className="hidden sm:inline-flex" strength={0.3}>
+              <Link
+                href="/contact"
+                className="inline-flex h-9 items-center rounded-lg border border-line-strong bg-primary-soft px-4 font-mono text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-on-primary"
+              >
+                Hire me
+              </Link>
+            </Magnetic>
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -137,7 +110,7 @@ export function Navbar() {
 
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
+          <m.div
             id="mobile-nav"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -145,7 +118,7 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 bg-bg/95 pt-20 backdrop-blur-xl lg:hidden"
           >
-            <motion.ul
+            <m.ul
               initial="hidden"
               animate="visible"
               variants={{
@@ -154,7 +127,7 @@ export function Navbar() {
               className="container-page flex flex-col gap-1"
             >
               {navItems.map((item) => (
-                <motion.li
+                <m.li
                   key={item.href}
                   variants={{
                     hidden: { opacity: 0, x: -12 },
@@ -168,7 +141,7 @@ export function Navbar() {
                       "flex items-center gap-3 rounded-lg border border-transparent px-4 py-3.5 font-mono text-base transition-colors",
                       isActive(item.href, item.sectionId)
                         ? "border-line-strong bg-primary-soft text-primary"
-                        : "text-muted hover:bg-surface-hover hover:text-fg"
+                        : "text-muted hover:bg-surface-hover hover:text-fg",
                     )}
                   >
                     <span aria-hidden="true" className="text-faint">
@@ -176,9 +149,9 @@ export function Navbar() {
                     </span>
                     {item.label}
                   </Link>
-                </motion.li>
+                </m.li>
               ))}
-              <motion.li
+              <m.li
                 variants={{
                   hidden: { opacity: 0, x: -12 },
                   visible: { opacity: 1, x: 0 },
@@ -192,9 +165,9 @@ export function Navbar() {
                 >
                   Hire me
                 </Link>
-              </motion.li>
-            </motion.ul>
-          </motion.div>
+              </m.li>
+            </m.ul>
+          </m.div>
         )}
       </AnimatePresence>
     </>

@@ -3,27 +3,27 @@ import type { Profile, Stat } from "@/types";
 export const profile: Profile = {
   name: "Priyank Baldaniya",
   role: "MERN Stack Developer",
-  headline: "MERN Stack Developer — React, Next.js, Node.js & MongoDB",
-  experienceLabel: "1.7+ years",
+  headline: "MERN Stack Developer — React, Next.js, Node.js, Express & MongoDB",
+  experienceLabel: "1.9+ years",
   careerStart: "2025-01",
   tagline:
-    "I build full-stack web applications end to end — React and Next.js on the front, Node.js, Express and MongoDB behind it — with a bias toward interfaces that stay fast under real production load.",
+    "Full stack developer building production web apps on the MERN stack — React and Next.js on the front end, Node.js, Express and MongoDB behind it — with a focus on fast, maintainable interfaces and APIs that hold up in production.",
   summary: [
-    "I'm a MERN stack developer based in Ahmedabad, India, working across EHS compliance, AI tooling, fintech, franchise management and stock-trading products. My work runs from the database schema through the API layer to the interface people actually use.",
-    "Most of it lives in the hard parts of a product: dynamic form engines, report builders, role-based dashboards and data-heavy tables where a careless query or a careless re-render both cost real money. I care about architecture that survives the second and third feature request, not just the first.",
-    "Lately I've been shipping AI-facing features — chat surfaces backed by RAG and vector search, document-summary pipelines, and adaptive question generation — which means designing for streaming, latency and gracefully wrong answers on both sides of the wire.",
+    "I'm a MERN stack developer based in Ahmedabad, India, with 1.9+ years of building production-grade web applications in React.js, Next.js, TypeScript, Node.js, Express and MongoDB. I've delivered features across SaaS products in EHS compliance, AI tooling, franchise management, stock operations and assessments, working in Agile/Scrum teams alongside backend, design, QA and product.",
+    "Most of my work sits in the parts of a product that carry the most weight: multi-tenant and role-based dashboards, ticket and corrective-action workflows, Stripe and Razorpay payment flows, dynamic report builders and data-heavy screens. On the server side that means Express REST APIs with middleware, JWT authentication and authorisation, and Mongoose schemas designed around how the data is actually queried.",
+    "I also build AI and real-time features: a Claude API assistant grounded with RAG over a vector database, an AI report builder, and a live AI-to-human support handoff over Socket.IO. Across all of it I care about performance and SEO as engineering work — code splitting, lazy loading, image optimisation, and proper metadata, sitemaps and semantic markup.",
   ],
   location: "Ahmedabad, Gujarat, India",
   locationShort: "AHMEDABAD, IN",
   email: "priyankahir333@gmail.com",
   phone: "+91 99797 00935",
   phoneRaw: "919979700935",
-  avatar: "/images/profile.jpeg",
-  resumePath: "/images/Priyank_Baldaniya_Resume_MERN_Stack.pdf",
-  resumeFileName: "Priyank-Baldaniya-MERN-Developer.pdf",
+  avatar: "/images/profile.png",
+  resumePath: "/images/Priyank_Baldaniya_FullStack.pdf",
+  resumeFileName: "Priyank-Baldaniya-FullStack.pdf",
   availability: {
     open: true,
-    label: "Open to MERN stack roles",
+    label: "Open to MERN stack & full stack roles",
   },
   socials: [
     {
@@ -56,15 +56,15 @@ export const profile: Profile = {
 export const stats: Stat[] = [
   {
     label: "Experience",
-    value: "1.7",
+    value: "1.9",
     suffix: "+ yrs",
-    hint: "Shipping production web apps since Jan 2025",
+    hint: "Building production web apps since Jan 2025",
   },
   {
-    label: "Products shipped",
+    label: "Products delivered",
     value: "6",
     suffix: "+",
-    hint: "SaaS platforms across six distinct domains",
+    hint: "SaaS, EHS, AI, franchise, stock and assessment platforms",
   },
   {
     label: "Stack",
@@ -74,7 +74,7 @@ export const stats: Stat[] = [
   {
     label: "Also fluent in",
     value: "Next.js",
-    hint: "TypeScript · Tailwind · TanStack Query",
+    hint: "TypeScript · Tailwind CSS · TanStack Query · Socket.IO",
   },
 ];
 
@@ -82,9 +82,9 @@ export const stats: Stat[] = [
 export const domains: string[] = [
   "EHS & Compliance",
   "AI / LLM Interfaces",
-  "Fintech & Payments",
+  "Payments (Stripe & Razorpay)",
   "Franchise Management",
-  "Stock Trading",
+  "Stock & Inventory",
   "Psychometric Assessment",
   "Real Estate",
 ];

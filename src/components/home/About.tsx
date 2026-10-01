@@ -21,9 +21,9 @@ const FACTS = [
 
 export function About() {
   return (
-    <Section id="about">
+    <Section id="about" tinted>
       <SectionHeading
-        command="cat about.md"
+        eyebrow="About"
         title="Full-stack, but the parts that are hard"
         description="Not landing pages — dashboards, builders, APIs and data-heavy product surfaces where architecture decisions show up as bugs six months later."
       />
@@ -75,7 +75,7 @@ export function About() {
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {principles.map((principle) => (
             <StaggerItem key={principle.id}>
-              <article className="panel panel-interactive h-full p-6">
+              <article data-spotlight className="panel panel-interactive h-full p-6">
                 <Icon name={principle.icon} className="h-5 w-5 text-primary" />
                 <h4 className="mt-4 text-base font-semibold">{principle.title}</h4>
                 <p className="mt-2 text-sm leading-relaxed text-muted">

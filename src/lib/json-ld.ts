@@ -7,6 +7,13 @@ import { absoluteUrl, siteConfig, siteUrl } from "@/lib/site";
 const PERSON_ID = `${siteUrl}/#person`;
 const SITE_ID = `${siteUrl}/#website`;
 
+/** Languages Priyank speaks, as [name, BCP 47 code]. */
+const SPOKEN_LANGUAGES = [
+  ["English", "en"],
+  ["Hindi", "hi"],
+  ["Gujarati", "gu"],
+] as const;
+
 /** Schema.org Person — the anchor node every other graph references. */
 export function personSchema() {
   return {
@@ -18,7 +25,15 @@ export function personSchema() {
     url: siteUrl,
     image: absoluteUrl(profile.avatar),
     jobTitle: profile.role,
-    description: profile.tagline,
+    description: profile.availability.open
+      ? `${profile.tagline} ${profile.availability.label}, based in ${profile.location}.`
+      : profile.tagline,
+    nationality: { "@type": "Country", name: "India" },
+    knowsLanguage: SPOKEN_LANGUAGES.map(([name, code]) => ({
+      "@type": "Language",
+      name,
+      alternateName: code,
+    })),
     email: `mailto:${profile.email}`,
     telephone: profile.phone,
     address: {
@@ -75,6 +90,58 @@ export function profilePageSchema() {
   };
 }
 
+/**
+ * Shared shape for single-purpose pages that are about the person:
+ * AboutPage (/about), ContactPage (/contact) and ProfilePage (/resume).
+ */
+function personPageSchema(type: string, path: string, name: string, description: string) {
+  const url = absoluteUrl(path);
+  return {
+    "@type": type,
+    "@id": `${url}#webpage`,
+    url,
+    name,
+    description,
+    inLanguage: siteConfig.language,
+    isPartOf: { "@id": SITE_ID },
+    about: { "@id": PERSON_ID },
+    mainEntity: { "@id": PERSON_ID },
+  };
+}
+
+/** AboutPage node for /about. */
+export function aboutPageSchema() {
+  return personPageSchema(
+    "AboutPage",
+    "/about",
+    `About ${profile.name}`,
+    `Background, experience and working approach of ${profile.name}, ${profile.role} in ${profile.location}.`
+  );
+}
+
+/** ContactPage node for /contact. */
+export function contactPageSchema() {
+  return personPageSchema(
+    "ContactPage",
+    "/contact",
+    `Contact ${profile.name}`,
+    `How to reach ${profile.name}, ${profile.role} in ${profile.location}, by email, WhatsApp or the contact form.`
+  );
+}
+
+/** ProfilePage node for /resume. */
+export function resumePageSchema() {
+  return {
+    ...personPageSchema(
+      "ProfilePage",
+      "/resume",
+      `${profile.name} — Resume`,
+      `Resume of ${profile.name}, ${profile.role}: experience, projects, skills and education.`
+    ),
+    "@id": `${absoluteUrl("/resume")}#profilepage`,
+  };
+}
+
 export function breadcrumbSchema(trail: { name: string; path: string }[]) {
   return {
     "@type": "BreadcrumbList",
@@ -116,7 +183,8 @@ export function blogPostingSchema(post: Post) {
     timeRequired: `PT${post.readingMinutes}M`,
     // Per-route OG images carry a build hash, so reference the stable root card.
     image: absoluteUrl("/opengraph-image"),
-    author: { "@id": PERSON_ID },
+    // Inline name so the article validates even when tested on its own.
+    author: { "@type": "Person", "@id": PERSON_ID, name: profile.name, url: siteUrl },
     publisher: { "@id": PERSON_ID },
     isPartOf: { "@id": SITE_ID },
   };
@@ -134,8 +202,31 @@ export function projectSchema(project: Project) {
     dateCreated: project.year,
     genre: project.domain,
     keywords: project.stack.join(", "),
+    inLanguage: siteConfig.language,
     creator: { "@id": PERSON_ID },
-    ...(project.liveUrl && { sameAs: project.liveUrl }),
+    author: { "@id": PERSON_ID },
+    isPartOf: { "@id": SITE_ID },
+    // Per-route OG images carry a build hash, so reference the stable root card.
+    image: absoluteUrl("/opengraph-image"),
+  };
+}
+
+/**
+ * Ordered list of case studies for the home page, so search engines can tie
+ * the person on this page to the projects linked from it.
+ */
+export function projectListSchema(items: Project[]) {
+  return {
+    "@type": "ItemList",
+    "@id": `${siteUrl}/#projects`,
+    name: `Projects by ${profile.name}`,
+    numberOfItems: items.length,
+    itemListElement: items.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: absoluteUrl(`/projects/${project.slug}`),
+      name: project.title,
+    })),
   };
 }
 

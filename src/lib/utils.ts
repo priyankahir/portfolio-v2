@@ -45,12 +45,3 @@ export function durationBetween(start: string, end: string | null): string {
   if (rest) parts.push(`${rest} mo${rest > 1 ? "s" : ""}`);
   return parts.join(" ");
 }
-
-/** Strips a URL down to its hostname for display, e.g. "vrundavanbuildcon.com". */
-export function displayHost(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
-}

@@ -9,7 +9,7 @@ export function Experience() {
   return (
     <Section id="experience" tinted>
       <SectionHeading
-        command="git log --author=priyank"
+        eyebrow="Experience"
         title="Where I've worked"
         description="Joined as an intern in January 2025 and moved onto client delivery in the first sprint. Everything since has shipped to production users."
       />
@@ -32,7 +32,7 @@ export function Experience() {
                   <Building2 className="h-4 w-4 text-primary" />
                 </span>
 
-                <article className="panel panel-interactive p-6 md:p-7">
+                <article data-spotlight className="panel panel-interactive p-6 md:p-7">
                   <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <h3 className="text-lg font-semibold">{job.role}</h3>

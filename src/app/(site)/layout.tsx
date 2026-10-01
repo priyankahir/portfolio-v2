@@ -1,4 +1,6 @@
 import { Toaster } from "sonner";
+import { MotionProvider } from "@/components/animations/MotionProvider";
+import { PointerTracker } from "@/components/animations/PointerTracker";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
@@ -12,26 +14,29 @@ export default function SiteLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ThemeProvider>
-      {/* Person + WebSite are site-wide; per-page schemas reference these by @id. */}
-      <JsonLd data={jsonLdGraph(personSchema(), websiteSchema())} />
+      <MotionProvider>
+        {/* Person + WebSite are site-wide; per-page schemas reference these by @id. */}
+        <JsonLd data={jsonLdGraph(personSchema(), websiteSchema())} />
 
-      {/* Provides the ⌘K palette context consumed by the navbar trigger. */}
-      <CommandPalette>
-        <Navbar />
-        <main id="main" className="flex flex-1 flex-col">
-          {children}
-        </main>
-        <Footer />
-      </CommandPalette>
+        {/* Provides the ⌘K palette context consumed by the navbar trigger. */}
+        <CommandPalette>
+          <Navbar />
+          <main id="main" className="flex flex-1 flex-col">
+            {children}
+          </main>
+          <Footer />
+        </CommandPalette>
 
-      <BackToTop />
-      <Toaster
-        position="bottom-center"
-        toastOptions={{
-          className:
-            "!bg-[var(--elevated)] !text-[var(--fg)] !border !border-[var(--line)] !font-sans",
-        }}
-      />
+        <BackToTop />
+        <PointerTracker />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            className:
+              "!bg-[var(--elevated)] !text-[var(--fg)] !border !border-[var(--line)] !font-sans",
+          }}
+        />
+      </MotionProvider>
     </ThemeProvider>
   );
 }

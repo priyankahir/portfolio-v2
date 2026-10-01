@@ -7,13 +7,61 @@ export const skillGroups: SkillGroup[] = [
     command: "npm ls react",
     icon: "Atom",
     description:
-      "Component-driven architecture, hooks-first state, and render cost I can account for.",
+      "Reusable component architecture, hooks-first state, and render cost I can account for.",
     skills: [
       { name: "React.js", level: "core" },
-      { name: "Hooks & Context", level: "core" },
-      { name: "Memo / Lazy / Suspense", level: "strong" },
+      { name: "Hooks & Context API", level: "core" },
       { name: "Component Architecture", level: "core" },
+      { name: "Memo / Lazy / Suspense", level: "strong" },
       { name: "JSX", level: "core" },
+    ],
+  },
+  {
+    id: "backend",
+    title: "Node.js & Express",
+    command: "node server.js",
+    icon: "Server",
+    description:
+      "REST APIs on Node.js and Express — middleware, authentication and authorisation handled at the boundary, not bolted on later.",
+    skills: [
+      { name: "Node.js", level: "strong" },
+      { name: "Express.js", level: "strong" },
+      { name: "REST API Design", level: "strong" },
+      { name: "Middleware", level: "strong" },
+      { name: "JWT Authentication", level: "working" },
+      { name: "Role-Based Authorisation", level: "working" },
+      { name: "Socket.IO", level: "working" },
+    ],
+  },
+  {
+    id: "database",
+    title: "MongoDB & Payments",
+    command: "mongosh",
+    icon: "Database",
+    description:
+      "MongoDB with Mongoose schemas modelled on how the data is read, plus Stripe and Razorpay payment flows wired through the API.",
+    skills: [
+      { name: "MongoDB", level: "strong" },
+      { name: "Mongoose", level: "working" },
+      { name: "Schema Design", level: "working" },
+      { name: "Stripe", level: "working" },
+      { name: "Razorpay", level: "working" },
+    ],
+  },
+  {
+    id: "framework",
+    title: "Next.js",
+    command: "next build",
+    icon: "Layers",
+    description:
+      "App Router by default, Pages Router where an existing codebase needs it. Server components first.",
+    skills: [
+      { name: "App Router", level: "core" },
+      { name: "Pages Router", level: "strong" },
+      { name: "Server Components", level: "strong" },
+      { name: "SSR / SSG / ISR", level: "strong" },
+      { name: "Route Handlers", level: "strong" },
+      { name: "Metadata & SEO", level: "strong" },
     ],
   },
   {
@@ -30,49 +78,19 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
   {
-    id: "framework",
-    title: "Next.js",
-    command: "next build",
-    icon: "Layers",
-    description:
-      "App Router by default, Pages Router where legacy demands it. Server components first.",
-    skills: [
-      { name: "App Router", level: "core" },
-      { name: "Server Components", level: "strong" },
-      { name: "SSR / SSG / ISR", level: "strong" },
-      { name: "Route Handlers", level: "strong" },
-      { name: "Metadata & SEO", level: "strong" },
-    ],
-  },
-  {
-    id: "backend",
-    title: "Backend & Database",
-    command: "node server.js",
-    icon: "Server",
-    description:
-      "Express APIs backed by MongoDB — schema design, indexes, and auth that isn't an afterthought.",
-    skills: [
-      { name: "Node.js", level: "strong" },
-      { name: "Express.js", level: "strong" },
-      { name: "MongoDB", level: "strong" },
-      { name: "Mongoose", level: "working" },
-      { name: "REST API Design", level: "core" },
-      { name: "JWT Auth", level: "working" },
-    ],
-  },
-  {
     id: "state",
-    title: "State & Data",
+    title: "State, Forms & Data",
     command: "cat store/index.ts",
-    icon: "Database",
+    icon: "Network",
     description:
-      "Server state and client state kept apart — cache in Query, UI state in Zustand.",
+      "Server state and client state kept apart — cache in TanStack Query, UI state in Zustand or Context, forms validated at the edge.",
     skills: [
       { name: "TanStack Query", level: "core" },
       { name: "Zustand", level: "core" },
-      { name: "REST APIs", level: "core" },
-      { name: "Axios", level: "strong" },
+      { name: "Context API", level: "core" },
+      { name: "React Hook Form", level: "strong" },
       { name: "Yup Validation", level: "strong" },
+      { name: "Axios", level: "strong" },
     ],
   },
   {
@@ -81,14 +99,30 @@ export const skillGroups: SkillGroup[] = [
     command: "tailwindcss --watch",
     icon: "Palette",
     description:
-      "Pixel-accurate against Figma, responsive from 320px up, accessible by construction.",
+      "Accurate to Figma, responsive from 320px up, accessible by construction.",
     skills: [
       { name: "Tailwind CSS", level: "core" },
+      { name: "Responsive Design", level: "core" },
       { name: "Shadcn UI", level: "strong" },
       { name: "Radix UI", level: "strong" },
       { name: "Framer Motion", level: "strong" },
-      { name: "Responsive Design", level: "core" },
       { name: "WCAG / a11y", level: "working" },
+    ],
+  },
+  {
+    id: "performance",
+    title: "Performance & SEO",
+    command: "lighthouse --view",
+    icon: "Gauge",
+    description:
+      "Less JavaScript shipped, fewer wasted renders, and search metadata that's correct on every route.",
+    skills: [
+      { name: "Code Splitting", level: "strong" },
+      { name: "Lazy Loading", level: "strong" },
+      { name: "Rendering Optimisation", level: "strong" },
+      { name: "Image Optimisation", level: "strong" },
+      { name: "Lighthouse", level: "strong" },
+      { name: "Technical SEO", level: "strong" },
     ],
   },
   {
@@ -97,26 +131,30 @@ export const skillGroups: SkillGroup[] = [
     command: "curl api.anthropic.com",
     icon: "Sparkles",
     description:
-      "LLM features end to end — streaming, retrieval context, and feedback capture.",
+      "LLM features end to end — retrieval-grounded answers, structured report output, and a human handoff when the model isn't enough.",
     skills: [
       { name: "Claude API", level: "strong" },
-      { name: "RAG Interfaces", level: "strong" },
-      { name: "Vector Search UX", level: "working" },
+      { name: "RAG", level: "strong" },
+      { name: "Vector Databases", level: "working" },
       { name: "Streaming Responses", level: "strong" },
     ],
   },
   {
     id: "tooling",
-    title: "Tools & DevOps",
-    command: "git log --oneline",
+    title: "Deployment & Tools",
+    command: "pm2 status",
     icon: "Wrench",
-    description: "Trunk-based Git flow, automated checks, previews before merge.",
+    description:
+      "Git-based workflows, automated checks in CI, and Node.js services kept running on AWS EC2 with PM2.",
     skills: [
       { name: "Git & GitHub", level: "core" },
       { name: "GitHub Actions", level: "working" },
+      { name: "AWS EC2", level: "working" },
+      { name: "PM2", level: "working" },
+      { name: "Vercel", level: "strong" },
       { name: "Vite", level: "strong" },
       { name: "Figma", level: "strong" },
-      { name: "Vercel", level: "strong" },
+      { name: "Agile / Scrum", level: "strong" },
     ],
   },
 ];
@@ -141,6 +179,6 @@ export const toolbox: ToolboxItem[] = [
   },
   {
     category: "Ship",
-    items: ["Vercel", "GitHub Actions", "Netlify", "Postman"],
+    items: ["AWS EC2", "PM2", "Vercel", "GitHub Actions", "Postman"],
   },
 ];

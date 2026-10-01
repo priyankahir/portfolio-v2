@@ -7,9 +7,9 @@ import { processSteps, services } from "@/data/services";
 
 export function Services() {
   return (
-    <Section id="services" tinted>
+    <Section id="services">
       <SectionHeading
-        command="cat services.json"
+        eyebrow="Services"
         title="What I can take off your plate"
         description="The work I'm brought in for, and what actually gets delivered for each."
       />
@@ -17,7 +17,7 @@ export function Services() {
       <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {services.map((service) => (
           <StaggerItem key={service.id}>
-            <article className="panel panel-interactive flex h-full flex-col p-6">
+            <article data-spotlight className="panel panel-interactive flex h-full flex-col p-6">
               <span className="grid h-10 w-10 place-items-center rounded-lg border border-line bg-primary-soft">
                 <Icon name={service.icon} className="h-[18px] w-[18px] text-primary" />
               </span>

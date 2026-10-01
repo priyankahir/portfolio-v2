@@ -23,6 +23,8 @@
   --color-primary-soft: var(--primary-soft);
   --color-on-primary: var(--on-primary);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-danger: var(--danger);
 
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
@@ -38,32 +40,43 @@
   --animate-marquee: marquee 42s linear infinite;
   --animate-blink: blink 1.05s steps(2, start) infinite;
   --animate-sheen: sheen 3.5s ease-in-out infinite;
+  --animate-enter: enter 0.7s var(--ease-out-soft) both;
+  --animate-aurora: aurora 18s ease-in-out infinite alternate;
+  --animate-flow: flow 2.4s linear infinite;
 }
 
 @layer base {
   :root {
     color-scheme: light;
 
-    --bg: #f7f7f5;
-    --bg-subtle: #f0f0ed;
+    /* Cool neutral greys with an emerald brand colour. Every text token is
+       ≥ 4.5:1 (WCAG AA) on bg, bg-subtle and surface. */
+    --bg: #f7f8fa;
+    --bg-subtle: #eff2f5;
     --surface: #ffffff;
-    --surface-hover: #fafaf8;
+    --surface-hover: #f9fbfa;
     --elevated: #ffffff;
 
-    --fg: #16191d;
-    --muted: #5c646e;
-    --faint: #8b939d;
+    --fg: #0f172a;
+    --muted: #475467;
+    --faint: #5d6878;
 
-    --primary: #067a55;
-    --primary-soft: rgba(6, 122, 85, 0.1);
+    --primary: #047857;
+    --primary-soft: rgba(4, 120, 87, 0.08);
     --on-primary: #ffffff;
     --accent: #0e7490;
+    --accent-2: #6d28d9;
+    --danger: #b42318;
 
-    --line: rgba(22, 25, 29, 0.1);
-    --line-strong: rgba(22, 25, 29, 0.18);
+    --line: rgba(15, 23, 42, 0.09);
+    --line-strong: rgba(4, 120, 87, 0.3);
 
-    --glow: rgba(6, 122, 85, 0.16);
-    --grid: rgba(22, 25, 29, 0.055);
+    --glow: rgba(4, 120, 87, 0.16);
+    --grid: rgba(15, 23, 42, 0.045);
+    /* Light surfaces need a shadow for depth; dark ones rely on borders. */
+    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -20px rgba(15, 23, 42, 0.16);
+    --spotlight: rgba(4, 120, 87, 0.07);
+    --noise-opacity: 0.02;
   }
 
   .dark {
@@ -77,18 +90,23 @@
 
     --fg: #e8edf2;
     --muted: #98a3b0;
-    --faint: #67727f;
+    --faint: #808a97;
 
     --primary: #35e08f;
     --primary-soft: rgba(53, 224, 143, 0.11);
     --on-primary: #04140c;
     --accent: #4cc9f0;
+    --accent-2: #a78bfa;
+    --danger: #ff6b6b;
 
     --line: rgba(255, 255, 255, 0.09);
-    --line-strong: rgba(53, 224, 143, 0.28);
+    --line-strong: rgba(53, 224, 143, 0.3);
 
     --glow: rgba(53, 224, 143, 0.22);
     --grid: rgba(255, 255, 255, 0.038);
+    --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+    --spotlight: rgba(53, 224, 143, 0.08);
+    --noise-opacity: 0.04;
   }
 
   * {
@@ -100,6 +118,8 @@
     /* Offset for the fixed header when jumping to #anchors */
     scroll-padding-top: 6.5rem;
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -109,7 +129,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* `clip` doesn't create a scroll container, so sticky children keep
+       working; `hidden` is the fallback for browsers without it. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   h1,
@@ -190,6 +213,8 @@
     background-color: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-card);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
 
@@ -197,6 +222,58 @@
     background-color: var(--elevated);
     border: 1px solid var(--line);
     border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-card);
+  }
+
+  /*
+   * Cursor spotlight. `PointerTracker` writes --mx/--my (px, relative to the
+   * element) on whichever [data-spotlight] element is under the pointer; the
+   * glow is a single gradient layer, so hovering costs one repaint per frame.
+   */
+  /* `isolate` + z-index -1 paints the glow above the card's background but
+     below all of its content, without touching children's positioning. */
+  [data-spotlight] {
+    position: relative;
+    isolation: isolate;
+  }
+  [data-spotlight]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-soft);
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 50%),
+      var(--spotlight),
+      transparent 65%
+    );
+  }
+  [data-spotlight]:hover::before {
+    opacity: 1;
+  }
+
+  /* Film-grain overlay — breaks up flat gradients so they don't band. */
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--noise-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Slow drifting colour field behind the hero. Transform-only animation. */
+  .aurora {
+    background:
+      radial-gradient(40% 50% at 20% 30%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 70%),
+      radial-gradient(35% 45% at 80% 20%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%),
+      radial-gradient(40% 50% at 60% 80%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 70%);
+    filter: blur(40px);
+    animation: var(--animate-aurora);
+    will-change: transform;
   }
 
   .panel-interactive {
@@ -240,11 +317,27 @@
   }
 
   .mask-fade-y {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 78%, transparent);
     mask-image: linear-gradient(to bottom, transparent, black 12%, black 78%, transparent);
   }
 
   .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
     mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+
+  /*
+   * CSS-only entrance for above-the-fold content. Unlike a JS animation it
+   * starts on first paint, so the hero never waits on hydration to be visible
+   * (that wait is what pushes LCP out). Stagger with `--enter-delay`.
+   */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .enter {
+    animation: var(--animate-enter);
+    animation-delay: var(--enter-delay, 0ms);
   }
 
   .hide-scrollbar {
@@ -279,6 +372,34 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Scroll reveals (see components/animations/Reveal.tsx)
+   Progressive enhancement: `.reveal` does nothing unless the browser supports
+   scroll-driven animations AND the user allows motion. Everywhere else the
+   content is simply visible, so it can never be stuck hidden for a crawler.
+--------------------------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal linear both;
+      /* Must follow the shorthand, which resets it. */
+      animation-timeline: view();
+      /* Fixed pixel offsets, not percentages: a percentage of `entry` scales
+         with the element's height, so a tall card would stay half-faded
+         while its top is already being read. Fully visible after 180px. */
+      animation-range: entry var(--reveal-shift, 0px) entry
+        calc(var(--reveal-shift, 0px) + 180px);
+    }
+
+    .stagger > .reveal:nth-child(3n + 2) {
+      --reveal-shift: 30px;
+    }
+    .stagger > .reveal:nth-child(3n + 3) {
+      --reveal-shift: 60px;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
    Keyframes
 --------------------------------------------------------------------------- */
 @keyframes marquee {
@@ -287,6 +408,59 @@
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 18px), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes aurora {
+  0% {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3%, 3%, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-2%, 4%, 0) scale(1.02);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes flow {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 24px 0;
   }
 }
 
@@ -303,15 +477,6 @@
   }
   50% {
     background-position: 100% 50%;
-  }
-}
-
-@keyframes scanline {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(100vh);
   }
 }
 
@@ -334,7 +499,6 @@
   font-size: 1.65rem;
   font-weight: 600;
   color: var(--fg);
-  scroll-margin-top: 7rem;
 }
 
 .prose-body h3 {
@@ -343,7 +507,6 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--fg);
-  scroll-margin-top: 7rem;
 }
 
 .prose-body strong {
@@ -357,7 +520,7 @@
   text-underline-offset: 3px;
 }
 
-.prose-body code {
+.prose-body :not(pre) > code {
   font-size: 0.875em;
   color: var(--primary);
   background: var(--primary-soft);

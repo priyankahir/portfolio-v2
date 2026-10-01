@@ -19,17 +19,19 @@ const LEGEND: { level: SkillLevel; label: string }[] = [
 
 export function Skills() {
   return (
-    <Section id="skills" tinted>
+    <Section id="skills">
       <SectionHeading
-        command="apt list --installed"
+        eyebrow="Tech stack"
         title="The stack I actually ship with"
         description="Grouped by what they do, and marked by how much I lean on them — no percentage bars, because nobody knows what 87% React means."
       />
 
-      <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {/* A lone card on the last 3-column row spans it, so the grid never ends
+          with an orphan however many groups the data holds. */}
+      <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 xl:[&>*:last-child:nth-child(3n+1)]:col-span-3">
         {skillGroups.map((group) => (
           <StaggerItem key={group.id}>
-            <article className="panel panel-interactive flex h-full flex-col p-6">
+            <article data-spotlight className="panel panel-interactive flex h-full flex-col p-6">
               <header className="flex items-start gap-3">
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-primary-soft">
                   <Icon name={group.icon} className="h-4 w-4 text-primary" />

@@ -5,6 +5,7 @@ import { PostBody } from "@/components/blog/PostBody";
 import { PostCard } from "@/components/blog/PostCard";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { JsonLd } from "@/components/ui/JsonLd";
+import { Logo } from "@/components/ui/Logo";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { Section } from "@/components/ui/Section";
 import { Tag, TagList } from "@/components/ui/Tag";
@@ -37,6 +38,7 @@ export async function generateMetadata({ params }: Params) {
     modifiedTime: post.updatedAt ?? post.publishedAt,
     tags: post.tags,
     keywords: post.tags,
+    hasOwnOgImage: true,
   });
 }
 
@@ -113,12 +115,7 @@ export default async function BlogPostPage({ params }: Params) {
               <p className="mt-5 text-lg leading-relaxed text-muted">{post.excerpt}</p>
 
               <div className="mt-8 flex items-center gap-3 border-t border-line pt-6">
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 place-items-center rounded-full bg-primary text-sm font-bold text-on-primary"
-                >
-                  P
-                </span>
+                <Logo className="h-9 w-9" />
                 <span className="text-sm">
                   <span className="block font-medium">{profile.name}</span>
                   <span className="block font-mono text-[11px] text-faint">

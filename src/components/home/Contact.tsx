@@ -12,7 +12,7 @@ export function Contact() {
   return (
     <Section id="contact" tinted>
       <SectionHeading
-        command="./init-contact"
+        eyebrow="Contact"
         title="Let's talk"
         description="Open to MERN stack roles and freelance work. Tell me what you're building — I reply within a day."
       />

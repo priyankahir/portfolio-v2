@@ -1,34 +1,44 @@
-import { Check, Download, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Download, Mail, MapPin, Phone } from "lucide-react";
+import Link from "next/link";
+import type { ReactNode } from "react";
 import { Reveal } from "@/components/animations/Reveal";
 import { LinkButton } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section } from "@/components/ui/Section";
-import { Tag } from "@/components/ui/Tag";
+import { SocialIcon } from "@/components/ui/SocialIcon";
 import { education, experiences } from "@/data/experience";
-import { profile } from "@/data/profile";
+import { profile, stats } from "@/data/profile";
 import { projects } from "@/data/projects";
 import { skillGroups } from "@/data/skills";
-import { breadcrumbSchema, jsonLdGraph } from "@/lib/json-ld";
+import { breadcrumbSchema, jsonLdGraph, resumePageSchema } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
 import { durationBetween, formatMonth } from "@/lib/utils";
 
 export const metadata = buildMetadata({
-  title: "Résumé",
-  description: `Résumé of ${profile.name} — ${profile.experienceLabel} as a MERN stack developer in React, Next.js, Node.js and MongoDB, with production work across EHS, AI, fintech, franchise and trading platforms.`,
+  title: "Résumé — MERN Stack Developer",
+  description: `Résumé of ${profile.name} — ${profile.experienceLabel} as a MERN stack developer in React, Next.js, Node.js, Express and MongoDB, with production work across EHS, AI, fintech, franchise and trading platforms.`,
   path: "/resume",
   keywords: [
     "MERN stack developer resume",
     "full stack developer CV",
+    "React Node.js developer resume",
     "Priyank Baldaniya resume",
   ],
 });
+
+/** Profiles worth listing on a résumé — GitHub/LinkedIn style links only. The
+ *  phone and email are shown separately, so WhatsApp and mail are skipped. */
+const webProfiles = profile.socials.filter(
+  (social) => social.icon !== "mail" && social.icon !== "whatsapp"
+);
 
 export default function ResumePage() {
   return (
     <>
       <JsonLd
         data={jsonLdGraph(
+          resumePageSchema(),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "Résumé", path: "/resume" },
@@ -37,172 +47,251 @@ export default function ResumePage() {
       />
 
       <PageHeader
-        command="cat resume.txt"
+        eyebrow="Résumé"
         title="Résumé"
-        description={`${profile.headline} · ${profile.experienceLabel} of production experience.`}
+        description={`${profile.role} with ${profile.experienceLabel} of production experience across React, Next.js, Node.js, Express and MongoDB. The same content as the PDF, readable on any screen.`}
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Résumé", path: "/resume" },
         ]}
       >
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 print:hidden">
           <LinkButton href={profile.resumePath} download={profile.resumeFileName}>
             <Download className="h-4 w-4" aria-hidden="true" />
             Download PDF
           </LinkButton>
-          <LinkButton href={`mailto:${profile.email}`} variant="secondary">
+          <LinkButton href="/contact" variant="secondary">
             <Mail className="h-4 w-4" aria-hidden="true" />
-            Email me
+            Get in touch
           </LinkButton>
         </div>
       </PageHeader>
 
-      <Section>
-        <div className="grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-14">
-          {/* ---- Sidebar ---- */}
-          <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-            <Reveal className="panel p-6">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-faint">
-                Contact
-              </h2>
-              <ul className="mt-4 space-y-3 text-sm">
-                <li className="flex items-center gap-2.5 text-muted">
-                  <Mail className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-                  <a
-                    href={`mailto:${profile.email}`}
-                    className="link-underline break-all hover:text-fg"
-                  >
-                    {profile.email}
-                  </a>
-                </li>
-                <li className="flex items-center gap-2.5 text-muted">
-                  <Phone className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-                  <a href={`tel:+${profile.phoneRaw}`} className="link-underline hover:text-fg">
-                    {profile.phone}
-                  </a>
-                </li>
-                <li className="flex items-center gap-2.5 text-muted">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-                  {profile.location}
-                </li>
-              </ul>
-            </Reveal>
+      <Section className="print:py-0">
+        {/* The résumé itself — one document card, laid out like a printed CV. */}
+        <Reveal>
+          <article className="panel-solid mx-auto max-w-5xl overflow-hidden print:border-0 print:shadow-none">
+            {/* ---- Document header ---- */}
+            <header className="relative border-b border-line px-5 py-7 sm:px-8 sm:py-9 lg:px-10 lg:py-10">
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-accent to-transparent"
+              />
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <h2 className="text-[1.75rem] font-semibold leading-tight tracking-tight sm:text-4xl">
+                    {profile.name}
+                  </h2>
+                  <p className="mt-2 text-base text-primary sm:text-lg">{profile.role}</p>
+                </div>
 
-            <Reveal delay={0.06} className="panel p-6">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-faint">
-                Core skills
-              </h2>
-              <dl className="mt-4 space-y-4">
-                {skillGroups.map((group) => (
-                  <div key={group.id}>
-                    <dt className="text-xs font-medium text-primary">{group.title}</dt>
-                    <dd className="mt-1 text-[13px] leading-relaxed text-muted">
-                      {group.skills.map((skill) => skill.name).join(" · ")}
+                <ul className="grid gap-x-6 gap-y-2 text-sm text-muted sm:grid-cols-2 lg:text-right lg:[&>li]:justify-end">
+                  <ContactItem icon={<Mail className="h-3.5 w-3.5" aria-hidden="true" />}>
+                    <a href={`mailto:${profile.email}`} className="break-all hover:text-fg">
+                      {profile.email}
+                    </a>
+                  </ContactItem>
+                  <ContactItem icon={<Phone className="h-3.5 w-3.5" aria-hidden="true" />}>
+                    <a href={`tel:+${profile.phoneRaw}`} className="hover:text-fg">
+                      {profile.phone}
+                    </a>
+                  </ContactItem>
+                  <ContactItem icon={<MapPin className="h-3.5 w-3.5" aria-hidden="true" />}>
+                    {profile.location}
+                  </ContactItem>
+                  {webProfiles.map((social) => (
+                    <ContactItem
+                      key={social.label}
+                      icon={<SocialIcon icon={social.icon} className="h-3.5 w-3.5" />}
+                    >
+                      <a
+                        href={social.url}
+                        target="_blank"
+                        rel="me noopener noreferrer"
+                        className="hover:text-fg"
+                      >
+                        {social.handle ?? social.label}
+                      </a>
+                    </ContactItem>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Quick facts */}
+              <dl className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-4">
+                {stats.map((stat) => (
+                  <div key={stat.label} className="bg-elevated px-4 py-3">
+                    <dt className="font-mono text-[10px] uppercase tracking-widest text-faint">
+                      {stat.label}
+                    </dt>
+                    <dd className="mt-1 font-display text-lg font-semibold">
+                      {stat.value}
+                      {stat.suffix && <span className="text-primary">{stat.suffix}</span>}
                     </dd>
                   </div>
                 ))}
               </dl>
-            </Reveal>
+            </header>
 
-            <Reveal delay={0.12} className="panel p-6">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-faint">
-                Education
-              </h2>
-              <ul className="mt-4 space-y-4">
-                {education.map((entry) => (
-                  <li key={entry.id}>
-                    <p className="text-sm font-medium">{entry.degree}</p>
-                    <p className="mt-0.5 text-[13px] text-muted">{entry.institution}</p>
-                    <p className="mt-1 font-mono text-[11px] text-faint">
-                      {formatMonth(entry.start)} — {formatMonth(entry.end)} ·{" "}
-                      {entry.score}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
+            {/* ---- Body ---- */}
+            <div className="divide-y divide-line">
+              <ResumeRow title="Summary">
+                <div className="space-y-3 text-[15px] leading-relaxed text-muted">
+                  {profile.summary.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </ResumeRow>
 
-          {/* ---- Main column ---- */}
-          <div className="space-y-12">
-            <Reveal>
-              <h2 className="font-mono text-xs uppercase tracking-widest text-primary">
-                Summary
-              </h2>
-              <p className="mt-4 text-[1.0625rem] leading-[1.8] text-muted">
-MERN stack developer with {profile.experienceLabel} building scalable,
-                high-performance web applications in React.js, Next.js, Node.js,
-                Express and MongoDB. Skilled at translating Figma wireframes into
-                pixel-perfect responsive UIs and designing the REST APIs behind them,
-                with deliberate state management on the client. Delivered production
-                SaaS across EHS, AI chatbot, fintech, franchise management and stock
-                trading domains, with a consistent focus on clean code, reusable
-                architecture and agile delivery.
-              </p>
-            </Reveal>
-
-            <Reveal>
-              <h2 className="font-mono text-xs uppercase tracking-widest text-primary">
-                Experience
-              </h2>
-              <ol className="mt-6 space-y-8">
-                {experiences.map((job) => (
-                  <li key={job.id}>
-                    <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                      <h3 className="text-base font-semibold">
-                        {job.role}
-                        <span className="text-muted"> · {job.company}</span>
-                      </h3>
-                      <p className="shrink-0 font-mono text-[11px] text-faint">
-                        {formatMonth(job.start)} — {job.end ? formatMonth(job.end) : "Present"}{" "}
-                        ({durationBetween(job.start, job.end)})
+              <ResumeRow title="Experience">
+                <ol className="space-y-8">
+                  {experiences.map((job) => (
+                    <li key={job.id} className="relative">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+                        <h3 className="text-base font-semibold">
+                          {job.role}
+                          <span className="font-normal text-muted"> · {job.company}</span>
+                        </h3>
+                        <p className="shrink-0 font-mono text-xs text-primary">
+                          <time dateTime={job.start}>{formatMonth(job.start)}</time>
+                          {" — "}
+                          {job.end ? (
+                            <time dateTime={job.end}>{formatMonth(job.end)}</time>
+                          ) : (
+                            "Present"
+                          )}
+                        </p>
+                      </div>
+                      <p className="mt-1 font-mono text-[11px] text-faint">
+                        {job.type} · {job.location} · {durationBetween(job.start, job.end)}
                       </p>
-                    </div>
+                      <ul className="mt-4 space-y-2">
+                        {job.highlights.map((highlight) => (
+                          <li key={highlight} className="flex gap-3 text-sm text-muted">
+                            <span
+                              aria-hidden="true"
+                              className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary"
+                            />
+                            <span className="leading-relaxed">{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-3 font-mono text-[11px] leading-relaxed text-faint">
+                        {job.stack.join(" · ")}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              </ResumeRow>
 
-                    <ul className="mt-4 space-y-2.5">
-                      {job.highlights.map((highlight) => (
-                        <li key={highlight} className="flex gap-3 text-sm text-muted">
-                          <Check
-                            className="mt-1 h-3.5 w-3.5 shrink-0 text-primary"
+              <ResumeRow title="Key projects">
+                <ul className="grid gap-4 md:grid-cols-2">
+                  {projects.map((project) => (
+                    <li key={project.id}>
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="group block h-full rounded-lg border border-line bg-surface p-4 transition-colors hover:border-line-strong hover:bg-surface-hover"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <h3 className="text-sm font-semibold group-hover:text-primary">
+                            {project.title}
+                          </h3>
+                          <ArrowUpRight
+                            className="h-3.5 w-3.5 shrink-0 text-faint transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary print:hidden"
                             aria-hidden="true"
                           />
-                          <span className="leading-relaxed">{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ol>
-            </Reveal>
+                        </div>
+                        <p className="mt-0.5 font-mono text-[11px] text-primary">
+                          {project.domain} · {project.year}
+                        </p>
+                        <p className="mt-2 text-[13px] leading-relaxed text-muted">
+                          {project.summary}
+                        </p>
+                        <p className="mt-3 font-mono text-[11px] leading-relaxed text-faint">
+                          {project.stack.slice(0, 6).join(" · ")}
+                        </p>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </ResumeRow>
 
-            <Reveal>
-              <h2 className="font-mono text-xs uppercase tracking-widest text-primary">
-                Key projects
-              </h2>
-              <ul className="mt-6 space-y-6">
-                {projects.map((project) => (
-                  <li key={project.id}>
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <h3 className="text-base font-semibold">{project.title}</h3>
-                      <span className="text-sm text-muted">— {project.subtitle}</span>
+              <ResumeRow title="Skills">
+                <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                  {skillGroups.map((group) => (
+                    <div key={group.id}>
+                      <dt className="text-sm font-semibold">{group.title}</dt>
+                      <dd className="mt-1 text-[13px] leading-relaxed text-muted">
+                        {group.skills.map((skill) => skill.name).join(" · ")}
+                      </dd>
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">
-                      {project.summary}
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {project.stack.map((item) => (
-                        <Tag key={item} tone="outline">
-                          {item}
-                        </Tag>
-                      ))}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
+                  ))}
+                </dl>
+              </ResumeRow>
+
+              <ResumeRow title="Education">
+                <ul className="space-y-5">
+                  {education.map((entry) => (
+                    <li
+                      key={entry.id}
+                      className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between"
+                    >
+                      <div>
+                        <h3 className="text-sm font-semibold">{entry.degree}</h3>
+                        <p className="mt-0.5 text-[13px] text-muted">
+                          {entry.institution} · {entry.board}
+                        </p>
+                      </div>
+                      <p className="shrink-0 font-mono text-xs text-faint sm:text-right">
+                        {formatMonth(entry.start)} — {formatMonth(entry.end)}
+                        <span className="block text-primary">{entry.score}</span>
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </ResumeRow>
+            </div>
+          </article>
+        </Reveal>
+
+        {/* Closing call to action */}
+        <div className="mx-auto mt-8 flex max-w-5xl flex-col items-start gap-4 rounded-[var(--radius-panel)] border border-line-strong bg-primary-soft p-6 sm:flex-row sm:items-center sm:justify-between print:hidden">
+          <p className="text-sm text-fg">
+            <span className="font-semibold">{profile.availability.label}.</span>{" "}
+            <span className="text-muted">Happy to share more detail on any role or project.</span>
+          </p>
+          <div className="flex shrink-0 gap-3">
+            <LinkButton href={profile.resumePath} download={profile.resumeFileName} size="sm">
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              PDF
+            </LinkButton>
+            <LinkButton href="/contact" variant="secondary" size="sm">
+              Contact me
+            </LinkButton>
           </div>
         </div>
       </Section>
     </>
+  );
+}
+
+/** One résumé section: label column on the left, content on the right. */
+function ResumeRow({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="grid gap-4 px-5 py-7 sm:px-8 sm:py-8 lg:grid-cols-[10rem_minmax(0,1fr)] lg:gap-10 lg:px-10">
+      <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-primary lg:pt-1">
+        {title}
+      </h2>
+      <div className="min-w-0">{children}</div>
+    </section>
+  );
+}
+
+function ContactItem({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <li className="flex items-center gap-2">
+      <span className="shrink-0 text-primary">{icon}</span>
+      <span className="min-w-0">{children}</span>
+    </li>
   );
 }
