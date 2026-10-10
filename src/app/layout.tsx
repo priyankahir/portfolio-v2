@@ -16,10 +16,13 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
+// Mono is only used for small labels, never for the LCP text, so it isn't
+// preloaded: it stays off the critical path and swaps in when it arrives.
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = buildMetadata();

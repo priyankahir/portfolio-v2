@@ -53,7 +53,9 @@ export function TagList({
     <ul className={cn("flex flex-wrap gap-1.5", className)}>
       {visible.map((item) => (
         <li key={item}>
-          <Tag tone={tone}>{item}</Tag>
+          <Tag tone={tone} className="chip-lift">
+            {item}
+          </Tag>
         </li>
       ))}
       {overflow > 0 && (

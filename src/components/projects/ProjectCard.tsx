@@ -27,7 +27,7 @@ export function ProjectCard({
       <article
         data-spotlight
         className={cn(
-          "panel panel-interactive group relative flex h-full flex-col overflow-hidden",
+          "panel panel-interactive border-beam beam-hover group relative flex h-full flex-col overflow-hidden",
           className,
         )}
         style={{ "--hue": project.hue } as CSSProperties}

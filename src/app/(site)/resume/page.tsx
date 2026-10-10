@@ -11,18 +11,18 @@ import { education, experiences } from "@/data/experience";
 import { profile, stats } from "@/data/profile";
 import { projects } from "@/data/projects";
 import { skillGroups } from "@/data/skills";
+import { experienceStat, getExperience } from "@/lib/experience";
 import { breadcrumbSchema, jsonLdGraph, resumePageSchema } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
-import { durationBetween, formatMonth } from "@/lib/utils";
+import { formatMonth } from "@/lib/utils";
 
 export const metadata = buildMetadata({
-  title: "Résumé — MERN Stack Developer",
-  description: `Résumé of ${profile.name} — ${profile.experienceLabel} as a MERN stack developer in React, Next.js, Node.js, Express and MongoDB, with production work across EHS, AI, fintech, franchise and trading platforms.`,
+  title: `Résumé — ${profile.role}`,
+  description: `Résumé of ${profile.name}, ${profile.role} in Ahmedabad: production MERN stack experience since January 2025, SaaS projects, skills and education.`,
   path: "/resume",
   keywords: [
     "MERN stack developer resume",
     "full stack developer CV",
-    "React Node.js developer resume",
     "Priyank Baldaniya resume",
   ],
 });
@@ -34,6 +34,9 @@ const webProfiles = profile.socials.filter(
 );
 
 export default function ResumePage() {
+  const experience = getExperience();
+  const quickFacts = [experienceStat(), ...stats];
+
   return (
     <>
       <JsonLd
@@ -49,7 +52,7 @@ export default function ResumePage() {
       <PageHeader
         eyebrow="Résumé"
         title="Résumé"
-        description={`${profile.role} with ${profile.experienceLabel} of production experience across React, Next.js, Node.js, Express and MongoDB. The same content as the PDF, readable on any screen.`}
+        description={`${profile.role} with ${experience.label} of professional experience across MongoDB, Express, React, Node.js and Next.js — experience, projects, skills and education on one page.`}
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Résumé", path: "/resume" },
@@ -119,7 +122,7 @@ export default function ResumePage() {
 
               {/* Quick facts */}
               <dl className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-4">
-                {stats.map((stat) => (
+                {quickFacts.map((stat) => (
                   <div key={stat.label} className="bg-elevated px-4 py-3">
                     <dt className="font-mono text-[10px] uppercase tracking-widest text-faint">
                       {stat.label}
@@ -146,25 +149,35 @@ export default function ResumePage() {
               <ResumeRow title="Experience">
                 <ol className="space-y-8">
                   {experiences.map((job) => (
-                    <li key={job.id} className="relative">
+                    <li key={job.id}>
                       <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                        <h3 className="text-base font-semibold">
-                          {job.role}
-                          <span className="font-normal text-muted"> · {job.company}</span>
-                        </h3>
-                        <p className="shrink-0 font-mono text-xs text-primary">
-                          <time dateTime={job.start}>{formatMonth(job.start)}</time>
-                          {" — "}
-                          {job.end ? (
-                            <time dateTime={job.end}>{formatMonth(job.end)}</time>
-                          ) : (
-                            "Present"
-                          )}
-                        </p>
+                        <h3 className="text-base font-semibold">{job.company}</h3>
+                        <p className="shrink-0 font-mono text-[11px] text-faint">{job.location}</p>
                       </div>
-                      <p className="mt-1 font-mono text-[11px] text-faint">
-                        {job.type} · {job.location} · {durationBetween(job.start, job.end)}
-                      </p>
+
+                      <ul className="mt-3 space-y-1.5">
+                        {job.positions.map((position) => (
+                          <li
+                            key={position.title}
+                            className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
+                          >
+                            <span className="text-sm text-fg">
+                              {position.title}
+                              <span className="text-muted"> · {position.type}</span>
+                            </span>
+                            <span className="shrink-0 font-mono text-xs text-primary">
+                              <time dateTime={position.start}>{formatMonth(position.start)}</time>
+                              {" — "}
+                              {position.end ? (
+                                <time dateTime={position.end}>{formatMonth(position.end)}</time>
+                              ) : (
+                                "Present"
+                              )}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+
                       <ul className="mt-4 space-y-2">
                         {job.highlights.map((highlight) => (
                           <li key={highlight} className="flex gap-3 text-sm text-muted">

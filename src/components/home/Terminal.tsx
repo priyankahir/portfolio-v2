@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "@/components/animations/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { experiences } from "@/data/experience";
+import { currentPosition, experiences } from "@/data/experience";
 import { posts } from "@/data/posts";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
@@ -26,13 +26,15 @@ interface CommandResult {
   clear?: boolean;
 }
 
-const BANNER = [
-  `${profile.name} — ${profile.role}`,
-  `${profile.experienceLabel} experience · ${profile.location}`,
-  "Type 'help' for available commands, or 'ls' to look around.",
-];
+function buildBanner(experience: string) {
+  return [
+    `${profile.name} — ${profile.role}`,
+    `${experience} of experience · ${profile.location}`,
+    "Type 'help' for available commands, or 'ls' to look around.",
+  ];
+}
 
-function buildCommands(): Record<
+function buildCommands(experience: string): Record<
   string,
   { description: string; run: (args: string[]) => CommandResult }
 > {
@@ -42,7 +44,7 @@ function buildCommands(): Record<
       run: () => ({
         lines: [
           "Available commands:",
-          ...Object.entries(buildCommands()).map(
+          ...Object.entries(buildCommands(experience)).map(
             ([name, command]) => `  ${name.padEnd(12)} ${command.description}`
           ),
           "",
@@ -55,8 +57,8 @@ function buildCommands(): Record<
       run: () => ({
         lines: [
           `name     : ${profile.name}`,
-          `role     : ${experiences[0].role} @ ${experiences[0].company}`,
-          `exp      : ${profile.experienceLabel}`,
+          `role     : ${currentPosition.title} @ ${currentPosition.company}`,
+          `exp      : ${experience}`,
           `location : ${profile.location}`,
           `status   : ${profile.availability.label}`,
         ],
@@ -115,9 +117,11 @@ function buildCommands(): Record<
     experience: {
       description: "Print work history",
       run: () => ({
-        lines: experiences.map(
-          (job) =>
-            `${job.start} → ${job.end ?? "present"}  ${job.role} @ ${job.company}`
+        lines: experiences.flatMap((job) =>
+          job.positions.map(
+            (position) =>
+              `${position.start} → ${position.end ?? "present"}  ${position.title} @ ${job.company}`
+          )
         ),
       }),
     },
@@ -184,18 +188,23 @@ function buildCommands(): Record<
   };
 }
 
-export function Terminal() {
+/**
+ * `experience` is computed on the server and passed in, so the banner text is
+ * identical in the server HTML and on hydration.
+ */
+export function Terminal({ experience }: { experience: string }) {
   const router = useRouter();
-  const commands = useMemo(() => buildCommands(), []);
+  const commands = useMemo(() => buildCommands(experience), [experience]);
 
   const [lines, setLines] = useState<Line[]>(() =>
-    BANNER.map((text, id) => ({ id, kind: "system" as const, text }))
+    buildBanner(experience).map((text, id) => ({ id, kind: "system" as const, text }))
   );
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
-  const nextId = useRef(BANNER.length);
+  // The banner is always three lines; ids for new lines start after it.
+  const nextId = useRef(3);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -282,12 +291,13 @@ export function Terminal() {
       <SectionHeading
         eyebrow="Interactive shell"
         title="Or just ask the shell"
-        description="A working terminal wired to the same data as the rest of this site. Try whoami, ls projects, or open blog."
+        description="A working shell wired to this site's data. Try whoami, ls projects or open blog."
         align="center"
       />
 
       <Reveal className="mx-auto max-w-3xl">
-        <div className="panel-solid overflow-hidden shadow-xl">
+        {/* Always a dark code window, in both themes. */}
+        <div className="force-dark panel-solid overflow-hidden text-fg shadow-xl">
           <div className="flex items-center gap-3 border-b border-line bg-bg-subtle px-4 py-2.5">
             <div aria-hidden="true" className="flex gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]/70" />

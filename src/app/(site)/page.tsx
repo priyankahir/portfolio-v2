@@ -3,9 +3,7 @@ import { AiSpotlight } from "@/components/home/AiSpotlight";
 import { Architecture } from "@/components/home/Architecture";
 import { Contact } from "@/components/home/Contact";
 import { Experience } from "@/components/home/Experience";
-import { Faq } from "@/components/home/Faq";
 import { Hero } from "@/components/home/Hero";
-import { Services } from "@/components/home/Services";
 import { Skills } from "@/components/home/Skills";
 import { Stats } from "@/components/home/Stats";
 import { Terminal } from "@/components/home/Terminal";
@@ -13,13 +11,8 @@ import { Work } from "@/components/home/Work";
 import { Writing } from "@/components/home/Writing";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { featuredProjects } from "@/data/projects";
-import { faqs } from "@/data/services";
-import {
-  faqSchema,
-  jsonLdGraph,
-  profilePageSchema,
-  projectListSchema,
-} from "@/lib/json-ld";
+import { jsonLdGraph, profilePageSchema, projectListSchema } from "@/lib/json-ld";
+import { getExperience } from "@/lib/experience";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({ path: "/", type: "profile" });
@@ -35,8 +28,7 @@ export default function HomePage() {
       <JsonLd
         data={jsonLdGraph(
           profilePageSchema(),
-          projectListSchema(featuredProjects),
-          faqSchema(faqs)
+          projectListSchema(featuredProjects)
         )}
       />
 
@@ -48,10 +40,8 @@ export default function HomePage() {
       <Architecture />
       <AiSpotlight />
       <About />
-      <Services />
       <Writing />
-      <Terminal />
-      <Faq />
+      <Terminal experience={getExperience().label} />
       <Contact />
     </>
   );

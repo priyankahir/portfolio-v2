@@ -1,17 +1,18 @@
 import type { Profile, Stat } from "@/types";
+import { projects } from "./projects";
 
 export const profile: Profile = {
   name: "Priyank Baldaniya",
   role: "MERN Stack Developer",
-  headline: "MERN Stack Developer — React, Next.js, Node.js, Express & MongoDB",
-  experienceLabel: "1.9+ years",
-  careerStart: "2025-01",
+  headline: "MERN Stack Developer — MongoDB, Express, React, Node.js & Next.js",
+  // Single source for every experience figure on the site. Never store a
+  // computed duration anywhere — use `getExperience()` from src/lib/experience.
+  careerStart: "2025-01-01",
   tagline:
-    "Full stack developer building production web apps on the MERN stack — React and Next.js on the front end, Node.js, Express and MongoDB behind it — with a focus on fast, maintainable interfaces and APIs that hold up in production.",
+    "Full-stack developer at Vivansh Infotech LLP, shipping SaaS products end to end — Express APIs, MongoDB data models and fast, accessible React interfaces.",
   summary: [
-    "I'm a MERN stack developer based in Ahmedabad, India, with 1.9+ years of building production-grade web applications in React.js, Next.js, TypeScript, Node.js, Express and MongoDB. I've delivered features across SaaS products in EHS compliance, AI tooling, franchise management, stock operations and assessments, working in Agile/Scrum teams alongside backend, design, QA and product.",
-    "Most of my work sits in the parts of a product that carry the most weight: multi-tenant and role-based dashboards, ticket and corrective-action workflows, Stripe and Razorpay payment flows, dynamic report builders and data-heavy screens. On the server side that means Express REST APIs with middleware, JWT authentication and authorisation, and Mongoose schemas designed around how the data is actually queried.",
-    "I also build AI and real-time features: a Claude API assistant grounded with RAG over a vector database, an AI report builder, and a live AI-to-human support handoff over Socket.IO. Across all of it I care about performance and SEO as engineering work — code splitting, lazy loading, image optimisation, and proper metadata, sitemaps and semantic markup.",
+    "I work on the parts of a product that carry the most weight: role-based dashboards, ticketing workflows, Stripe and Razorpay payments, report builders and an AI assistant.",
+    "On the server that means Express APIs with JWT auth and Mongoose schemas built around real queries. On the client, server-rendered React with deliberate caching and every loading, empty and error state handled.",
   ],
   location: "Ahmedabad, Gujarat, India",
   locationShort: "AHMEDABAD, IN",
@@ -20,7 +21,7 @@ export const profile: Profile = {
   phoneRaw: "919979700935",
   avatar: "/images/profile.png",
   resumePath: "/images/Priyank_Baldaniya_FullStack.pdf",
-  resumeFileName: "Priyank-Baldaniya-FullStack.pdf",
+  resumeFileName: "Priyank-Baldaniya-MERN-Stack-Developer.pdf",
   availability: {
     open: true,
     label: "Open to MERN stack & full stack roles",
@@ -53,18 +54,15 @@ export const profile: Profile = {
   ],
 };
 
+/**
+ * Headline numbers. The experience tile is not here: it's time-dependent, so
+ * components prepend `experienceStat()` from src/lib/experience at render time.
+ */
 export const stats: Stat[] = [
   {
-    label: "Experience",
-    value: "1.9",
-    suffix: "+ yrs",
-    hint: "Building production web apps since Jan 2025",
-  },
-  {
     label: "Products delivered",
-    value: "6",
-    suffix: "+",
-    hint: "SaaS, EHS, AI, franchise, stock and assessment platforms",
+    value: String(projects.length),
+    hint: "EHS, AI, franchise, stock, assessment and real estate",
   },
   {
     label: "Stack",
@@ -72,9 +70,9 @@ export const stats: Stat[] = [
     hint: "MongoDB · Express · React · Node.js",
   },
   {
-    label: "Also fluent in",
+    label: "Framework",
     value: "Next.js",
-    hint: "TypeScript · Tailwind CSS · TanStack Query · Socket.IO",
+    hint: "App Router · Server Components · SSR / SSG",
   },
 ];
 

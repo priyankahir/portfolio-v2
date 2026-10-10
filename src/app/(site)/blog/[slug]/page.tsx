@@ -164,16 +164,16 @@ export default async function BlogPostPage({ params }: Params) {
 
           <div className="panel mt-10 flex flex-col items-start gap-5 p-7 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-lg font-semibold">Need this built, not just written about?</h3>
+              <h3 className="text-lg font-semibold">Questions about this article?</h3>
               <p className="mt-1.5 text-sm text-muted">
-                I&apos;m open to MERN stack roles and freelance work.
+                Happy to discuss it — and I&apos;m open to MERN and full stack roles.
               </p>
             </div>
             <Link
               href="/contact"
               className="group inline-flex h-11 shrink-0 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-on-primary transition-all hover:brightness-110"
             >
-              Work with me
+              Get in touch
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>

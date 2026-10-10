@@ -5,10 +5,10 @@
  */
 
 export { profile, stats, domains } from "./profile";
-export { skillGroups, allSkills, toolbox } from "./skills";
-export { experiences, education } from "./experience";
+export { skillGroups, allSkills } from "./skills";
+export { experiences, currentPosition, education } from "./experience";
 export { projects, featuredProjects, getProjectBySlug } from "./projects";
-export { services, processSteps, principles, faqs } from "./services";
+export { principles, faqs } from "./approach";
 export { navItems, homeSectionIds, footerLinks } from "./navigation";
 export {
   posts,

@@ -6,25 +6,29 @@ import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section, SectionHeading } from "@/components/ui/Section";
+import { principles } from "@/data/approach";
+import { currentPosition } from "@/data/experience";
 import { profile } from "@/data/profile";
-import { principles, processSteps } from "@/data/services";
-import { toolbox } from "@/data/skills";
+import { projects } from "@/data/projects";
+import { getExperience } from "@/lib/experience";
 import { aboutPageSchema, breadcrumbSchema, jsonLdGraph } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   title: "About",
   description:
-    "Priyank Baldaniya — MERN stack developer in Ahmedabad with 1.7+ years shipping React, Next.js, Node.js and MongoDB applications for SaaS products across EHS, AI, fintech and trading.",
+    "Priyank Baldaniya is a MERN stack developer in Ahmedabad, building React, Next.js, Node.js and MongoDB applications for SaaS products since January 2025.",
   path: "/about",
   keywords: [
     "about Priyank Baldaniya",
-    "MERN developer bio",
+    "MERN stack developer Ahmedabad",
     "React developer Ahmedabad",
   ],
 });
 
 export default function AboutPage() {
+  const experience = getExperience();
+
   return (
     <>
       <JsonLd
@@ -40,7 +44,7 @@ export default function AboutPage() {
       <PageHeader
         eyebrow="About me"
         title="A full-stack developer who designs the API before the mockup"
-        description={profile.tagline}
+        description={`${profile.role} at ${currentPosition.company} in Ahmedabad, with ${experience.label} of professional experience across MongoDB, Express, React and Node.js.`}
         crumbs={[
           { name: "Home", path: "/" },
           { name: "About", path: "/about" },
@@ -67,19 +71,10 @@ export default function AboutPage() {
 
             <h2 className="pt-6 text-xl font-semibold text-fg">Where I came from</h2>
             <p className="text-[1.0625rem] leading-[1.8] text-muted">
-              I finished a B.E. in Computer Engineering at Government Engineering
-              College, Rajkot under Gujarat Technological University in May 2025,
-              having already started working as a developer that January. The
-              last stretch of the degree ran in parallel with real client delivery —
-              which taught me more about component architecture than any coursework
-              did.
-            </p>
-            <p className="text-[1.0625rem] leading-[1.8] text-muted">
-              Since then I&apos;ve worked across six distinct product domains at
-              Vivansh InfoTech. That variety is the part I value most: an EHS
-              compliance platform and a stock-trading dashboard fail in completely
-              different ways, and building both teaches you which patterns are
-              universal and which were just habit.
+              I started at {currentPosition.company} in January 2025, while finishing a
+              B.E. in Computer Engineering (GTU, 2025). Since then I&apos;ve shipped{" "}
+              {projects.length} products across very different domains — and learned
+              which patterns hold up everywhere.
             </p>
           </Reveal>
 
@@ -89,21 +84,8 @@ export default function AboutPage() {
                 What I&apos;m looking for
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-A product-focused MERN role where the app has genuine complexity on both
-                sides — dashboards, builders, AI surfaces, APIs that have to stay fast —
-                and where code review is a real conversation rather than a rubber stamp.
-              </p>
-            </div>
-
-            <div className="panel p-6">
-              <h2 className="font-mono text-[11px] uppercase tracking-widest text-faint">
-                Outside the editor
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                I read other people&apos;s source. Most of what I know about component
-                API design came from reading Radix and TanStack, not from tutorials.
-                It&apos;s also where most of the ideas on this site&apos;s blog
-                started.
+                A product-focused MERN role with real complexity on both sides of the
+                API, and code review that is a conversation, not a rubber stamp.
               </p>
             </div>
           </Reveal>
@@ -114,7 +96,7 @@ A product-focused MERN role where the app has genuine complexity on both
         <SectionHeading
           eyebrow="Principles"
           title="What I optimise for"
-          description="Opinions I've formed from shipping, and would defend in a code review."
+          description="Opinions formed from shipping."
         />
 
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -132,65 +114,7 @@ A product-focused MERN role where the app has genuine complexity on both
         </Stagger>
       </Section>
 
-      <Section>
-        <SectionHeading
-          eyebrow="Process"
-          title="How a feature actually gets built"
-          description="Five steps, in the order they happen. The first two are where most of the bugs get prevented."
-        />
-
-        <ol className="space-y-3">
-          {processSteps.map((step, index) => (
-            <li key={step.id}>
-              <Reveal delay={index * 0.06}>
-                <article className="panel flex gap-5 p-6">
-                  <span
-                    aria-hidden="true"
-                    className="font-display text-2xl font-semibold text-line-strong"
-                  >
-                    {step.step}
-                  </span>
-                  <div>
-                    <h3 className="text-base font-semibold">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">
-                      {step.description}
-                    </p>
-                  </div>
-                </article>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
       <Experience />
-
-      <Section>
-        <SectionHeading
-          eyebrow="Toolbox"
-          title="Daily toolbox"
-          description="The things actually open on my machine on a normal working day."
-        />
-
-        <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {toolbox.map((group) => (
-            <StaggerItem key={group.category}>
-              <div className="panel h-full p-5">
-                <h3 className="font-mono text-[11px] uppercase tracking-widest text-primary">
-                  {group.category}
-                </h3>
-                <ul className="mt-4 space-y-2">
-                  {group.items.map((item) => (
-                    <li key={item} className="font-mono text-sm text-muted">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </Section>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import type { FaqItem, Post, Project } from "@/types";
-import { education, experiences } from "@/data/experience";
+import { currentPosition, education, experiences } from "@/data/experience";
 import { allSkills } from "@/data/skills";
 import { profile } from "@/data/profile";
 import { absoluteUrl, siteConfig, siteUrl } from "@/lib/site";
@@ -48,17 +48,17 @@ export function personSchema() {
       .map((social) => social.url),
     worksFor: {
       "@type": "Organization",
-      name: experiences[0].company,
+      name: currentPosition.company,
     },
-    hasOccupation: experiences.map((experience) => ({
+    hasOccupation: {
       "@type": "Occupation",
-      name: experience.role,
+      name: currentPosition.title,
       occupationLocation: {
         "@type": "City",
-        name: experience.location,
+        name: experiences[0].location,
       },
-      skills: experience.stack.join(", "),
-    })),
+      skills: experiences[0].stack.join(", "),
+    },
     alumniOf: education.map((entry) => ({
       "@type": "EducationalOrganization",
       name: entry.institution,

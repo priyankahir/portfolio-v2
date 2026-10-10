@@ -35,7 +35,7 @@ export function GET() {
     <title>${escapeXml(siteConfig.name)} — Blog</title>
     <link>${absoluteUrl("/blog")}</link>
     <description>${escapeXml(
-      "Notes on full-stack architecture, AI interfaces and web performance."
+      "Notes on full stack architecture, AI interfaces and web performance."
     )}</description>
     <language>en</language>
     <managingEditor>${escapeXml(`${profile.email} (${profile.name})`)}</managingEditor>

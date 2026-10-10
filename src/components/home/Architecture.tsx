@@ -83,7 +83,7 @@ export function Architecture() {
       <SectionHeading
         eyebrow="Architecture"
         title="How I build a MERN application"
-        description="The decisions I make at each layer of the stack, from the React client to the Express API, MongoDB, real-time services and deployment. Pick a layer to see the reasoning behind it."
+        description="The decisions behind each layer of the stack — pick one to see why."
       />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] lg:gap-10">

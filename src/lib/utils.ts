@@ -27,21 +27,3 @@ export function formatDate(iso: string): string {
     year: "numeric",
   });
 }
-
-/** Inclusive month count between two `YYYY-MM` values, rendered as "1 yr 8 mos". */
-export function durationBetween(start: string, end: string | null): string {
-  const [sy, sm] = start.split("-").map(Number);
-  const endParts = end ? end.split("-").map(Number) : null;
-  const now = new Date();
-  const ey = endParts ? endParts[0] : now.getFullYear();
-  const em = endParts ? endParts[1] : now.getMonth() + 1;
-
-  const months = Math.max(1, (ey - sy) * 12 + (em - sm) + 1);
-  const years = Math.floor(months / 12);
-  const rest = months % 12;
-
-  const parts: string[] = [];
-  if (years) parts.push(`${years} yr${years > 1 ? "s" : ""}`);
-  if (rest) parts.push(`${rest} mo${rest > 1 ? "s" : ""}`);
-  return parts.join(" ");
-}

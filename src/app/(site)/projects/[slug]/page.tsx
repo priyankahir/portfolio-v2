@@ -181,16 +181,17 @@ export default async function ProjectPage({ params }: Params) {
 
         <div className="panel mt-10 flex flex-col items-start gap-5 p-7 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-semibold">Building something like this?</h3>
+            <h3 className="text-lg font-semibold">Hiring a MERN stack developer?</h3>
             <p className="mt-1.5 text-sm text-muted">
-              I&apos;m open to MERN stack roles and freelance work.
+              I&apos;m open to MERN and full stack roles and happy to walk through this
+              work in more detail.
             </p>
           </div>
           <Link
             href="/contact"
             className="group inline-flex h-11 shrink-0 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-on-primary transition-all hover:brightness-110"
           >
-            Start a conversation
+            Get in touch
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>

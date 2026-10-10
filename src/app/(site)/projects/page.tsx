@@ -39,7 +39,7 @@ export default function ProjectsPage() {
           collectionPageSchema({
             name: "Projects",
             description:
-              "Full-stack case studies across EHS, AI, fintech, assessment and trading platforms.",
+              "Full stack case studies across EHS, AI, fintech, assessment and trading platforms.",
             path: "/projects",
             items: projects.map((project) => ({
               name: project.title,

@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
-import { BRAND, LOGO_DOT, LOGO_PATHS, LOGO_STROKE, LOGO_VIEWBOX } from "@/lib/brand";
+import { BRAND, LOGO_PATHS, LOGO_RADIUS, LOGO_STROKE, LOGO_VIEWBOX } from "@/lib/brand";
+import { profile } from "@/data/profile";
 import { siteConfig } from "@/lib/site";
 
 export const OG_SIZE = { width: 1200, height: 630 };
@@ -142,7 +143,7 @@ export function renderOgImage({ eyebrow, title, subtitle, chips = [] }: OgOption
                   {siteConfig.name}
                 </div>
                 <div style={{ display: "flex", fontSize: 20, color: MUTED }}>
-                  MERN Stack Developer · React · Node.js · MongoDB
+                  {profile.role} · React · Node.js · MongoDB
                 </div>
               </div>
             </div>
@@ -167,34 +168,28 @@ function LogoMark({ size }: { size: number }) {
   return (
     <svg width={size} height={size} viewBox={LOGO_VIEWBOX}>
       <defs>
-        <linearGradient id="pb" x1="6" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+        <linearGradient id="pb-tile" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor={BRAND.from} />
           <stop offset="1" stopColor={BRAND.to} />
         </linearGradient>
+        <linearGradient id="pb-shine" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#fff" stopOpacity="0.35" />
+          <stop offset="0.55" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
       </defs>
-      <rect width="32" height="32" rx="9" fill={BRAND.tile} />
-      <rect
-        x="0.5"
-        y="0.5"
-        width="31"
-        height="31"
-        rx="8.5"
-        fill="none"
-        stroke={BRAND.from}
-        strokeOpacity="0.3"
-      />
+      <rect width="32" height="32" rx={LOGO_RADIUS} fill="url(#pb-tile)" />
+      <rect width="32" height="32" rx={LOGO_RADIUS} fill="url(#pb-shine)" />
       {LOGO_PATHS.map((d) => (
         <path
           key={d}
           d={d}
           fill="none"
-          stroke="url(#pb)"
+          stroke={BRAND.ink}
           strokeWidth={LOGO_STROKE}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       ))}
-      <circle cx={LOGO_DOT.cx} cy={LOGO_DOT.cy} r={LOGO_DOT.r} fill={BRAND.from} />
     </svg>
   );
 }

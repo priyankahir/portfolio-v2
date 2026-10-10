@@ -11,7 +11,7 @@ export const projects: Project[] = [
     status: "In Production",
     featured: true,
     summary:
-      "A Claude API assistant grounded with RAG over a vector database for context-aware EHS guidance, plus an AI Report Builder that turns safety documents into structured summaries and recommendations.",
+      "AI features inside an EHS compliance platform. I built a Claude API assistant grounded with RAG over a vector database, an AI Report Builder that turns safety documents into structured summaries, and a live handoff to human support.",
     problem:
       "Safety officers were working through long policy PDFs and incident reports to find answers that existed somewhere in their own document set. A generic chatbot answering from general knowledge would have been worse than useless in a compliance context — answers had to come from the customer's own material.",
     approach: [
@@ -52,7 +52,7 @@ export const projects: Project[] = [
     status: "In Production",
     featured: true,
     summary:
-      "A multi-tenant Environmental, Health & Safety SaaS covering training, incident management, compliance and workforce operations — with ticketing, Action Plan workflows and live support over Socket.IO.",
+      "A multi-tenant Environmental, Health & Safety SaaS for training, incidents, compliance and workforce operations. I built training, incident and compliance modules, ticketing and Action Plan workflows, and live support over Socket.IO.",
     problem:
       "EHS compliance is largely a records problem: training history, incidents, corrective actions and audit trails scattered across spreadsheets and email. The platform had to bring all of it together for multiple tenant organisations without turning into an unusable enterprise maze.",
     approach: [
@@ -73,6 +73,8 @@ export const projects: Project[] = [
       "Next.js",
       "TypeScript",
       "Node.js",
+      "Express.js",
+      "MongoDB",
       "Socket.IO",
       "TanStack Query",
       "Zustand",
@@ -92,17 +94,17 @@ export const projects: Project[] = [
     status: "In Production",
     featured: true,
     summary:
-      "Franchise operations and payments for admins, franchisors and franchisees — Stripe and Razorpay workflows over REST APIs, role-based access and dashboards scoped to each role.",
+      "A franchise management SaaS for admins, franchisors and franchisees. I built full stack features for its role-based dashboards and integrated Stripe and Razorpay payment workflows with REST APIs.",
     problem:
-      "Franchise payments were being reconciled by hand across a franchise network. Three very different user types — admin, franchisor and franchisee — needed the same underlying data, each with a different slice and different permissions.",
+      "Three very different user types — admin, franchisor and franchisee — needed the same underlying franchise and payment data, each with a different slice and different permissions.",
     approach: [
       "Built multi-role interfaces for admins, franchisors and franchisees, with role-based access control deciding what each user can see and do.",
-      "Implemented payment workflows with both Stripe and Razorpay, integrated through REST APIs, to replace manual reconciliation.",
+      "Implemented payment workflows with both Stripe and Razorpay, integrated through REST APIs.",
       "Connected order data through a POS integration so dashboard figures reflect actual sales.",
       "Developed operational dashboards giving each role the insight relevant to its level of the business.",
     ],
     outcome:
-      "Payment collection moved from a manual exercise to an automated flow, with every role working from a dashboard scoped to its own permissions.",
+      "Payments run through Stripe and Razorpay inside the platform, and every role works from a dashboard scoped to its own permissions.",
     metrics: [
       { label: "Payments", value: "Stripe + Razorpay" },
       { label: "Access", value: "Role-based (3 tiers)" },
@@ -112,7 +114,8 @@ export const projects: Project[] = [
       "React.js",
       "TypeScript",
       "Node.js",
-      "REST APIs",
+      "Express.js",
+      "MongoDB",
       "Stripe",
       "Razorpay",
       "Zustand",
@@ -131,7 +134,7 @@ export const projects: Project[] = [
     status: "In Production",
     featured: true,
     summary:
-      "A dynamic report-template builder for behavioural and psychological assessments, driven by conditional forms and API-driven rendering.",
+      "A psychological assessment platform with client-specific reports. I built the dynamic report-template builder, using conditional form logic and API-driven rendering so new report formats don't need code changes.",
     problem:
       "Every client wanted their assessment report shaped differently — different sections, scoring narratives and conditional branches. Hard-coding report layouts would have meant a release for every new client.",
     approach: [
@@ -160,7 +163,7 @@ export const projects: Project[] = [
     status: "In Production",
     featured: true,
     summary:
-      "Bulk stock purchasing, order processing, pricing and inventory management — high-volume workflows where a stale render is a pricing error.",
+      "A bulk stock ordering, pricing and inventory platform. I built the ordering and pricing modules and used TanStack Query to keep frequently changing price data accurate without unnecessary re-renders.",
     problem:
       "High-volume stock operations with frequently changing prices: the UI had to stay accurate and responsive while data moved underneath it, because a stale render would show a user the wrong price.",
     approach: [
@@ -189,7 +192,7 @@ export const projects: Project[] = [
     status: "Live",
     featured: false,
     summary:
-      "A marketing-grade property platform with dynamic layouts, heavy media, and Core Web Vitals that survive it.",
+      "A responsive real estate site with media-heavy property pages. I built the dynamic layouts, optimised image loading and added transform-only Framer Motion transitions.",
     problem:
       "Real estate sites live or die on imagery, and imagery is exactly what destroys load performance. The brief needed a premium visual feel without a four-second LCP.",
     approach: [
@@ -198,7 +201,7 @@ export const projects: Project[] = [
       "Used Framer Motion for section transitions constrained to transform and opacity, keeping animation off the layout path.",
     ],
     outcome:
-      "A visually heavy site that still loads fast on a mid-range phone over mobile data.",
+      "A visually heavy site that keeps large imagery off the critical rendering path.",
     metrics: [
       { label: "Media", value: "Optimised loading" },
       { label: "Layout", value: "Fully responsive" },

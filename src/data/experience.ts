@@ -1,56 +1,61 @@
 import type { Education, Experience } from "@/types";
+import { profile } from "./profile";
 
+/**
+ * One entry per company. The internship and the full-time role at Vivansh are
+ * stages of the same entry, so the company appears once and total experience
+ * is never the sum of separately counted stages.
+ */
 export const experiences: Experience[] = [
   {
-    id: "vivansh-web-developer",
-    role: "Web Developer",
-    company: "Vivansh InfoTech",
+    id: "vivansh-infotech",
+    company: "Vivansh Infotech LLP",
     location: "Ahmedabad, India",
-    start: "2025-04",
-    end: null,
-    type: "Full-time",
-    summary:
-      "Build and ship production features across multiple SaaS products — EHS, AI, franchise management, stock operations and assessments — using React.js, Next.js, TypeScript and the wider MERN stack, in Agile/Scrum sprints.",
+    positions: [
+      {
+        title: "Web Developer",
+        type: "Full-time",
+        start: "2025-04",
+        end: null,
+        summary:
+          "Full stack features across EHS, AI, franchise, stock and assessment SaaS products.",
+      },
+      {
+        title: "Web Developer Intern",
+        type: "Internship",
+        // Same date as profile.careerStart — the internship is where it began.
+        start: profile.careerStart.slice(0, 7),
+        end: "2025-03",
+        summary:
+          "Responsive React and Tailwind CSS interfaces from Figma, REST API integration and form validation.",
+      },
+    ],
     highlights: [
-      "Develop production applications in React.js, Next.js and TypeScript, built on reusable component architecture so new modules ship against existing primitives.",
-      "Manage application state with Zustand, Context API and TanStack Query, keeping server cache and UI state separate for predictable, responsive dashboards.",
-      "Integrate REST APIs, Stripe and Razorpay payment workflows, and Socket.IO real-time communication for a live AI-to-human support handoff.",
-      "Improve Lighthouse scores through code splitting, lazy loading, rendering optimisation and image optimisation.",
-      "Implement technical SEO with route-level metadata, semantic HTML structure, sitemaps and robots.txt.",
-      "Work cross-functionally with backend, design, QA and product teams through sprint planning, reviews and releases.",
+      "Build SaaS features end to end with MongoDB, Express.js, React.js, Node.js, Next.js and TypeScript.",
+      "Design REST APIs with Express middleware, JWT auth, role-based access and Mongoose schemas.",
+      "Integrate Stripe and Razorpay payments and Socket.IO real-time support, including AI-to-human handoff.",
+      "Ship reusable UI with Tailwind CSS and Shadcn UI, and improve Lighthouse scores and technical SEO.",
     ],
     stack: [
+      "MongoDB",
+      "Express.js",
       "React.js",
+      "Node.js",
       "Next.js",
       "TypeScript",
-      "Node.js",
-      "Express.js",
-      "MongoDB",
       "TanStack Query",
       "Zustand",
       "Socket.IO",
       "Tailwind CSS",
     ],
   },
-  {
-    id: "vivansh-intern",
-    role: "Web Developer Intern",
-    company: "Vivansh InfoTech",
-    location: "Ahmedabad, India",
-    start: "2025-01",
-    end: "2025-03",
-    type: "Internship",
-    summary:
-      "Started on front-end delivery, turning Figma designs into production-ready React interfaces before moving into the full-time role.",
-    highlights: [
-      "Built responsive user interfaces from Figma designs using React.js and Tailwind CSS.",
-      "Created reusable UI components following component-driven development practices.",
-      "Integrated REST APIs and implemented form validation with Yup.",
-      "Worked in Git-based branching and pull-request workflows within an Agile team.",
-    ],
-    stack: ["React.js", "JavaScript", "Tailwind CSS", "Yup", "Git"],
-  },
 ];
+
+/** The current company and title, for summaries that only need one line. */
+export const currentPosition = {
+  company: experiences[0].company,
+  title: experiences[0].positions[0].title,
+};
 
 export const education: Education[] = [
   {

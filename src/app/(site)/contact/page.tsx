@@ -2,19 +2,18 @@ import { Contact } from "@/components/home/Contact";
 import { Faq } from "@/components/home/Faq";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { faqs } from "@/data/services";
+import { faqs } from "@/data/approach";
 import { profile } from "@/data/profile";
 import { contactPageSchema, breadcrumbSchema, faqSchema, jsonLdGraph } from "@/lib/json-ld";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   title: "Contact",
-  description: `Get in touch with ${profile.name} — MERN stack developer in Ahmedabad, India. Open to full-stack roles and freelance React / Next.js / Node.js work. Replies within a day.`,
+  description: `Contact ${profile.name}, ${profile.role} in Ahmedabad, India, about MERN stack and full stack roles — by email, WhatsApp or the contact form.`,
   path: "/contact",
   keywords: [
-    "hire MERN stack developer",
-    "contact full stack developer",
-    "freelance Node.js developer",
+    "contact MERN stack developer",
+    "full stack developer Ahmedabad",
   ],
 });
 
@@ -35,7 +34,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="Contact"
         title="Get in touch"
-        description="Hiring for a MERN or full-stack role, or stuck on a specific problem? Either is a good reason to write. I read everything and reply within a day."
+        description="Hiring for a MERN or full stack role, or have a question about my work? I read every message and usually reply within a day."
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Contact", path: "/contact" },

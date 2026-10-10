@@ -9,8 +9,8 @@ export const contentType = OG_CONTENT_TYPE;
 export default function Image() {
   return renderOgImage({
     eyebrow: profile.availability.label,
-    title: "I build full-stack apps that hold up in production.",
-    subtitle: `${profile.role} · ${profile.experienceLabel} · ${profile.location}`,
+    title: "I build MERN apps from schema to screen.",
+    subtitle: `${profile.role} · ${profile.location}`,
     chips: ["MongoDB", "Express", "React", "Node.js", "Next.js"],
   });
 }

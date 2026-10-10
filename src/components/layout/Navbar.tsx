@@ -10,7 +10,6 @@ import { profile } from "@/data/profile";
 import { useScrolled } from "@/hooks/useScrolled";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { cn } from "@/lib/utils";
-import { Magnetic } from "@/components/animations/Magnetic";
 import { NavLinks } from "@/components/layout/NavLinks";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { CommandPaletteTrigger } from "@/components/ui/CommandPalette";
@@ -82,14 +81,12 @@ export function Navbar() {
           <div className="flex shrink-0 items-center gap-2">
             <CommandPaletteTrigger className="hidden h-9 sm:flex" />
             <ThemeToggle />
-            <Magnetic className="hidden sm:inline-flex" strength={0.3}>
               <Link
                 href="/contact"
-                className="inline-flex h-9 items-center rounded-lg border border-line-strong bg-primary-soft px-4 font-mono text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-on-primary"
+                className="hidden h-9 items-center sm:inline-flex rounded-lg border border-line-strong bg-primary-soft px-4 font-mono text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-on-primary"
               >
-                Hire me
+                Contact
               </Link>
-            </Magnetic>
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -163,7 +160,7 @@ export function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="flex h-12 items-center justify-center rounded-lg bg-primary font-mono text-sm font-medium text-on-primary"
                 >
-                  Hire me
+                  Contact
                 </Link>
               </m.li>
             </m.ul>

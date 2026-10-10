@@ -1,13 +1,14 @@
 import {
+  currentPosition,
   education,
   experiences,
   faqs,
   profile,
   projects,
-  services,
   skillGroups,
   sortedPosts,
 } from "@/data";
+import { getExperience } from "@/lib/experience";
 import { absoluteUrl, siteConfig } from "@/lib/site";
 import { formatDateRange, formatMonth } from "@/lib/utils";
 
@@ -31,13 +32,13 @@ const coreSkills = Array.from(
 const contactLine = `Email ${profile.email} · ${absoluteUrl("/contact")}`;
 
 function keyFacts(): string[] {
-  const current = experiences.find((experience) => experience.end === null) ?? experiences[0];
+  const experience = getExperience();
   return [
     `- Name: ${profile.name}`,
     `- Role: ${profile.headline}`,
     `- Location: ${profile.location}`,
-    `- Experience: ${profile.experienceLabel} (professional since ${formatMonth(profile.careerStart)})`,
-    ...(current ? [`- Current position: ${current.role} at ${current.company}`] : []),
+    `- Experience: ${experience.label} (professional since ${experience.since})`,
+    `- Current position: ${currentPosition.title} at ${currentPosition.company}`,
     `- Core skills: ${coreSkills.join(", ")}`,
     `- Availability: ${profile.availability.open ? profile.availability.label : "Not currently looking"}`,
     `- Contact: ${contactLine}`,
@@ -83,7 +84,7 @@ export function buildLlmsTxt(): string {
     "",
     "## Optional",
     "",
-    link("Full profile for LLMs", "/llms-full.txt", "Complete experience, case studies, skills, services and FAQs as markdown"),
+    link("Full profile for LLMs", "/llms-full.txt", "Complete experience, case studies, skills and FAQs as markdown"),
     link("RSS feed", "/rss.xml", "Blog feed"),
     "",
   ].join("\n");
@@ -111,11 +112,14 @@ export function buildLlmsFullTxt(): string {
 
   for (const experience of experiences) {
     sections.push(
-      `### ${experience.role} — ${experience.company}`,
+      `### ${experience.company} — ${experience.location}`,
       "",
-      `${formatDateRange(experience.start, experience.end)} · ${experience.type} · ${experience.location}`,
+      ...experience.positions.map(
+        (position) =>
+          `- ${position.title} (${position.type}), ${formatDateRange(position.start, position.end)}: ${position.summary}`
+      ),
       "",
-      experience.summary,
+      "Responsibilities:",
       "",
       ...experience.highlights.map((highlight) => `- ${highlight}`),
       "",
@@ -158,18 +162,6 @@ export function buildLlmsFullTxt(): string {
       group.description,
       "",
       `${group.skills.map((skill) => `${skill.name} (${skill.level})`).join(", ")}`,
-      ""
-    );
-  }
-
-  sections.push("## Services", "");
-  for (const service of services) {
-    sections.push(
-      `### ${service.title}`,
-      "",
-      service.description,
-      "",
-      ...service.deliverables.map((deliverable) => `- ${deliverable}`),
       ""
     );
   }

@@ -49,37 +49,41 @@
   :root {
     color-scheme: light;
 
-    /* Cool neutral greys with an emerald brand colour. Every text token is
-       ≥ 4.5:1 (WCAG AA) on bg, bg-subtle and surface. */
-    --bg: #f7f8fa;
-    --bg-subtle: #eff2f5;
+    /* Soft neutral paper with a faint green undertone, so the emerald brand
+       colour sits naturally on it. Every text token is ≥ 4.5:1 (WCAG AA) on
+       bg, bg-subtle and surface. Depth comes from layered shadows plus
+       borders that are visible but quiet. */
+    --bg: #f7f9f8;
+    --bg-subtle: #edf3f0;
     --surface: #ffffff;
-    --surface-hover: #f9fbfa;
+    --surface-hover: #f3f8f5;
     --elevated: #ffffff;
 
-    --fg: #0f172a;
-    --muted: #475467;
-    --faint: #5d6878;
+    --fg: #0c1322;
+    --muted: #434e5d;
+    --faint: #586374;
 
     --primary: #047857;
-    --primary-soft: rgba(4, 120, 87, 0.08);
+    --primary-soft: rgba(4, 120, 87, 0.09);
     --on-primary: #ffffff;
     --accent: #0e7490;
     --accent-2: #6d28d9;
     --danger: #b42318;
 
-    --line: rgba(15, 23, 42, 0.09);
-    --line-strong: rgba(4, 120, 87, 0.3);
+    --line: rgba(12, 19, 34, 0.1);
+    --line-strong: rgba(4, 120, 87, 0.34);
 
-    --glow: rgba(4, 120, 87, 0.16);
-    --grid: rgba(15, 23, 42, 0.045);
+    --glow: rgba(4, 120, 87, 0.22);
+    --grid: rgba(12, 19, 34, 0.05);
     /* Light surfaces need a shadow for depth; dark ones rely on borders. */
-    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -20px rgba(15, 23, 42, 0.16);
+    --shadow-card: 0 1px 2px rgba(12, 19, 34, 0.05), 0 2px 6px -2px rgba(12, 19, 34, 0.05),
+      0 14px 34px -18px rgba(12, 19, 34, 0.2);
     --spotlight: rgba(4, 120, 87, 0.07);
     --noise-opacity: 0.02;
   }
 
-  .dark {
+  .dark,
+  .force-dark {
     color-scheme: dark;
 
     --bg: #07090c;
@@ -359,6 +363,179 @@
     animation: var(--animate-blink);
   }
 
+  /* -------------------------------------------------------------------------
+     Hero motion. Everything below is CSS-only and transform/opacity based, so
+     it starts on first paint, ships no JavaScript and is flattened to its end
+     state by the global reduced-motion rule at the bottom of this file.
+  ------------------------------------------------------------------------- */
+
+  /* Word-by-word settle for the hero headline. Each word is fully visible
+     from the first frame (no mask, no opacity) and only glides a short way
+     into place — so the headline, the page LCP element, counts as painted
+     immediately instead of when the animation ends. */
+  .word {
+    display: inline-block;
+  }
+  .word > span {
+    display: inline-block;
+    animation: word-rise 0.8s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 55ms);
+  }
+
+  /* Hand-drawn underline that strokes in once the headline has landed.
+     Paths use pathLength="1" so the dash maths is resolution-independent. */
+  .draw path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 1.1s var(--ease-out-soft) 0.95s forwards;
+  }
+
+  /* Rotating light travelling around a rounded border. The angle is a
+     registered custom property so the conic gradient can be animated. */
+  .border-beam {
+    position: relative;
+  }
+  .border-beam::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--beam-angle),
+      transparent 0 62%,
+      var(--primary) 76%,
+      var(--accent) 86%,
+      transparent 96%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam-spin 7s linear infinite;
+  }
+
+  /* Same beam, but only while the card is hovered or focused. */
+  /* Inside an overflow-hidden card the ring has to sit on the border itself. */
+  .beam-hover::after {
+    inset: 0;
+    opacity: 0;
+    /* Paused while hidden, so idle cards cost nothing per frame. */
+    animation-play-state: paused;
+    transition: opacity 0.4s var(--ease-out-soft);
+  }
+  .beam-hover:hover::after,
+  .beam-hover:focus-within::after {
+    opacity: 1;
+    animation-play-state: running;
+  }
+
+  /* Pulse travelling along a 1px line — the MERN "data flow" rail. */
+  .flow-line::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 30%;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: flow-x 3.2s linear infinite;
+  }
+
+  /* Node that lights up as the pulse passes. Delays are set per node so the
+     glow lines up with the pulse's position on the rail. */
+  .flow-node {
+    animation: node-glow 3.2s ease-out infinite;
+    animation-delay: var(--node-delay, 0s);
+  }
+
+  /* Beams running along the hero grid lines. */
+  .grid-beam {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    overflow: hidden;
+  }
+  .grid-beam::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 1px;
+    height: 140px;
+    background: linear-gradient(to bottom, transparent, var(--primary), transparent);
+    opacity: 0.7;
+    animation: beam-y var(--beam-duration, 7s) linear var(--beam-delay, 0s) infinite;
+  }
+
+  /* Tech nodes orbiting behind the portrait. The ring turns; each node
+     counter-rotates at the same speed so its label stays upright. */
+  .orbit {
+    animation: spin 60s linear infinite;
+  }
+  .orbit-node {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(var(--a)) translateX(var(--r))
+      rotate(calc(var(--a) * -1));
+  }
+  .orbit-node > span {
+    animation: spin 60s linear infinite reverse;
+  }
+
+  /* -------------------------------------------------------------------------
+     Section motion (outside the hero). Hover effects are transitions; the
+     ambient ones are single transform animations on tiny elements.
+  ------------------------------------------------------------------------- */
+
+  /* Light gliding along the 1px divider at the top of tinted sections. */
+  .divider-glow {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 22%;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: flow-x 9s ease-in-out infinite;
+  }
+
+  /* Card icon that lifts and tilts when its card is hovered. */
+  .icon-pop {
+    transition:
+      transform 0.45s var(--ease-out-soft),
+      border-color 0.3s var(--ease-out-soft),
+      box-shadow 0.45s var(--ease-out-soft);
+  }
+  .group:hover .icon-pop {
+    transform: translateY(-2px) rotate(-6deg) scale(1.08);
+    border-color: var(--line-strong);
+    box-shadow: 0 8px 22px -10px var(--glow);
+  }
+
+  /* Chips that lift on hover. */
+  .chip-lift {
+    transition:
+      transform 0.3s var(--ease-out-soft),
+      border-color 0.3s var(--ease-out-soft),
+      color 0.3s var(--ease-out-soft);
+  }
+  .chip-lift:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-strong);
+    color: var(--primary);
+  }
+
+  /* FAQ answers ease in when a <details> opens. */
+  details[open] > .details-body {
+    animation: enter 0.45s var(--ease-out-soft) both;
+  }
+
+  /* Mouse-wheel scroll cue. */
+  .scroll-wheel {
+    animation: scroll-wheel 1.8s var(--ease-out-soft) infinite;
+  }
+
   .link-underline {
     background-image: linear-gradient(var(--primary), var(--primary));
     background-size: 0% 1px;
@@ -388,6 +565,20 @@
          while its top is already being read. Fully visible after 180px. */
       animation-range: entry var(--reveal-shift, 0px) entry
         calc(var(--reveal-shift, 0px) + 180px);
+    }
+
+    /* Section headings: the eyebrow rule draws in and the title rises out
+       of a mask as the heading scrolls into view. */
+    .heading-line {
+      transform-origin: left;
+      animation: grow-x linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 70%;
+    }
+    .heading-rise {
+      animation: clip-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
     }
 
     .stagger > .reveal:nth-child(3n + 2) {
@@ -467,6 +658,103 @@
 @keyframes blink {
   50% {
     opacity: 0;
+  }
+}
+
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes clip-rise {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.35em);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+@keyframes word-rise {
+  from {
+    transform: translateY(0.28em);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes flow-x {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+
+@keyframes node-glow {
+  0% {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0 var(--glow), 0 0 18px -2px var(--glow);
+  }
+  35%,
+  100% {
+    border-color: var(--line);
+    box-shadow: 0 0 0 8px transparent, 0 0 0 0 transparent;
+  }
+}
+
+@keyframes beam-y {
+  from {
+    transform: translateY(-140px);
+  }
+  to {
+    transform: translateY(900px);
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes scroll-wheel {
+  0% {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(7px);
   }
 }
 

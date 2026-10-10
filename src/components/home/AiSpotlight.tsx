@@ -35,14 +35,14 @@ export function AiSpotlight() {
       <SectionHeading
         eyebrow="AI engineering"
         title="AI features, wired end to end"
-        description="Model quality is half the problem. Retrieval, streaming, latency, showing where an answer came from, and a way out when it's wrong — that half is engineering."
+        description="Grounded answers, structured reports and a human handoff when the model isn't enough."
       />
 
       <Stagger className="grid gap-4 sm:grid-cols-2">
         {CAPABILITIES.map((capability) => (
           <StaggerItem key={capability.title}>
-            <article data-spotlight className="panel panel-interactive flex h-full gap-4 p-6">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line bg-primary-soft">
+            <article data-spotlight className="panel panel-interactive group flex h-full gap-4 p-6">
+              <span className="icon-pop grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line bg-primary-soft">
                 <capability.icon className="h-[18px] w-[18px] text-primary" aria-hidden="true" />
               </span>
               <div>

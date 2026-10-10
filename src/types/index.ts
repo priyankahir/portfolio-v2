@@ -23,9 +23,11 @@ export interface Profile {
   role: string;
   /** Longer role used for SEO titles */
   headline: string;
-  /** Human-facing experience label, e.g. "1.7+ years" */
-  experienceLabel: string;
-  /** ISO month the professional career started — powers the live counter */
+  /**
+   * ISO date (YYYY-MM-DD) the professional career started. The single source
+   * for every experience figure on the site — durations are always computed
+   * from it at render time (see `src/lib/experience.ts`), never stored.
+   */
   careerStart: string;
   tagline: string;
   /** 2–3 paragraphs for the About section */
@@ -72,18 +74,29 @@ export interface SkillGroup {
   skills: Skill[];
 }
 
-export interface Experience {
-  id: string;
-  role: string;
-  company: string;
-  companyUrl?: string;
-  location: string;
+/** One stage of employment at a company, e.g. an internship or a full-time role. */
+export interface ExperiencePosition {
+  title: string;
+  type: "Full-time" | "Internship";
   /** ISO `YYYY-MM` */
   start: string;
   /** ISO `YYYY-MM`, or null when current */
   end: string | null;
-  type: "Full-time" | "Internship" | "Freelance";
+  /** One line on what this stage covered */
   summary: string;
+}
+
+/**
+ * One company, with every stage worked there. Responsibilities live at the
+ * company level so they're never repeated per stage.
+ */
+export interface Experience {
+  id: string;
+  company: string;
+  companyUrl?: string;
+  location: string;
+  /** Most recent first */
+  positions: ExperiencePosition[];
   highlights: string[];
   stack: string[];
 }
@@ -127,21 +140,6 @@ export interface Education {
   location: string;
 }
 
-export interface Service {
-  id: string;
-  title: string;
-  description: string;
-  icon: IconName;
-  deliverables: string[];
-}
-
-export interface ProcessStep {
-  id: string;
-  step: string;
-  title: string;
-  description: string;
-}
-
 export interface Principle {
   id: string;
   title: string;
@@ -152,11 +150,6 @@ export interface Principle {
 export interface FaqItem {
   question: string;
   answer: string;
-}
-
-export interface ToolboxItem {
-  category: string;
-  items: string[];
 }
 
 export type PostBlock =

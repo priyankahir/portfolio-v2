@@ -1,6 +1,6 @@
 # priyank.dev — portfolio
 
-Portfolio site for Priyank Baldaniya, frontend developer.
+Portfolio site for Priyank Baldaniya, MERN stack developer.
 Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Framer Motion.
 
 All content is static and lives in `src/data` — there is no CMS and no runtime
@@ -27,12 +27,16 @@ Everything a visitor reads comes from one directory. Nothing else needs touching
 | File | What it holds |
 | --- | --- |
 | `src/data/profile.ts` | Name, role, tagline, bio, contact details, socials, headline stats |
-| `src/data/experience.ts` | Work history and education |
+| `src/data/experience.ts` | Work history (one entry per company, with its stages) and education |
 | `src/data/projects.ts` | Project case studies — each one generates `/projects/<slug>` |
-| `src/data/skills.ts` | Skill groups and the daily toolbox |
-| `src/data/services.ts` | Services, working process, principles, FAQ |
+| `src/data/skills.ts` | Skill groups |
+| `src/data/approach.ts` | Working process, principles, FAQ |
 | `src/data/posts.ts` | Blog articles — each one generates `/blog/<slug>` |
 | `src/data/navigation.ts` | Header and footer links |
+
+Total experience is never written down: it's computed from `profile.careerStart`
+by `src/lib/experience.ts` at render time, and pages revalidate daily so the
+figure stays current. Don't hardcode a duration anywhere in the content.
 
 Every file is typed against `src/types/index.ts`, so a malformed entry fails the
 build rather than the page. Adding a project or post automatically adds it to the

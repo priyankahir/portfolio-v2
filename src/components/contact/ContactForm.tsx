@@ -2,7 +2,6 @@
 
 import { Loader2, Send } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 type Status = "idle" | "sending" | "sent";
@@ -35,6 +34,12 @@ export function ContactForm() {
     if (errors[key]) setErrors((current) => ({ ...current, [key]: undefined }));
   };
 
+  /** The toast library loads on first use, keeping it out of the initial bundle. */
+  const notify = async (kind: "success" | "error", message: string) => {
+    const { toast } = await import("sonner");
+    toast[kind](message);
+  };
+
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -55,11 +60,12 @@ export function ContactForm() {
 
       setStatus("sent");
       setValues(EMPTY);
-      toast.success("Message sent — I'll reply within a day.");
+      void notify("success", "Message sent — I'll reply within a day.");
       setTimeout(() => setStatus("idle"), 6000);
     } catch (error) {
       setStatus("idle");
-      toast.error(
+      void notify(
+        "error",
         error instanceof Error && error.message !== "Request failed"
           ? error.message
           : "Couldn't send that. Email me directly and it'll definitely reach me."
@@ -70,7 +76,7 @@ export function ContactForm() {
   const disabled = status !== "idle";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="panel p-6 md:p-8">
+    <form onSubmit={onSubmit} noValidate className="panel border-beam p-6 md:p-8">
       <p className="mb-6 font-mono text-xs text-faint">
         <span aria-hidden="true" className="text-primary">
           ${" "}
@@ -123,7 +129,7 @@ export function ContactForm() {
           error={errors.message}
           onChange={update("message")}
           disabled={disabled}
-          placeholder="What are you building, and where do you need help?"
+          placeholder="Tell me about the role, or what you'd like to discuss."
         />
       </div>
 

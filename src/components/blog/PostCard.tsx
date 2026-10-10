@@ -21,7 +21,7 @@ export function PostCard({
     <article
       data-spotlight
       className={cn(
-        "panel panel-interactive group relative flex h-full flex-col p-6",
+        "panel panel-interactive border-beam beam-hover group relative flex h-full flex-col p-6",
         featured && "md:p-8",
         className
       )}

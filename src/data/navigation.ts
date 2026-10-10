@@ -6,7 +6,6 @@ export const navItems: NavItem[] = [
   { label: "experience", href: "/#experience", sectionId: "experience" },
   { label: "skills", href: "/#skills", sectionId: "skills" },
   { label: "about", href: "/#about", sectionId: "about" },
-  { label: "services", href: "/#services", sectionId: "services" },
   { label: "blog", href: "/blog" },
   { label: "resume", href: "/resume" },
   { label: "contact", href: "/#contact", sectionId: "contact" },
@@ -18,7 +17,6 @@ export const homeSectionIds = [
   "experience",
   "skills",
   "about",
-  "services",
   "contact",
 ];
 

@@ -19,7 +19,7 @@ export function Work() {
       <SectionHeading
         eyebrow="Selected work"
         title="Featured projects"
-        description={`${featuredProjects.length} production SaaS products across ${domainCount} domains. Each one is a short case study — the constraint, the approach, and what shipped.`}
+        description={`${featuredProjects.length} production SaaS products across ${domainCount} domains — each one a short case study.`}
         action={
           <Link
             href="/projects"

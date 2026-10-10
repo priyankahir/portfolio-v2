@@ -18,7 +18,7 @@ export const metadata = buildMetadata({
   keywords: [
     "React blog",
     "Next.js articles",
-    "full stack architecture writing",
+    "full stack architecture articles",
     "TanStack Query guide",
   ],
 });
@@ -35,7 +35,7 @@ export default function BlogPage() {
           collectionPageSchema({
             name: "Blog",
             description:
-              "Articles on full-stack architecture, AI interfaces and web performance.",
+              "Articles on full stack architecture, AI interfaces and web performance.",
             path: "/blog",
             items: sortedPosts.map((post) => ({
               name: post.title,

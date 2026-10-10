@@ -13,7 +13,7 @@ export function Writing() {
       <SectionHeading
         eyebrow="Writing"
         title="Things I've written down"
-        description="Notes from actual work — state architecture, AI interfaces, dynamic forms and the performance problems dashboards have that landing pages don't."
+        description="Notes from real work — state, AI interfaces, forms and performance."
         action={
           <Link
             href="/blog"

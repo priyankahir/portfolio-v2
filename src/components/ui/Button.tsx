@@ -7,7 +7,7 @@ type Size = "sm" | "md" | "lg";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-primary text-on-primary border-primary hover:brightness-110 shadow-[0_6px_24px_-10px_var(--glow)]",
+    "bg-primary text-on-primary border-primary hover:brightness-110",
   secondary:
     "bg-surface text-fg border-line hover:border-line-strong hover:bg-surface-hover",
   ghost: "bg-transparent text-muted border-transparent hover:text-primary",
@@ -20,7 +20,7 @@ const SIZES: Record<Size, string> = {
 };
 
 const BASE =
-  "inline-flex items-center justify-center rounded-lg border font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-55";
+  "inline-flex items-center justify-center rounded-lg border font-medium transition-[color,background-color,border-color,filter] duration-200 disabled:pointer-events-none disabled:opacity-55";
 
 interface CommonProps {
   variant?: Variant;

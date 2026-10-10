@@ -32,8 +32,10 @@ export function Section({
       {tinted && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
-        />
+          className="pointer-events-none absolute inset-x-0 top-0 h-px overflow-hidden bg-gradient-to-r from-transparent via-line-strong to-transparent"
+        >
+          <span className="divider-glow" />
+        </div>
       )}
       <div className={narrow ? "container-prose" : "container-page"}>{children}</div>
     </section>
@@ -77,7 +79,7 @@ export function SectionHeading({
           <Eyebrow className={cn("mb-4", align === "center" && "justify-center")}>
             {eyebrow}
           </Eyebrow>
-          <h2 className="text-3xl font-semibold leading-tight sm:text-4xl md:text-[2.75rem]">
+          <h2 className="heading-rise text-3xl font-semibold leading-tight sm:text-4xl md:text-[2.75rem]">
             {title}
           </h2>
           {description && (
@@ -107,7 +109,7 @@ export function Eyebrow({
     >
       <span
         aria-hidden="true"
-        className="h-px w-8 bg-gradient-to-r from-primary to-transparent"
+        className="heading-line h-px w-8 bg-gradient-to-r from-primary to-transparent"
       />
       {children}
     </p>

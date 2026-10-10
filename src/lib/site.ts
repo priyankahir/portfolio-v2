@@ -14,9 +14,9 @@ export const siteConfig = {
   name: profile.name,
   shortName: "Priyank B.",
   // Kept under ~60 characters so search results don't truncate it.
-  title: `${profile.name} — MERN Stack Developer | React & Next.js`,
+  title: `${profile.name} — ${profile.role} | React & Next.js`,
   description:
-    "MERN stack developer in Ahmedabad, India, building production web apps with MongoDB, Express, React, Node.js and Next.js across EHS, AI, fintech and trading.",
+    "Priyank Baldaniya is a MERN stack developer in Ahmedabad, India, building production SaaS apps with MongoDB, Express, React, Node.js and Next.js.",
   locale: "en_IN",
   language: "en",
   themeColor: {
@@ -30,17 +30,8 @@ export const siteConfig = {
     "React developer",
     "Next.js developer",
     "Node.js developer",
-    "MongoDB developer",
-    "Express.js developer",
-    "TypeScript developer",
     "MERN stack developer Ahmedabad",
-    "React developer Ahmedabad",
-    "Node.js developer India",
-    "MongoDB Express React Node.js",
-    "React developer portfolio",
-    "Next.js projects",
     "full stack developer India",
-    "AI interface developer",
     "portfolio",
   ],
 } as const;
@@ -50,7 +41,7 @@ export const siteConfig = {
  * `lastModified` in the sitemap instead of the build time, so crawlers only
  * see a change when the content actually changed. Bump it when you edit them.
  */
-export const contentUpdatedAt = "2026-10-01";
+export const contentUpdatedAt = "2026-10-10";
 
 /** Builds an absolute URL from a site-relative path. */
 export function absoluteUrl(path = "/"): string {

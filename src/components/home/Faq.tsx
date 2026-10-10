@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { Reveal } from "@/components/animations/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { faqs } from "@/data/services";
+import { faqs } from "@/data/approach";
 
 /**
  * Native `<details>` — keyboard accessible, works without JavaScript, and the
@@ -29,7 +29,7 @@ export function Faq() {
                   className="h-4 w-4 shrink-0 text-primary transition-transform duration-300 group-open:rotate-45"
                 />
               </summary>
-              <div className="border-t border-line px-5 py-4">
+              <div className="details-body border-t border-line px-5 py-4">
                 <p className="text-sm leading-relaxed text-muted">{faq.answer}</p>
               </div>
             </details>

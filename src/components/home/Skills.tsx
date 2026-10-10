@@ -23,7 +23,7 @@ export function Skills() {
       <SectionHeading
         eyebrow="Tech stack"
         title="The stack I actually ship with"
-        description="Grouped by what they do, and marked by how much I lean on them — no percentage bars, because nobody knows what 87% React means."
+        description="Grouped by job and marked by how often I use them — no percentage bars."
       />
 
       {/* A lone card on the last 3-column row spans it, so the grid never ends
@@ -31,9 +31,9 @@ export function Skills() {
       <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 xl:[&>*:last-child:nth-child(3n+1)]:col-span-3">
         {skillGroups.map((group) => (
           <StaggerItem key={group.id}>
-            <article data-spotlight className="panel panel-interactive flex h-full flex-col p-6">
+            <article data-spotlight className="panel panel-interactive group flex h-full flex-col p-6">
               <header className="flex items-start gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-primary-soft">
+                <span className="icon-pop grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-primary-soft">
                   <Icon name={group.icon} className="h-4 w-4 text-primary" />
                 </span>
                 <div className="min-w-0">
@@ -47,16 +47,12 @@ export function Skills() {
                 </div>
               </header>
 
-              <p className="mt-4 text-sm leading-relaxed text-muted">
-                {group.description}
-              </p>
-
-              <ul className="mt-5 flex flex-wrap gap-1.5 pt-1">
+              <ul className="mt-5 flex flex-wrap gap-1.5">
                 {group.skills.map((skill) => (
                   <li key={skill.name}>
                     <span
                       className={cn(
-                        "inline-flex rounded-md border px-2 py-1 font-mono text-[11px] leading-none transition-colors",
+                        "chip-lift inline-flex rounded-md border px-2 py-1 font-mono text-[11px] leading-none",
                         LEVEL_STYLES[skill.level]
                       )}
                     >

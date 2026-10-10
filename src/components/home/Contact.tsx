@@ -4,6 +4,7 @@ import { ContactForm } from "@/components/contact/ContactForm";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { SocialIcon } from "@/components/ui/SocialIcon";
+import { currentPosition } from "@/data/experience";
 import { profile } from "@/data/profile";
 
 export function Contact() {
@@ -14,17 +15,19 @@ export function Contact() {
       <SectionHeading
         eyebrow="Contact"
         title="Let's talk"
-        description="Open to MERN stack roles and freelance work. Tell me what you're building — I reply within a day."
+        description="Open to MERN stack and full stack roles. Send a message or reach me directly — I usually reply within a day."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.25fr] lg:gap-10">
-        {/* min-w-0: without it the grid track is forced to the contact list's
+        {/* Contact details render without a scroll fade: they are the first
+            content on /contact and must be fully legible from the first frame.
+            min-w-0: without it the grid track is forced to the contact list's
             min-content width and the page scrolls sideways at 320px. */}
-        <Reveal direction="right" className="flex min-w-0 flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <ul className="panel divide-y divide-line">
             {reachable.map((social) => (
-              <li key={social.label} className="flex items-center gap-3 p-4">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-primary-soft text-primary">
+              <li key={social.label} className="group flex items-center gap-3 p-4">
+                <span className="icon-pop grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-primary-soft text-primary">
                   <SocialIcon icon={social.icon} className="h-4 w-4" />
                 </span>
 
@@ -79,12 +82,10 @@ export function Contact() {
               <span className="font-medium text-fg">
                 {profile.availability.label}.
               </span>{" "}
-Currently at Vivansh InfoTech, and happy to talk about MERN or
-              full-stack positions, contract work, or a specific problem you&apos;re
-              stuck on.
+              Currently {currentPosition.title} at {currentPosition.company}.
             </p>
           </div>
-        </Reveal>
+        </div>
 
         <Reveal direction="left" delay={0.1} className="min-w-0">
           <ContactForm />
